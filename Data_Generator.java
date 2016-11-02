@@ -1,10 +1,14 @@
-import java.io.*;
+import java.util.Scanner;
+import java.util.Random;
 import java.util.*;
+import java.io.*;
 
 public class Data_Generator
 {
 	public static void main(Strings[] args)
 	{
+		Random numGen = new Random();
+		int pick = numGen.nextInt(100) + 1;
 		int counter = 0;
 		
 		
