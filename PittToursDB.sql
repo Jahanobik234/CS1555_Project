@@ -1,8 +1,8 @@
---Pitt Tours Database
---Jonathan Hanobik and Seth Stayer
---CS1555, Fall 2016
+-- Pitt Tours Database
+-- Jonathan Hanobik and Seth Stayer
+-- CS1555, Fall 2016
 
---Airline
+-- Airline
 CREATE OR REPLACE TABLE Airline (
 	airline_id VARCHAR(5),
 	airline_name VARCHAR(50),
@@ -11,7 +11,7 @@ CREATE OR REPLACE TABLE Airline (
 	CONSTRAINT PK_Airline PRIMARY KEY(airline_id)
 );
 
---Flight Schedule
+-- Flight Schedule
 CREATE OR REPLACE TABLE Flight (
 	flight_number VARCHAR(3),
 	plane_type CHAR(4),
@@ -25,7 +25,7 @@ CREATE OR REPLACE TABLE Flight (
 	CONSTRAINT FK2_Flight FOREIGN KEY(airline_id) REFERENCES Airline(airline_id)
 );
 
---Plane
+-- Plane
 CREATE OR REPLACE TABLE Plane (
 	plane_type CHAR(4),
 	manufacture VARCHAR(10),
@@ -35,4 +35,60 @@ CREATE OR REPLACE TABLE Plane (
 	owner_id VARCHAR(5),
 	CONSTRAINT PK_Plane PRIMARY KEY(plane_type),
 	CONSTRAINT FK_Plane FOREIGN KEY(owner_id) REFERENCES Airline(airline_id)
+);
+
+-- Flight Pricing
+CREATE OR REPLACE TABLE Price (
+	departure_city varchar(3),
+	arrival_city varchar(3),
+	airline_id varchar(5),
+	high_price int,
+	low_price int,
+	CONSTRAINT Pk_Price PRIMARY KEY(departure_city, arrival_city),
+	CONSTRAINT Fk_Price FOREIGN KEY(airline_id) REFERENCES Airline(airline_id)
+);
+
+-- Customer
+CREATE OR REPLACE TABLE Customer (
+	cid varchar(9),
+	salutation varchar(3),
+	first_name varchar(30),
+	last_name varchar(30),
+	credit_card_num varchar(16),
+	credit_card_expire date,
+	street varchar(30),
+	city varchar(30),
+	state varchar(2),
+	phone varchar(10),
+	email varchar(30),
+	CONSTRAINT Pk_Customer PRIMARY KEY(cid)
+);
+
+-- Reservation Information
+CREATE OR REPLACE TABLE Reservation (
+	reservation_number varchar(5),
+	cid varchar(9),
+	cost int,
+	credit_card_num varchar(16),
+	reservation_date date,
+	ticketed varchar(1),
+	CONSTRAINT Pk_Reservation PRIMARY KEY(reservation_number),
+	CONSTRAINT Fk_Reservation FOREIGN KEY(cid) REFERENCES Customer(cid)
+);
+
+-- Reservation Detail
+CREATE OR REPLACE TABLE Reservation_Detail (
+	reservation_number varchar(5),
+	flight_number varchar(3),
+	flight_date date,
+	leg int,
+	CONSTRAINT Pk_Reservation_Detail PRIMARY KEY(reservation_number, leg),
+	CONSTRAINT Fk1_Reservation_Detail FOREIGN KEY(reservation_number) REFERENCES Reservation(reservation_number),
+	CONSTRAINT Fk2_Reservation_Detail FOREIGN KEY(flight_number) REFERENCES Flight(flight_number)
+);
+
+-- Our Time
+CREATE OR REPLACE TABLE _Date (
+	c_date date,
+	CONSTRAINT Pk_Date PRIMARY KEY(c_date)
 );
