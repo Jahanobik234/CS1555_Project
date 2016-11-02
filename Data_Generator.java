@@ -44,13 +44,13 @@ public class Data_Generator
 			ccNum();
 			
 			// CREDIT CARD DATE
-			ccDate((pick2 % 12), (pick1 - 1));			// Month, Year
+			ccDate((pick2 % 12 + 1), (pick1 - 1));			// Month, Year
 			
 			// STREET NAME
-			streetName(pick2 % 10 + 11);
+			streetName(pick2);								// 1 - 20
 			
 			// CITY AND STATE
-			cityState(pick1 % 20);
+			cityState(pick1 % 20);							// 0 - 19
 			
 			// PHONE
 			phone();
