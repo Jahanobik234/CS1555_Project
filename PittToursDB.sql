@@ -54,6 +54,7 @@ CREATE OR REPLACE TABLE Customer (
 	salutation varchar(3),
 	first_name varchar(30),
 	last_name varchar(30),
+	frequent_miles varchar(5),
 	credit_card_num varchar(16),
 	credit_card_expire date,
 	street varchar(30),
