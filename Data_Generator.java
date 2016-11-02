@@ -5,6 +5,13 @@ import java.io.*;
 
 public class Data_Generator
 {
+	private enum FemaleNames = {Kathy, Staci, Gay, Kay, Fay, Day, Audrey, Monica, Rebecca, Emily, Sara, Demeara, Kim, Jessica, Annie, Katie, Lisa, Martha, Breanna, Penelope, Nicole};
+	private enum MaleNames = {Seth, Jonathan, Panos, Steve, Mark, John, Paul, Tim, Spencer, Matt, Dan, Will, Jesse, Wyatt, Michael, Sam, Caleb, Adam, Hunter, Joshua};
+	private enum LastNames = {Miller, Smith, Johnson, Brown, Hanobik, Stayer, Richardson, Stevenson, Carroll, McKinney, Gosa, Getz, Sinatra, Paul, Butcher, Frey, Misuraca, Tuft, Roosevelt, Ross};
+	private enum City = {Pittsburgh, Philadelphia, York, Hershey, Harrisburg, Albany, Columbus, Indianapolis, Chicago, Des Moines, Houston, Tallahasee, New Orleans, Atlanta, Providence, Boston, Los Angeles, Honolulu, Anchorage, Billings};
+	private enum State = {PA, PA, PA, PA, PA, NY, OH, IA, IL, IA, TX, FL, LA, GA, RI, MA, CA, HI, AK, MT};
+	private enum Street = {Main Street, Walnut Street, Bigelow Boulevard, Oakland Avenue, Orchard Circle, McKee Street, Pine Road, West Avenue, Friendship Lane, Forbes Avenue, Fifth Avenue, Cherry Street, New School Lane, Distillery Road, Memory Lane, Kenyon Trail, Yuletide Road, Swanson Street, Cathedral Road, Farm Lane, Union Street};
+
 	public static void main(Strings[] args)
 	{
 		Random numGen = new Random();
@@ -57,6 +64,10 @@ public class Data_Generator
 	// Print result
 	public static void femaleName()
 	{
+		if(pick >= 1 && pick <= 25)
+			printf("%s ", "'Ms'");
+		else if(pick >=26 && pick <=50)
+			printf("%s ", "'Mrs'");
 	}
 	
 	// Generate random first and last name
