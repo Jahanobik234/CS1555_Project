@@ -1,3 +1,4 @@
+-- Customers --
 INSERT INTO CUSTOMER VALUES (00000000, 'Mrs', 'Kathy', 'Stayer', 'No', '404593132997237', to_date('06/39', 'MM/YY'), '949 McKee Street', 'Pittsburgh', 'PA', '1237205179', '0@pitt.edu');
 INSERT INTO CUSTOMER VALUES (00000001, 'Mr', 'Hunter', 'Smith', 'Yes', '762433862018519', to_date('02/57', 'MM/YY'), '171 Walnut Street', 'Anchorage', 'AK', '4557376610', '1@pitt.edu');
 INSERT INTO CUSTOMER VALUES (00000002, 'Mr', 'Hunter', 'Misuraca', 'Yes', '616702746248371', to_date('05/57', 'MM/YY'), '455 Yuletide Road', 'Anchorage', 'AK', '3984951970', '2@pitt.edu');
@@ -198,3 +199,15 @@ INSERT INTO CUSTOMER VALUES (00000196, 'Ms', 'Fay', 'Gosa', 'No', '9939175918287
 INSERT INTO CUSTOMER VALUES (00000197, 'Mrs', 'Annie', 'Hanobik', 'No', '587832906489319', to_date('05/33', 'MM/YY'), '596 Orchard Circle', 'Providence', 'RI', '4391649803', '197@pitt.edu');
 INSERT INTO CUSTOMER VALUES (00000198, 'Mr', 'Panos', 'Getz', 'No', '314389186734677', to_date('12/81', 'MM/YY'), '560 Cherry Street', 'York', 'PA', '3555132417', '198@pitt.edu');
 INSERT INTO CUSTOMER VALUES (00000199, 'Ms', 'Emily', 'Ross', 'Yes', '845225151146498', to_date('08/08', 'MM/YY'), '680 Farm Lane', 'Des Moines', 'IA', '9155675677', '199@pitt.edu');
+
+-- Airplanes --
+INSERT INTO AIRPLANE VALUES ('10001', 'American Airlines', 'AAL', 1934);
+INSERT INTO AIRPLANE VALUES ('20001', 'Southwest Airlines', 'SWA', 1967);
+INSERT INTO AIRPLANE VALUES ('30001', 'Delta Airlines', 'DAL', 1924);
+INSERT INTO AIRPLANE VALUES ('40001', 'All Nippon Airways', 'ANA', 1952);
+INSERT INTO AIRPLANE VALUES ('50001', 'United Airlines', 'UAL', 1926);
+INSERT INTO AIRPLANE VALUES ('60001', 'Frontier Airlines', 'FFT', 1994);
+INSERT INTO AIRPLANE VALUES ('70001', 'JetBlue Airlines', 'JBU', 1998);
+INSERT INTO AIRPLANE VALUES ('80001', 'Virgin Airlines', 'VRD', 2004);
+INSERT INTO AIRPLANE VALUES ('90001', 'Allegiant Air', 'AAY', 1997);
+INSERT INTO AIRPLANE VALUES ('10010', 'Alaska Airlines', 'ASA', 1932);
