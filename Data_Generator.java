@@ -33,7 +33,7 @@ public class Data_Generator
 		{
 			pick1 = numGen.nextInt(100) + 1;
 			pick2 = numGen.nextInt(20);
-			int tmp = counter + 1;
+			int tmp = counter;
 			
 			// CID
 			output.printf("INSERT INTO CUSTOMER VALUES (%08d, ", tmp);
@@ -70,7 +70,7 @@ public class Data_Generator
 			email(tmp);
 			
 			output.println(");");
-			counter += 16;
+			counter ++;
 		}
 		output.close();
 		System.out.println("Customers Created");
@@ -121,7 +121,7 @@ public class Data_Generator
 			num = tmp.nextInt(10);						// 0 - 9
 			output.print(num);
 		}
-		output.printf(", ");
+		output.printf("', ");
 	}
 	
 	// Generate "to_date("<rand_mon>/<rand_year>", "MM/YY")"
