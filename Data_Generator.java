@@ -33,7 +33,7 @@ public class Data_Generator
 		{
 			pick1 = numGen.nextInt(100) + 1;
 			pick2 = numGen.nextInt(20);
-			int tmp = counter + 17;
+			int tmp = counter + 1;
 			
 			// CID
 			output.printf("INSERT INTO CUSTOMER VALUES (%08d, ", tmp);
@@ -70,16 +70,17 @@ public class Data_Generator
 			email(tmp);
 			
 			output.println(");");
-			counter++;
+			counter += 16;
 		}
 		output.close();
+		System.out.println("Customers Created");
 	}
 	
 	// Generate Mrs. or Ms. modularly with a first and last name.
 	// Print result to file
 	public static void femaleName(int name1, int name2)
 	{
-	System.out.println("F Name1: " + name1 + " Name2: " + name2);
+	//System.out.println("F Name1: " + name1 + " Name2: " + name2);
 		if(name1 >= 1 && name1 <= 25)
 			output.printf("%s, ", "'Ms'");
 		else if(name1 >=26 && name1 <=50)
@@ -93,7 +94,7 @@ public class Data_Generator
 	// Print result to file
 	public static void maleName(int name1, int name2)
 	{
-	System.out.println("M Name1: " + name1 + " Name2: " + name2);
+	//System.out.println("M Name1: " + name1 + " Name2: " + name2);
 		output.printf("%s, ", "'Mr'");
 		output.printf("'%s', ", maleNames[name1]);
 		output.printf("'%s', ", lastNames[name2]);
