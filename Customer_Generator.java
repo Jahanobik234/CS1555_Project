@@ -134,7 +134,8 @@ public class Customer_Generator
 	// Randomly select name from list
 	public static void streetName(int num)
 	{
-		output.printf("'%s', ", street[num]);
+		Random tmp = new Random();
+		output.printf("'%03d %s', ", (tmp.nextInt(999) + 1), street[num]);
 	}
 	
 	// Randomly select city and state from list
