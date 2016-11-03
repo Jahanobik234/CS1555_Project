@@ -80,7 +80,6 @@ public class Customer_Generator
 	// Print result to file
 	public static void femaleName(int name1, int name2)
 	{
-	//System.out.println("F Name1: " + name1 + " Name2: " + name2);
 		if(name1 >= 1 && name1 <= 25)
 			output.printf("%s, ", "'Ms'");
 		else if(name1 >=26 && name1 <=50)
@@ -94,7 +93,6 @@ public class Customer_Generator
 	// Print result to file
 	public static void maleName(int name1, int name2)
 	{
-	//System.out.println("M Name1: " + name1 + " Name2: " + name2);
 		output.printf("%s, ", "'Mr'");
 		output.printf("'%s', ", maleNames[name1]);
 		output.printf("'%s', ", lastNames[name2]);
@@ -116,7 +114,7 @@ public class Customer_Generator
 		int num;
 		
 		output.printf("'");
-		for(int i = 0; i < 9; i++)
+		for(int i = 0; i < 15; i++)
 		{
 			num = tmp.nextInt(10);						// 0 - 9
 			output.print(num);
@@ -127,8 +125,7 @@ public class Customer_Generator
 	// Generate "to_date("<rand_mon>/<rand_year>", "MM/YY")"
 	public static void ccDate(int mon, int year)
 	{
-		output.print("to_date('");
-		output.print(mon + "/" + year + "', 'MM/YY'), ");
+		output.printf("to_date('%02d/%02d', 'MM/YY'), ", mon, year);
 	}
 	
 	// Randomly select name from list
