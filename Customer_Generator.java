@@ -12,7 +12,7 @@ public class Customer_Generator
 	private static String[] city = {"Pittsburgh", "Philadelphia", "York", "Hershey", "Harrisburg", "Albany", "Columbus", "Indianapolis", "Chicago", "Des Moines", "Houston", "Tallahassee", "New Orleans", "Atlanta", "Providence", "Boston", "Los Angeles", "Honolulu", "Anchorage", "Billings"};
 	private static String[] state = {"PA", "PA", "PA", "PA", "PA", "NY", "OH", "IA", "IL", "IA", "TX", "FL", "LA", "GA", "RI", "MA", "CA", "HI", "AK", "MT"};
 	private static String[] street = {"Main Street", "Walnut Street", "Bigelow Boulevard", "Oakland Avenue", "Orchard Circle", "McKee Street", "Pine Road", "West Avenue", "Friendship Lane", "Forbes Avenue", "Fifth Avenue", "Cherry Street", "New School Lane", "Distillery Road", "Memory Lane", "Kenyon Trail", "Yuletide Road", "Swanson Street", "Cathedral Road", "Farm Lane", "Union Street"};
-	private static String[] AirlineID = {"10001", "20001", "30001", "40001", "50001", "60001", "70001", "80001", "90001", "10010");
+	private static String[] AirlineID = {"10001", "20001", "30001", "40001", "50001", "60001", "70001", "80001", "90001", "10010"};
 	
 	public static void main(String[] args)
 	{
@@ -50,7 +50,7 @@ public class Customer_Generator
 			}
 			
 			// FREQUENT MILES
-			frequentMiles(pick1 % 10);						// 0 - 9
+			frequentMiles(numGen, (pick1 % 10));			// 0 - 9
 			
 			// CREDIT CARD NUMBER
 			ccNum();
@@ -99,11 +99,11 @@ public class Customer_Generator
 		output.printf("'%s', ", lastNames[name2]);
 	}
 	
-	// Generates y/n modularly
-	public static void frequentMiles(int num)
+	// Generates Random Airline Code 30% of the time, otherwise NULL
+	public static void frequentMiles(Random gen, int num)
 	{
 		if(num > 7) {
-			output.printf("%s, ", AirlineID[num + 1]);
+			output.printf("'%s', ", AirlineID[gen.nextInt(10)]);
 			}
 		else
 			output.printf("%s, ", "NULL");
