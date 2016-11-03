@@ -17,7 +17,7 @@ public class Customer_Generator
 	{
 		try
 		{
-			output = new PrintWriter("data.txt");
+			output = new PrintWriter("cust_data.sql");
 		}
 		catch(IOException excep)
 		{
