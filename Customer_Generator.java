@@ -3,7 +3,7 @@ import java.util.Random;
 import java.util.*;
 import java.io.*;
 
-public class Data_Generator
+public class Customer_Generator
 {
 	private static PrintWriter output;
 	private static String[] femaleNames = {"Kathy", "Staci", "Gay", "Kay", "Fay", "Day", "Audrey", "Monica", "Rebecca", "Emily", "Sara", "Demeara", "Kim", "Jessica", "Annie", "Katie", "Lisa", "Martha", "Breanna", "Penelope", "Nicole"};
