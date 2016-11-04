@@ -74,7 +74,7 @@ public class Flight_Generator
 		int highPrice, lowPrice;
 		do{
 		highPrice = gen.nextInt(151) + 150; //High Price Somewhere Between 150-300
-		lowPrice = gen.nextInt(101 + 50); //Low Price Between 50-150
+		lowPrice = gen.nextInt(101) + 50; //Low Price Between 50-150
 		}while(!(highPrice - lowPrice > 30));
 		
 		output.printf("'%d', ", highPrice);
