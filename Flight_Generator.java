@@ -24,9 +24,7 @@ public class Flight_Generator
 		int counter = 0;				// Counter for while loop
 		
 		while(counter < 100)
-		{
-			int tmp;
-			
+		{	
 			// BEGIN
 			output.print("INSERT INTO FLIGHT VALUES (");
 
@@ -40,10 +38,10 @@ public class Flight_Generator
 			high_low_price(numGen);
 			
 			output.println(");");
-			counter ++;
+			counter++;
 		}
 		output.close();
-		System.out.println("Airplanes Created");
+		System.out.println("Flights Created");
 	}
 	
 	// Generate Departure and Arrival Cities
@@ -66,8 +64,8 @@ public class Flight_Generator
 	// Generate Airline Number
 	public static void airlineID(Random gen)
 	{
-		int num = (gen.nextInt(10) + 1);	
-		output.printf("'%d', ", airlineID[num]);
+		int num = (gen.nextInt(10));	
+		output.printf("'%s', ", airlineID[num]);
 	}
 	
 	// Year
@@ -80,6 +78,6 @@ public class Flight_Generator
 		}while(!(highPrice - lowPrice > 30));
 		
 		output.printf("'%d', ", highPrice);
-		output.printf("'%d', ", lowPrice);
+		output.printf("'%d'", lowPrice);
 	}
 }
