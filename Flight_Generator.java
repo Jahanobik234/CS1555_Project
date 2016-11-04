@@ -30,17 +30,14 @@ public class Flight_Generator
 			// BEGIN
 			output.print("INSERT INTO FLIGHT VALUES (");
 
-			// DEPARTURE CITY
+			// DEPARTURE AND ARRIVAL CITY
 			departure_arrival_city(numGen);
 			
 			// AIRLINE ID
-			capacity(numGen);
+			airlineID(numGen);
 			
-			// HIGH PRICE
-			tmp = service_date(numGen);
-			
-			// LOW PRICE
-			yearCreated(numGen, tmp);
+			// HIGH AND LOW PRICE
+			high_low_price(numGen);
 			
 			output.println(");");
 			counter ++;
@@ -50,7 +47,7 @@ public class Flight_Generator
 	}
 	
 	// Generate Departure and Arrival Cities
-	public static vooid departure_arrival_city(Random gen)
+	public static void departure_arrival_city(Random gen)
 	{
 		int num1 = gen.nextInt(999) + 1;
 		int num2;
@@ -58,7 +55,7 @@ public class Flight_Generator
 		String arrival_code;
 		do {
 			num2 = gen.nextInt(999) + 1;
-		}while(cities[num1 % 20].equals(cities[num2 % 20]);
+		}while(cities[num1 % 20].equals(cities[num2 % 20]));
 		
 		arrival_code = cities[num2 % 20];
 		
@@ -79,7 +76,7 @@ public class Flight_Generator
 		int highPrice, lowPrice;
 		do{
 		highPrice = gen.nextInt(151) + 150; //High Price Somewhere Between 150-300
-		lowPrice = gen.nextInt(101 + 50; //Low Price Between 50-150
+		lowPrice = gen.nextInt(101 + 50); //Low Price Between 50-150
 		}while(!(highPrice - lowPrice > 30));
 		
 		output.printf("'%d', ", highPrice);
