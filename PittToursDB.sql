@@ -75,6 +75,7 @@ CREATE OR REPLACE TABLE Reservation (
 	ticketed varchar(1),
 	CONSTRAINT Pk_Reservation PRIMARY KEY(reservation_number) IMMEDIATE,
 	CONSTRAINT Fk_Reservation FOREIGN KEY(cid) REFERENCES Customer(cid) INITIALLY DEFERRED DEFERRABLE
+	CONSTRAINT Fk_Reservation FOREIGN KEY(credit_card_num) REFERENCES Customer(credit_card_num) INITIALLY DEFERRED DEFERRABLE
 );
 
 -- Reservation Detail
