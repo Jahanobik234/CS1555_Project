@@ -3,7 +3,7 @@ import java.util.Random;
 import java.util.*;
 import java.io.*;
 
-public class Airplane_Generator
+public class Plane_Generator
 {
 	private static PrintWriter output;
 	private static String[] manuf = {"Boeing", "Airbus", "Embraer", "Bombardier", "Learjet"};	
@@ -14,7 +14,7 @@ public class Airplane_Generator
 	{
 		try
 		{
-			output = new PrintWriter("airplane_data.sql");
+			output = new PrintWriter("plane_data.sql");
 		}
 		catch(IOException excep)
 		{
@@ -29,7 +29,7 @@ public class Airplane_Generator
 			int tmp;
 			
 			// BEGIN
-			output.print("INSERT INTO AIRPLANE VALUES (");
+			output.print("INSERT INTO PLANE VALUES (");
 
 			// TYPE
 			tmp = type(numGen);
@@ -53,7 +53,7 @@ public class Airplane_Generator
 			counter ++;
 		}
 		output.close();
-		System.out.println("Airplanes Created");
+		System.out.println("Planes Created");
 	}
 	
 	// Generate Plane Type '<char><3-digit num>'

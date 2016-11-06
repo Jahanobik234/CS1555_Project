@@ -3,7 +3,7 @@ import java.util.Random;
 import java.util.*;
 import java.io.*;
 
-public class Flight_Generator
+public class Price_Generator
 {
 	private static PrintWriter output;
 	private static String[] cities = {"PIT", "IND", "NYC", "MCO", "LAS", "JFK", "MIA", "HOU", "ATL", "DAL", "HON", "SEA", "DET", "CHI", "PHX", "CLT", "COL", "BOS", "DEN", "ANC"};	
@@ -13,7 +13,7 @@ public class Flight_Generator
 	{
 		try
 		{
-			output = new PrintWriter("flight_data.sql");
+			output = new PrintWriter("price_data.sql");
 		}
 		catch(IOException excep)
 		{
@@ -26,7 +26,7 @@ public class Flight_Generator
 		while(counter < 100)
 		{	
 			// BEGIN
-			output.print("INSERT INTO FLIGHT VALUES (");
+			output.print("INSERT INTO PRICE VALUES (");
 
 			// DEPARTURE AND ARRIVAL CITY
 			departure_arrival_city(numGen);
@@ -41,7 +41,7 @@ public class Flight_Generator
 			counter++;
 		}
 		output.close();
-		System.out.println("Flights Created");
+		System.out.println(counter + " Prices Created");
 	}
 	
 	// Generate Departure and Arrival Cities
