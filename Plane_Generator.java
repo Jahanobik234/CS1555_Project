@@ -5,12 +5,14 @@ import java.io.*;
 
 public class Plane_Generator
 {
+	private static final int DATA_COUNT = 30;
+	private String[] manuf = {"Boeing", "Airbus", "Embraer", "Bombardier", "Learjet"};	
+	private static String[] alpha = {"B", "A", "E", "M", "L"};
+	private String[] airlineID = {"10001", "20001", "30001", "40001", "50001", "60001", "70001", "80001", "90001", "10010"};
+	public static String[] planeType = new String[DATA_COUNT];
 	private static PrintWriter output;
-	private static String[] manuf = {"Boeing", "Airbus", "Embraer", "Bombardier", "Learjet"};	
-	private static char[] alpha = {'B', 'A', 'E', 'M', 'L'};
-	private static String[] airlineID = {"10001", "20001", "30001", "40001", "50001", "60001", "70001", "80001", "90001", "10010"};
 	
-	public static void main(String[] args)
+	public Plane_Generator()
 	{
 		try
 		{
@@ -24,7 +26,7 @@ public class Plane_Generator
 		Random numGen = new Random();
 		int counter = 0;				// Counter for while loop
 		
-		while(counter < 30)
+		while(counter < DATA_COUNT)
 		{
 			int tmp;
 			
@@ -32,7 +34,7 @@ public class Plane_Generator
 			output.print("INSERT INTO PLANE VALUES (");
 
 			// TYPE
-			tmp = type(numGen);
+			tmp = type(numGen, counter);
 			
 			// MANUFACTURER
 			manufacturer(tmp);
@@ -57,17 +59,19 @@ public class Plane_Generator
 	}
 	
 	// Generate Plane Type '<char><3-digit num>'
-	public static int type(Random gen)
+	public static int type(Random gen, int index)
 	{
 		int num = gen.nextInt(999) + 1;
-		char let = alpha[num % 5];
+		String let = alpha[num % 5];
+		String t = let.concat(String.format("%03d", num));
 		
-		output.printf("'%c%03d', ", let, num);
+		planeType[index] = t;
+		output.printf("'%s', ", t);
 		return num % 5;
 	}
 	
 	// Generate Manufacturer
-	public static void manufacturer(int num)
+	public void manufacturer(int num)
 	{
 		String man = manuf[num];
 		
@@ -75,14 +79,14 @@ public class Plane_Generator
 	}
 	
 	// Generate Plane Capacity
-	public static void capacity(Random gen)
+	public void capacity(Random gen)
 	{
 		int num = (gen.nextInt(40) + 10) * 5;				// 50 - 245
 		output.printf("'%d', ", num);
 	}
 	
 	// Last Service Date
-	public static int service_date(Random gen)
+	public int service_date(Random gen)
 	{
 		int mon = gen.nextInt(12) + 1;
 		int day = gen.nextInt(30) + 1;
@@ -93,14 +97,14 @@ public class Plane_Generator
 	}
 	
 	// Year
-	public static void yearCreated(Random gen, int sYear)
+	public void yearCreated(Random gen, int sYear)
 	{
 		int cDate = sYear - (gen.nextInt(10) + 1);
 		output.printf("%d, ", cDate);
 	}
 	
 	// Owner ID
-	public static void owner(Random gen)
+	public void owner(Random gen)
 	{
 		int num = gen.nextInt(10);
 		output.printf("'%s'", airlineID[num]);

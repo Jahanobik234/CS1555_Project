@@ -5,7 +5,7 @@ import java.io.*;
 
 public class Customer_Generator
 {
-	private static PrintWriter output;
+	private static final int DATA_COUNT = 200;
 	private static String[] femaleNames = {"Kathy", "Staci", "Gay", "Kay", "Fay", "Day", "Audrey", "Monica", "Rebecca", "Emily", "Sara", "Demeara", "Kim", "Jessica", "Annie", "Katie", "Lisa", "Martha", "Breanna", "Penelope", "Nicole"};
 	private static String[] maleNames = {"Seth", "Jonathan", "Panos", "Steve", "Mark", "John", "Paul", "Tim", "Spencer", "Matt", "Dan", "Will", "Jesse", "Wyatt", "Michael", "Sam", "Caleb", "Adam", "Hunter", "Joshua"};
 	private static String[] lastNames = {"Miller", "Smith", "Johnson", "Brown", "Hanobik", "Stayer", "Richardson", "Stevenson", "Carroll", "McKinney", "Gosa", "Getz", "Sinatra", "Jonas", "Butcher", "Frey", "Misuraca", "Tuft", "Roosevelt", "Ross"};
@@ -14,7 +14,12 @@ public class Customer_Generator
 	private static String[] street = {"Main Street", "Walnut Street", "Bigelow Boulevard", "Oakland Avenue", "Orchard Circle", "McKee Street", "Pine Road", "West Avenue", "Friendship Lane", "Forbes Avenue", "Fifth Avenue", "Cherry Street", "New School Lane", "Distillery Road", "Memory Lane", "Kenyon Trail", "Yuletide Road", "Swanson Street", "Cathedral Road", "Farm Lane", "Union Street"};
 	private static String[] AirlineID = {"10001", "20001", "30001", "40001", "50001", "60001", "70001", "80001", "90001", "10010"};
 	
-	public static void main(String[] args)
+	public String[] cids = new String[DATA_COUNT];
+	public String[] ccNumbers = new String[DATA_COUNT];
+	
+	private static PrintWriter output;
+	
+	public Customer_Generator()
 	{
 		try
 		{
@@ -27,17 +32,17 @@ public class Customer_Generator
 		
 		Random numGen = new Random();
 		int pick1;						// Random Number
-		int pick2;
+		int pick2;						// Random Number
 		int counter = 0;				// User Counter
 		
-		while(counter < 200)
+		while(counter < DATA_COUNT)
 		{
 			pick1 = numGen.nextInt(100) + 1;
 			pick2 = numGen.nextInt(20);
-			int tmp = counter;
 			
 			// CID
-			output.printf("INSERT INTO CUSTOMER VALUES (%08d, ", tmp);
+			cids[counter] = String.format("%08d", counter);
+			output.printf("INSERT INTO CUSTOMER VALUES (%08d, ", counter);
 			
 			// SALUTATION, F_NAME, L_NAME
 			if(pick1 > 50)
@@ -53,7 +58,7 @@ public class Customer_Generator
 			frequentMiles(numGen, (pick1 % 10));			// 0 - 9
 			
 			// CREDIT CARD NUMBER
-			ccNum();
+			ccNum(counter);
 			
 			// CREDIT CARD DATE
 			ccDate((pick2 % 12 + 1), (pick1 - 1));			// Month, Year
@@ -110,18 +115,19 @@ public class Customer_Generator
 	}
 	
 	// Generate random 16 digit credit card number
-	public static void ccNum()
+	public static void ccNum(int index)
 	{
 		Random tmp = new Random();
 		int num;
+		String no = (tmp.nextInt(10)).toString();
 		
-		output.printf("'");
-		for(int i = 0; i < 15; i++)
+		for(int i = 0; i < 14; i++)
 		{
 			num = tmp.nextInt(10);						// 0 - 9
-			output.print(num);
+			no = no.concat(num.toString());
 		}
-		output.printf("', ");
+		ccNumbers[index] = no;
+		output.printf("'%s', ", no);
 	}
 	
 	// Generate "to_date("<rand_mon>/<rand_year>", "MM/YY")"

@@ -9,7 +9,7 @@ public class Price_Generator
 	private static String[] cities = {"PIT", "IND", "NYC", "MCO", "LAS", "JFK", "MIA", "HOU", "ATL", "DAL", "HON", "SEA", "DET", "CHI", "PHX", "CLT", "COL", "BOS", "DEN", "ANC"};	
 	private static String[] airlineID = {"10001", "20001", "30001", "40001", "50001", "60001", "70001", "80001", "90001", "10010"};
 	
-	public static void main(String[] args)
+	public Price_Generator()
 	{
 		try
 		{
@@ -45,7 +45,7 @@ public class Price_Generator
 	}
 	
 	// Generate Departure and Arrival Cities
-	public static void departure_arrival_city(Random gen)
+	private static void departure_arrival_city(Random gen)
 	{
 		int num1 = gen.nextInt(999) + 1;
 		int num2;
@@ -62,14 +62,14 @@ public class Price_Generator
 	}
 	
 	// Generate Airline Number
-	public static void airlineID(Random gen)
+	private void airlineID(Random gen)
 	{
 		int num = (gen.nextInt(10));	
 		output.printf("'%s', ", airlineID[num]);
 	}
 	
 	// Year
-	public static void high_low_price(Random gen)
+	private void high_low_price(Random gen)
 	{
 		int highPrice, lowPrice;
 		do{
