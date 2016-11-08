@@ -3,14 +3,14 @@ import java.util.Random;
 import java.util.*;
 import java.io.*;
 
-public class Reservation_Detail
+public class Reservation_Detail_Generator
 {
 	private static final int DATA_COUNT = 200;
 	
 	
 	private static PrintWriter output;
 	
-	public Reservation_Detail(String[] arrCity, String[] depCity)
+	public Reservation_Detail_Generator(String[] arrCity, String[] depCity)
 	{
 		try
 		{
