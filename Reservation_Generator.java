@@ -32,7 +32,6 @@ public class Reservation_Generator
 			
 			// RERVATION NUMBER
 			output.printf("'%05d', ", (counter + 1));
-			counter++;
 			
 			// CID
 			output.printf("'%s', ", cids[custID]);
@@ -47,7 +46,7 @@ public class Reservation_Generator
 			output.print("to_date('<date>','MM-DD-YYYY'), ");
 			
 			// TICKETED
-			output.print("'<Y/N>'");
+			output.print("'<Y/N>');\n");
 			counter++;
 		}
 		output.close();
