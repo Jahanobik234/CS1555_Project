@@ -6,20 +6,11 @@ import java.io.*;
 public class Reservation_Detail
 {
 	private static final int DATA_COUNT = 200;
-	private static String[] femaleNames = {"Kathy", "Staci", "Gay", "Kay", "Fay", "Day", "Audrey", "Monica", "Rebecca", "Emily", "Sara", "Demeara", "Kim", "Jessica", "Annie", "Katie", "Lisa", "Martha", "Breanna", "Penelope", "Nicole"};
-	private static String[] maleNames = {"Seth", "Jonathan", "Panos", "Steve", "Mark", "John", "Paul", "Tim", "Spencer", "Matt", "Dan", "Will", "Jesse", "Wyatt", "Michael", "Sam", "Caleb", "Adam", "Hunter", "Joshua"};
-	private static String[] lastNames = {"Miller", "Smith", "Johnson", "Brown", "Hanobik", "Stayer", "Richardson", "Stevenson", "Carroll", "McKinney", "Gosa", "Getz", "Sinatra", "Jonas", "Butcher", "Frey", "Misuraca", "Tuft", "Roosevelt", "Ross"};
-	private static String[] city = {"Pittsburgh", "Philadelphia", "York", "Hershey", "Harrisburg", "Albany", "Columbus", "Indianapolis", "Chicago", "Des Moines", "Houston", "Tallahassee", "New Orleans", "Atlanta", "Providence", "Boston", "Los Angeles", "Honolulu", "Anchorage", "Billings"};
-	private static String[] state = {"PA", "PA", "PA", "PA", "PA", "NY", "OH", "IA", "IL", "IA", "TX", "FL", "LA", "GA", "RI", "MA", "CA", "HI", "AK", "MT"};
-	private static String[] street = {"Main Street", "Walnut Street", "Bigelow Boulevard", "Oakland Avenue", "Orchard Circle", "McKee Street", "Pine Road", "West Avenue", "Friendship Lane", "Forbes Avenue", "Fifth Avenue", "Cherry Street", "New School Lane", "Distillery Road", "Memory Lane", "Kenyon Trail", "Yuletide Road", "Swanson Street", "Cathedral Road", "Farm Lane", "Union Street"};
-	private static String[] AirlineID = {"10001", "20001", "30001", "40001", "50001", "60001", "70001", "80001", "90001", "10010"};
 	
-	public String[] cids = new String[DATA_COUNT];
-	public static String[] ccNumbers = new String[DATA_COUNT];
 	
 	private static PrintWriter output;
 	
-	public Reservation_Detail()
+	public Reservation_Detail(String[] arrCity, String[] depCity)
 	{
 		try
 		{
