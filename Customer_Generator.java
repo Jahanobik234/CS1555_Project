@@ -122,7 +122,7 @@ public class Customer_Generator
 		int num2 = tmp.nextInt(10);
 		String no = Integer.toString(num2);
 		
-		for(int i = 0; i < 14; i++)
+		for(int i = 0; i < 15; i++)
 		{
 			num = tmp.nextInt(10);						// 0 - 9
 			no = no.concat(Integer.toString(num));
