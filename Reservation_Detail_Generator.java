@@ -10,7 +10,7 @@ public class Reservation_Detail_Generator
 	private static PrintWriter output;
 	private static PrintWriter output2;
 	
-	public Reservation_Detail_Generator(String[] arrCity, String[] depCity, String[] flightNum, String[] cids, String[] ccNums)
+	public Reservation_Detail_Generator(String[] depCity, String[] arrCity, String[] flightNum, String[] cids, String[] ccNums)
 	{
 		try
 		{
@@ -50,7 +50,7 @@ public class Reservation_Detail_Generator
 			while(leg < numLegs) //Additional Legs
 			{
 				do {
-				pick2 = (numGen.nextInt(999) % 100);
+					pick2 = (numGen.nextInt(999) % 100);
 				}while((!depCity[pick2].equals(legDest[legDestIndex-1]) || (alreadyVisited(arrCity[pick2], legDest))));
 				output.print("INSERT INTO RESERVATION_DETAIL(");
 				output.printf("'%05d', ", counter);
