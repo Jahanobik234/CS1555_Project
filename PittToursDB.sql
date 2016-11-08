@@ -8,7 +8,7 @@ CREATE OR REPLACE TABLE Airline (
 	airline_name VARCHAR(50),
 	airline_abbreviation VARCHAR(20),
 	year_founded int,
-	CONSTRAINT PK_Airline PRIMARY KEY(airline_id) IMMEDIATE
+	CONSTRAINT PK_Airline PRIMARY KEY(airline_id) IMMEDIATE,
 );
 
 -- Flight Schedule
@@ -22,7 +22,10 @@ CREATE OR REPLACE TABLE Flight (
 	weekly_schedule VARCHAR(7),
 	CONSTRAINT PK_Flight PRIMARY KEY(flight_number) IMMEDIATE,
 	CONSTRAINT FK1_Flight FOREIGN KEY(plane_type) REFERENCES Plane(plane_type) INITIALLY DEFERRED DEFERRABLE,
-	CONSTRAINT FK2_Flight FOREIGN KEY(airline_id) REFERENCES Airline(airline_id) INITIALLY DEFERRED DEFERRABLE
+	CONSTRAINT FK2_Flight FOREIGN KEY(airline_id) REFERENCES Airline(airline_id) INITIALLY DEFERRED DEFERRABLE,
+	CONSTRAINT cityCheckFlight CHECK departure_city <> arrival_city IMMEDIATE,
+	CONSTRAINT scheduleCheck CHECK weekly_schedule <> '-------' IMMEDIATE,
+	CONSTRAINT timeCheck CHECK((departure_time BETWEEN '00:00' AND '23:59') AND (arrival_time BETWEEN '00:00' AND '23:59') IMMEDIATE	
 );
 
 -- Plane
@@ -35,6 +38,8 @@ CREATE OR REPLACE TABLE Plane (
 	owner_id VARCHAR(5),
 	CONSTRAINT PK_Plane PRIMARY KEY(plane_type) IMMEDIATE,
 	CONSTRAINT FK_Plane FOREIGN KEY(owner_id) REFERENCES Airline(airline_id) INITIALLY DEFERRED DEFERRABLE
+	CONSTRAINT capacityCheck CHECK (plane_capacity > 0) IMMEDIATE,
+	CONSTRAINT yearCheck CHECK (CAST(to_char(last_service, YYYY) AS INT) >= year) IMMEDIATE
 );
 
 -- Flight Pricing
@@ -46,6 +51,8 @@ CREATE OR REPLACE TABLE Price (
 	low_price int,
 	CONSTRAINT Pk_Price PRIMARY KEY(departure_city, arrival_city) IMMEDIATE,
 	CONSTRAINT Fk_Price FOREIGN KEY(airline_id) REFERENCES Airline(airline_id) INITIALLY DEFERRED DEFERRABLE
+	CONSTRAINT cityCheckPrice CHECK departure_city <> arrival_city IMMEDIATE,
+	CONSTRAINT priceCheck CHECK high_price > low_price IMMEDIATE
 );
 
 -- Customer
@@ -62,7 +69,8 @@ CREATE OR REPLACE TABLE Customer (
 	state varchar(2),
 	phone varchar(10),
 	email varchar(30),
-	CONSTRAINT Pk_Customer PRIMARY KEY(cid) IMMEDIATE
+	CONSTRAINT Pk_Customer PRIMARY KEY(cid) IMMEDIATE,
+	CONSTRAINT validCC CHECK CAST(to_char(credit_card_expire, YYYY) AS INT) > 2016 IMMEDIATE
 );
 
 -- Reservation Information
@@ -75,7 +83,9 @@ CREATE OR REPLACE TABLE Reservation (
 	ticketed varchar(1),
 	CONSTRAINT Pk_Reservation PRIMARY KEY(reservation_number) IMMEDIATE,
 	CONSTRAINT Fk_Reservation FOREIGN KEY(cid) REFERENCES Customer(cid) INITIALLY DEFERRED DEFERRABLE
-	CONSTRAINT Fk_Reservation FOREIGN KEY(credit_card_num) REFERENCES Customer(credit_card_num) INITIALLY DEFERRED DEFERRABLE
+	CONSTRAINT Fk_Reservation FOREIGN KEY(credit_card_num) REFERENCES Customer(credit_card_num) INITIALLY DEFERRED DEFERRABLE,
+	CONSTRAINT customerCCCheck CHECK credit_card_num = (SELECT credit_card_num FROM Customer C WHERE C.cid = cid) IMMEDIATE,
+	CONSTRAINT reserveDateCheck CHECK reservation_date >= sysdate IMMEDIATE
 );
 
 -- Reservation Detail
@@ -86,7 +96,8 @@ CREATE OR REPLACE TABLE Reservation_Detail (
 	leg int,
 	CONSTRAINT Pk_Reservation_Detail PRIMARY KEY(reservation_number, leg) IMMEDIATE,
 	CONSTRAINT Fk1_Reservation_Detail FOREIGN KEY(reservation_number) REFERENCES Reservation(reservation_number) INITIALLY DEFERRED DEFERRABLE,
-	CONSTRAINT Fk2_Reservation_Detail FOREIGN KEY(flight_number) REFERENCES Flight(flight_number) INITIALLY DEFERRED DEFERRABLE
+	CONSTRAINT Fk2_Reservation_Detail FOREIGN KEY(flight_number) REFERENCES Flight(flight_number) INITIALLY DEFERRED DEFERRABLE,
+	CONSTRAINT legCheck CHECK leg > 0 IMMEDIATE
 );
 
 -- Our Time
