@@ -7,17 +7,15 @@ public class Reservation_Generator
 {
 	private static final int DATA_COUNT = 300;
 
-	private static PrintWriter output1;
-	private static PrintWriter output2;
+	private static PrintWriter output;
 	
-	public Reservation_Generator()
+	public Reservation_Generator(String[] ccNums, String[] cids)
 	{
 		Random gen = new Random();
 		
 		try
 		{
-			output1 = new PrintWriter("reservation_data.sql");
-			output2 = new PrintWriter("reservation_detail.sql");
+			output = new PrintWriter("reservation_data.sql");
 		}
 		catch(IOException excep)
 		{
@@ -29,16 +27,30 @@ public class Reservation_Generator
 		
 		while(counter < DATA_COUNT)
 		{
-			output1.print("INSERT INTO RESERVATION VALUES (");
-			output2.print("INSERT INTO RESERVATION_DETAIL VALUES (");
+			int custID = gen.nextInt(200);
+			output.print("INSERT INTO RESERVATION VALUES (");
 			
 			// RERVATION NUMBER
-			output1.printf("'%05d', \n", (counter + 1));
-			output2.printf("'%05d', \n", (counter + 1));
+			output.printf("'%05d', ", (counter + 1));
+			counter++;
+			
+			// CID
+			output.printf("'%s', ", cids[custID]);
+			
+			// COST
+			output.print("'<cost>', ");
+			
+			// CREDIT CARD NUMBER
+			output.printf("'%s, ', ", ccNums[custID]);
+			
+			// RESERVATION DATE
+			output.print("to_date('<date>','MM-DD-YYYY'), ");
+			
+			// TICKETED
+			output.print("'<Y/N>'");
 			counter++;
 		}
-		output1.close();
-		output2.close();
+		output.close();
 		System.out.println("Reservations Started");
 	}
 }

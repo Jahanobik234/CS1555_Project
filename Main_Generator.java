@@ -14,7 +14,7 @@ public class Main_Generator
 		Flight_Generator fg = new Flight_Generator();
 		Price_Generator pg  = new Price_Generator();
 		Customer_Generator cg = new Customer_Generator();
-		Reservation_Generator rg = new Reservation_Generator();
+		Reservation_Generator rg = new Reservation_Generator(cg.ccNumbers, cg.cids);
 		
 		System.out.println("Most Data Generated");
 	}
