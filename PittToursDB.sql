@@ -94,6 +94,7 @@ CREATE OR REPLACE TABLE Reservation_Detail (
 	flight_number varchar(3),
 	flight_date date,
 	leg int,
+	price int,
 	CONSTRAINT Pk_Reservation_Detail PRIMARY KEY(reservation_number, leg) IMMEDIATE,
 	CONSTRAINT Fk1_Reservation_Detail FOREIGN KEY(reservation_number) REFERENCES Reservation(reservation_number) INITIALLY DEFERRED DEFERRABLE,
 	CONSTRAINT Fk2_Reservation_Detail FOREIGN KEY(flight_number) REFERENCES Flight(flight_number) INITIALLY DEFERRED DEFERRABLE,
@@ -105,3 +106,22 @@ CREATE OR REPLACE TABLE _Date (
 	c_date date,
 	CONSTRAINT Pk_Date PRIMARY KEY(c_date) IMMEDIATE
 );
+
+--Trigger 1
+CREATE OR REPLACE TRIGGER adjustTicket 
+AFTER UPDATE ON Reservation_Detail
+REFERENCING NEW AS NEW_LEG
+FOR EACH ROW
+	WHEN NEW_LEG.price <> old.price
+BEGIN
+	DECLARE reservationCost INT;
+	SELECT cost INTO reservationCost
+	FROM Reservation R
+	WHERE NEW_LEG.reservation_number = R.reservation_number;
+	reservationCost = reservationCost - :old.price;
+	reservationCost = reservationCost + :NEW_LEG.price;
+	UPDATE Reservation R
+	SET cost = reservationCost
+	WHERE :NEW_LEG.reservation_number = R.reservation_number;
+END;
+/
