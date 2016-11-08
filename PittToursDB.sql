@@ -125,3 +125,13 @@ BEGIN
 	WHERE :NEW_LEG.reservation_number = R.reservation_number;
 END;
 /
+
+--Trigger 2
+CREATE OR REPLACE planeUpgrade
+AFTER INSERT OR UPDATE ON Reservation_Detail
+REFERENCING NEW AS NEW_RES
+	WHEN(
+BEGIN
+	
+END;
+/
