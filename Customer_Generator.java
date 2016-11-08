@@ -15,7 +15,7 @@ public class Customer_Generator
 	private static String[] AirlineID = {"10001", "20001", "30001", "40001", "50001", "60001", "70001", "80001", "90001", "10010"};
 	
 	public String[] cids = new String[DATA_COUNT];
-	public String[] ccNumbers = new String[DATA_COUNT];
+	public static String[] ccNumbers = new String[DATA_COUNT];
 	
 	private static PrintWriter output;
 	
@@ -41,8 +41,8 @@ public class Customer_Generator
 			pick2 = numGen.nextInt(20);
 			
 			// CID
-			cids[counter] = String.format("%08d", counter);
-			output.printf("INSERT INTO CUSTOMER VALUES (%08d, ", counter);
+			cids[counter] = String.format("%08d", counter + 1);
+			output.printf("INSERT INTO CUSTOMER VALUES (%08d, ", counter + 1);
 			
 			// SALUTATION, F_NAME, L_NAME
 			if(pick1 > 50)
@@ -61,7 +61,7 @@ public class Customer_Generator
 			ccNum(counter);
 			
 			// CREDIT CARD DATE
-			ccDate((pick2 % 12 + 1), (pick1 - 1));			// Month, Year
+			ccDate((pick2 % 12 + 1), numGen);			// Month, Year
 			
 			// STREET NAME
 			streetName(pick2);								// 0 - 19
@@ -73,7 +73,7 @@ public class Customer_Generator
 			phone();
 			
 			// EMAIL
-			email(tmp);
+			email(counter + 1);
 			
 			output.println(");");
 			counter ++;
@@ -119,20 +119,22 @@ public class Customer_Generator
 	{
 		Random tmp = new Random();
 		int num;
-		String no = (tmp.nextInt(10)).toString();
+		int num2 = tmp.nextInt(10);
+		String no = Integer.toString(num2);
 		
 		for(int i = 0; i < 14; i++)
 		{
 			num = tmp.nextInt(10);						// 0 - 9
-			no = no.concat(num.toString());
+			no = no.concat(Integer.toString(num));
 		}
 		ccNumbers[index] = no;
 		output.printf("'%s', ", no);
 	}
 	
 	// Generate "to_date("<rand_mon>/<rand_year>", "MM/YY")"
-	public static void ccDate(int mon, int year)
+	public static void ccDate(int mon, Random gen)
 	{
+		int year = gen.nextInt(10) + 16;
 		output.printf("to_date('%02d/%02d', 'MM/YY'), ", mon, year);
 	}
 	

@@ -14,12 +14,8 @@ public class Main_Generator
 		Flight_Generator fg = new Flight_Generator();
 		Price_Generator pg  = new Price_Generator();
 		Customer_Generator cg = new Customer_Generator();
-		// Cannot function enough right now to figure out the best way to implement the last
-		// two generators. Either they need to be created in a single generator, or not.
+		Reservation_Generator rg = new Reservation_Generator();
 		
-		//Reservation_Detail_Generator rdg = new Reservation_Detail_Generator();
-		//Reservation_Generator rg = new Reservation_Generator(cg.ccNumbers, cg.cids);
-		
-		System.out.println("All Data Generated");
+		System.out.println("Most Data Generated");
 	}
 }
