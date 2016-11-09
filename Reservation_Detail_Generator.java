@@ -26,7 +26,7 @@ public class Reservation_Detail_Generator
 		int numLegs;						// Random Number
 		int pick2;						// Random Number
 		int customer;			//Customer Generator
-		int counter = 0;				// User Counter
+		int counter = 1;				// User Counter
 		
 		while(counter <= DATA_COUNT)
 		{
@@ -43,7 +43,7 @@ public class Reservation_Detail_Generator
 			output.print("to_date('<date>', 'MM-DD-YYYY'), ");
 			output.printf("%d ", ++leg);
 			output.print(");\n");
-			legDest[legDestIndex] = depCity[pick2];
+			legDest[legDestIndex++] = depCity[pick2];
 			legDest[legDestIndex++] = arrCity[pick2];
 			
 			while(leg < numLegs) //Additional Legs
