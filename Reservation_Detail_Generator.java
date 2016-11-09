@@ -8,14 +8,14 @@ public class Reservation_Detail_Generator
 	private static final int DATA_COUNT = 300;
 	
 	private static PrintWriter output;
-	private static PrintWriter output2;
+	//private static PrintWriter output2;
 	
-	public Reservation_Detail_Generator(String[] depCity, String[] arrCity, String[] flightNum, String[] cids, String[] ccNums)
+	public Reservation_Detail_Generator(String[] depCity, String[] arrCity, String[] flightNum)//, String[] cids, String[] ccNums)
 	{
 		try
 		{
 			output = new PrintWriter("reservation_detail_data.sql");
-			output2 = new PrintWriter("reservation_data.sql");
+			//output2 = new PrintWriter("reservation_data.sql");
 		}
 		catch(IOException excep)
 		{
@@ -40,11 +40,11 @@ public class Reservation_Detail_Generator
 			output.print("INSERT INTO RESERVATION_DETAIL("); //First Leg
 			output.printf("'%05d', ", counter);
 			output.printf("'%s', ", flightNum[pick2]);
-			output.print("'<date>', ");
+			output.print("to_date('<date>', 'MM-DD-YYYY'), ");
 			output.printf("%d ", ++leg); 
 			output.print("<cost>");
 			output.print(");\n");
-			legDest[legDestIndex++] = depCity[pick2];
+			legDest[legDestIndex] = depCity[pick2];
 			legDest[legDestIndex++] = arrCity[pick2];
 			
 			while(leg < numLegs) //Additional Legs
@@ -55,7 +55,7 @@ public class Reservation_Detail_Generator
 				output.print("INSERT INTO RESERVATION_DETAIL(");
 				output.printf("'%05d', ", counter);
 				output.printf("'%s', ", flightNum[pick2]);
-				output.print("'<date>', ");
+				output.print("to_date('<date>', 'MM-DD-YYYY'), ");
 				output.printf("%d ", ++leg);
 				output.print("<cost>");				
 				output.print(");\n");
@@ -63,13 +63,13 @@ public class Reservation_Detail_Generator
 				
 			}
 			
-			output2.print("INSERT INTO RESERVATION(");
-			output2.printf("'%05d', '%s', <cost>, '%s', '<date>', <ticketed>", counter, cids[customer], ccNums[customer]);
-			output2.print(");\n");
+			// output2.print("INSERT INTO RESERVATION(");
+// 			output2.printf("'%05d', '%s', <cost>, '%s', '<date>', <ticketed>", counter, cids[customer], ccNums[customer]);
+// 			output2.print(");\n");
 			counter++;
 		}
 		output.close();
-		output2.close();
+		//output2.close();
 		System.out.println("Reservation Details Created");
 	}
 	

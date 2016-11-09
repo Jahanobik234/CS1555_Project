@@ -34,7 +34,7 @@ public class Plane_Generator
 			output.print("INSERT INTO PLANE VALUES (");
 
 			// TYPE
-			tmp = type(numGen, counter);
+			type(numGen, counter);
 			
 			// MANUFACTURER
 			manufacturer(tmp);
@@ -59,15 +59,36 @@ public class Plane_Generator
 	}
 	
 	// Generate Plane Type '<char><3-digit num>'
-	public static int type(Random gen, int index)
+	public static void type(Random gen, int index)
 	{
-		int num = gen.nextInt(999) + 1;
-		String let = alpha[num % 5];
-		String t = let.concat(String.format("%03d", num));
+		int num;
+		String let;
+		String t;
+		
+		do
+		{
+			num = gen.nextInt(999) + 1;
+			let = alpha[num % 5];
+			t = let.concat(String.format("%03d", num));
+		} while (duplicate(t, index));
 		
 		planeType[index] = t;
 		output.printf("'%s', ", t);
 		return num % 5;
+	}
+	
+	// Check for plane type duplicates
+	private boolean duplicate(String test, int numValues)
+	{
+		for(int i = 0; i < numValues; i++)
+		{
+			String used = planeType[i];
+			if(planeType[test].equals(used))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	// Generate Manufacturer
