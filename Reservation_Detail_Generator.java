@@ -41,8 +41,7 @@ public class Reservation_Detail_Generator
 			output.printf("'%05d', ", counter);
 			output.printf("'%s', ", flightNum[pick2]);
 			output.print("to_date('<date>', 'MM-DD-YYYY'), ");
-			output.printf("%d ", ++leg); 
-			output.print("<cost>");
+			output.printf("%d ", ++leg);
 			output.print(");\n");
 			legDest[legDestIndex] = depCity[pick2];
 			legDest[legDestIndex++] = arrCity[pick2];
