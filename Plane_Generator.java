@@ -5,12 +5,13 @@ import java.io.*;
 
 public class Plane_Generator
 {
-	private static final int DATA_COUNT = 30;
+	private final int DATA_COUNT = 30;
 	private String[] manuf = {"Boeing", "Airbus", "Embraer", "Bombardier", "Learjet"};	
-	private static String[] alpha = {"B", "A", "E", "M", "L"};
+	private String[] alpha = {"B", "A", "E", "M", "L"};
 	private String[] airlineID = {"10001", "20001", "30001", "40001", "50001", "60001", "70001", "80001", "90001", "10010"};
-	public static String[] planeType = new String[DATA_COUNT];
-	private static PrintWriter output;
+	
+	public String[] planeType = new String[DATA_COUNT];
+	private PrintWriter output;
 	
 	public Plane_Generator()
 	{
@@ -33,8 +34,8 @@ public class Plane_Generator
 			// BEGIN
 			output.print("INSERT INTO PLANE VALUES (");
 
-			// TYPE
-			type(numGen, counter);
+			// TYPE (RETURNS LETTER CODE FOR MANUFACTURER)
+			tmp = type(numGen, counter);
 			
 			// MANUFACTURER
 			manufacturer(tmp);
@@ -59,7 +60,7 @@ public class Plane_Generator
 	}
 	
 	// Generate Plane Type '<char><3-digit num>'
-	public static void type(Random gen, int index)
+	public int type(Random gen, int index)
 	{
 		int num;
 		String let;
@@ -83,7 +84,7 @@ public class Plane_Generator
 		for(int i = 0; i < numValues; i++)
 		{
 			String used = planeType[i];
-			if(planeType[test].equals(used))
+			if(test.equals(used))
 			{
 				return true;
 			}

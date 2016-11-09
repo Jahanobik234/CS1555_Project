@@ -5,14 +5,14 @@ import java.io.*;
 
 public class Flight_Generator
 {
-	public static Plane_Generator pg = new Plane_Generator();
-	private static final int DATA_COUNT = 100;
-	private static String[] cities = {"PIT", "IND", "NYC", "MCO", "LAS", "JFK", "MIA", "HOU", "ATL", "DAL", "HON", "SEA", "DET", "CHI", "PHX", "CLT", "COL", "BOS", "DEN", "ANC"};
-	private static String[] days = {"S", "M", "T", "W", "T", "F", "S", "-"};
+	public Plane_Generator pg = new Plane_Generator();
+	private final int DATA_COUNT = 100;
+	private String[] cities = {"PIT", "IND", "NYC", "MCO", "LAS", "JFK", "MIA", "HOU", "ATL", "DAL", "HON", "SEA", "DET", "CHI", "PHX", "CLT", "COL", "BOS", "DEN", "ANC"};
+	private String[] days = {"S", "M", "T", "W", "T", "F", "S", "-"};
 	public String[] dep = new String[DATA_COUNT];
 	public String[] arr = new String[DATA_COUNT];
 	public String[] flightNum = new String[DATA_COUNT];
-	private static PrintWriter output;
+	private PrintWriter output;
 	
 	public Flight_Generator()
 	{
@@ -64,7 +64,12 @@ public class Flight_Generator
 			output.printf("'%s', ", dTime);
 			
 			// ARRIVAL TIME
-			int h2 = (numGen.nextInt(24) + 1 + h1) % 24;
+			int h2;
+			do
+			{
+				h2 = (numGen.nextInt(24) + 1 + h1) % 24;
+			} while (h1 == h2);
+			
 			int m2 = numGen.nextInt(4) * 15;
 			String hour2 = String.format("%02d", h2);
 			String minute2 = String.format("%02d", m2);

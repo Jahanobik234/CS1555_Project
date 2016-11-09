@@ -5,9 +5,9 @@ import java.io.*;
 
 public class Reservation_Generator
 {
-	private static final int DATA_COUNT = 300;
+	private final int DATA_COUNT = 300;
 
-	private static PrintWriter output;
+	private PrintWriter output;
 	
 	public Reservation_Generator(String[] ccNums, String[] cids)
 	{

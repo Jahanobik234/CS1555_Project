@@ -5,17 +5,15 @@ import java.io.*;
 
 public class Reservation_Detail_Generator
 {
-	private static final int DATA_COUNT = 300;
+	private final int DATA_COUNT = 300;
 	
-	private static PrintWriter output;
-	//private static PrintWriter output2;
+	private PrintWriter output;
 	
 	public Reservation_Detail_Generator(String[] depCity, String[] arrCity, String[] flightNum)//, String[] cids, String[] ccNums)
 	{
 		try
 		{
 			output = new PrintWriter("reservation_detail_data.sql");
-			//output2 = new PrintWriter("reservation_data.sql");
 		}
 		catch(IOException excep)
 		{
@@ -28,7 +26,7 @@ public class Reservation_Detail_Generator
 		int customer;			//Customer Generator
 		int counter = 1;				// User Counter
 		
-		while(counter <= DATA_COUNT)
+		while(counter < DATA_COUNT)
 		{
 			customer = numGen.nextInt(200);
 			numLegs = numGen.nextInt(3) + 1; //Number of Legs On Trip
@@ -50,7 +48,8 @@ public class Reservation_Detail_Generator
 			{
 				do {
 					pick2 = (numGen.nextInt(999) % 100);
-				}while((!depCity[pick2].equals(legDest[legDestIndex-1]) || (alreadyVisited(arrCity[pick2], legDest))));
+				}while((depCity[pick2].equals(legDest[legDestIndex-1]) || (alreadyVisited(arrCity[pick2], legDest))));
+				
 				output.print("INSERT INTO RESERVATION_DETAIL(");
 				output.printf("'%05d', ", counter);
 				output.printf("'%s', ", flightNum[pick2]);
@@ -58,28 +57,20 @@ public class Reservation_Detail_Generator
 				output.printf("%d ", ++leg);			
 				output.print(");\n");
 				legDest[legDestIndex++] = arrCity[pick2];
-				
 			}
-			
-			// output2.print("INSERT INTO RESERVATION(");
-// 			output2.printf("'%05d', '%s', <cost>, '%s', '<date>', <ticketed>", counter, cids[customer], ccNums[customer]);
-// 			output2.print(");\n");
 			counter++;
 		}
 		output.close();
-		//output2.close();
 		System.out.println("Reservation Details Created");
 	}
 	
-	private static boolean alreadyVisited(String city, String[] destinations)
+	private boolean alreadyVisited(String city, String[] destinations)
 	{
 		for(int i = 0; i < destinations.length; i++)
 		{
 			if(city.equals(destinations[i]))
 				return true;
 		}
-		
 		return false;
 	}
-
 }
