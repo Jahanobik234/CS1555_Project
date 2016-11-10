@@ -101,7 +101,7 @@ CREATE OR REPLACE TABLE Reservation_Detail (
 );
 
 -- Our Time
-CREATE OR REPLACE TABLE _Date (
+CREATE OR REPLACE TABLE Our_Date (
 	c_date date,
 	CONSTRAINT Pk_Date PRIMARY KEY(c_date) IMMEDIATE
 );
