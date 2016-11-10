@@ -24,6 +24,9 @@ public class Plane_Generator
 			System.out.println("Did not create file.");
 		}
 		
+		// Data Titles for Easier Readability to User Looking at Insert Statements
+		output.println("-- plane_type, manufacturer, plane_capacity, last_service_date, year, owner_id -- ");
+		
 		Random numGen = new Random();
 		int counter = 0;				// Counter for while loop
 		

@@ -30,6 +30,9 @@ public class Customer_Generator
 			System.out.println("Did not create file.");
 		}
 		
+		// Data Titles for Easier Readability to User Looking at Insert Statements
+		output.println("-- cid, salutation, first_name, last_name, credit_card_num, credit_card_expire, street, city, state, phone, email --");		
+		
 		Random numGen = new Random();
 		int pick1;						// Random Number
 		int pick2;						// Random Number

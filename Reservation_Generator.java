@@ -22,6 +22,9 @@ public class Reservation_Generator
 			System.out.println("Did not create file.");
 		}
 		
+		// Data Titles for Easier Readability to User Looking at Insert Statements
+		output.println("-- reservation_number, cid, cost, credit_card_num, reservation_date, ticketed --");
+				
 		Random numGen = new Random();
 		int counter = 0;				// Counter for while loop
 		

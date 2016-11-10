@@ -25,6 +25,9 @@ public class Flight_Generator
 			System.out.println("Did not create file.");
 		}
 		
+		// Data Titles for Easier Readability to User Looking at Insert Statements
+		output.println("-- flight_number, airline_id, plane_type, departure_city, arrival_city, departure_time, arrival_time, weekly_schedule --");
+		
 		Random numGen = new Random();
 		int counter = 0;				// User Counter
 		

@@ -1,3 +1,4 @@
+-- airline_id, airline_name, airline_abbreviation, year_founded --
 INSERT INTO AIRLINE VALUES ('00001', 'Allegiant Air', 'AAY', 1997);
 INSERT INTO AIRLINE VALUES ('00002', 'American Airlines', 'AAL', 1934);
 INSERT INTO AIRLINE VALUES ('00003', 'Delta Air Lines', 'DAL', 1924);

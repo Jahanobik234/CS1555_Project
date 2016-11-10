@@ -20,6 +20,9 @@ public class Reservation_Detail_Generator
 			System.out.println("Did not create file.");
 		}
 		
+		// Data Titles for Easier Readability to User Looking at Insert Statements
+		output.println("-- reservation_number, flight_number, flight_date, leg --");
+		
 		Random numGen = new Random();
 		int numLegs;						// Random Number
 		int pick2;						// Random Number
