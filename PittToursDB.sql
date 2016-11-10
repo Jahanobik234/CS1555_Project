@@ -128,9 +128,11 @@ END;
 --Trigger 2
 CREATE OR REPLACE planeUpgrade
 AFTER INSERT OR UPDATE ON Reservation_Detail
-REFERENCING NEW AS NEW_RES
-	WHEN(
 BEGIN
-	
+	DECLARE curr_capacity INT;
+	SELECT COUNT(*)
+	FROM (Reservation_Detail R JOIN Flight F ON R.flight_number = F.flight_number) AS T JOIN Plane P ON T.plane_type = P.plane_type
+	GROUP BY P.plane_type
+	HAVING plane_type = 
 END;
 /
