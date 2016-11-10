@@ -130,9 +130,27 @@ CREATE OR REPLACE planeUpgrade
 AFTER INSERT OR UPDATE ON Reservation_Detail
 BEGIN
 	DECLARE curr_capacity INT;
-	SELECT COUNT(*)
-	FROM (Reservation_Detail R JOIN Flight F ON R.flight_number = F.flight_number) AS T JOIN Plane P ON T.plane_type = P.plane_type
-	GROUP BY P.plane_type
-	HAVING plane_type = 
+	SELECT COUNT(*) INTO curr_capacity
+	FROM Reservation_Detail
+	GROUP BY flight_number
+	WHERE :new.flight_number = flight_number;
+	
+	DECLARE max_capacity INT:
+	SELECT capacity INTO max_capacity
+	FROM (Flight NATURAL JOIN Plane) W
+	WHERE :new.flight_number = W.flight_number;
+	
+	DECLARE new_type CHAR(4);
+	IF(curr_capacity > max_capacity)
+	THEN {
+		SELECT plane_type INTO new_type
+		FROM Plane P
+		WHERE P.capacity > curr_capacity;
+		
+		UPDATE Flight	
+		SET plane_type = new_type
+		WHERE :new.flight_number = flight_number;
+	}
+	END IF;
 END;
 /
