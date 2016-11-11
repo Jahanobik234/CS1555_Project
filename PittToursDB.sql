@@ -154,3 +154,37 @@ BEGIN
 	END IF;
 END;
 /
+
+--Trigger 3
+CREATE OR REPLACE cancelReservation
+AFTER UPDATE ON Our_Date
+WHEN(to_char(SELECT * FROM Our_Date) + INTERVAL '30' MIN, HH24:MI) IN (SELECT departure_time FROM Flight)
+BEGIN
+	DECLARE cancel_time CHAR(4);
+	cancel_time := to_char(SELECT * FROM Our_Date) + INTERVAL '30' MIN, HH24:MI);
+	DELETE FROM Reservation
+	WHERE Ticketed == 'N' && reservation_number == (SELECT reservation_number FROM Reservation_Detail WHERE leg == 0 && cancel_time == departure_time);
+	--Fit Into Smaller Plane
+	DECLARE curr_capacity INT;
+	DECLARE curr_flightNum VARCHAR(3);
+	SELECT COUNT(*) INTO curr_capacity, flight_number INTO curr_flightNum
+	FROM Reservation_Detail
+	GROUP BY flight_number
+	WHERE cancel_time == (SELECT departure_time FROM Flight F);
+	
+	DECLARE low_capacity INT:
+	SELECT capacity INTO low_capacity
+	FROM Plane P
+	WHERE curr_capacity > P.capacity;
+	
+	DECLARE new_type CHAR(4);
+	SELECT plane_type INTO new_type
+	FROM Plane P
+	WHERE low_capacity = capacity;
+	
+	UPDATE Flight
+	SET plane_type = new_type
+	WHERE flight_number == curr_flightNum;
+	
+END;
+/
