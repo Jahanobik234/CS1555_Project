@@ -10,16 +10,12 @@ public class Price_Generator
 	private static String[] cities = {"PIT", "IND", "NYC", "MCO", "LAS", "JFK", "MIA", "HOU", "ATL", "DAL", "HON", "SEA", "DET", "CHI", "PHX", "CLT", "COL", "BOS", "DEN", "ANC"};	
 	private static String[] airlineID = {"10001", "20001", "30001", "40001", "50001", "60001", "70001", "80001", "90001", "10010"};
 
-	public String[] arrCity;
-	public String[] depCity;
-	public int[][] prices;
-	private static int counter = 0;				// Counter for while loop
+	public String[] arrCity = new String[DATA_COUNT];
+	public String[] depCity = new String[DATA_COUNT];
+	public int[][] prices = new int[DATA_COUNT][2];
+	private int counter = 0;				// Counter for while loop
 	public Price_Generator()
 	{
-		arrCity = new String[DATA_COUNT];
-		depCity = new String[DATA_COUNT];
-		prices = new int[DATA_COUNT][2];
-		
 		try
 		{
 			output = new PrintWriter("price_data.sql");
@@ -57,7 +53,7 @@ public class Price_Generator
 	}
 	
 	// Generate Departure and Arrival Cities
-	private static void departure_arrival_city(Random gen, int index)
+	private void departure_arrival_city(Random gen, int index)
 	{
 		int num1 = gen.nextInt(999) + 1;
 		int num2;
@@ -77,7 +73,7 @@ public class Price_Generator
 	}
 	
 	// Check Duplicate Flights
-	private static boolean checkDup(int num1, int num2, int index)
+	private boolean checkDup(int num1, int num2, int index)
 	{
 		for(int i = 0; i < index; i++)
 		{
