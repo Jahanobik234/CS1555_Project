@@ -40,10 +40,13 @@ public class Reservation_Generator
 			output.printf("'%s', ", cids[custID]);
 			
 			// COST
+			for(int i = 0; i < 300; i++) {
+				for(int j = 0; j < 3; j++) {
+					System.out.print(flightPrices[i][j]); }
+				System.out.println(); }
 			int sum = 0;
 			for(int i = 0; i < 3; i++)
 			{
-				System.out.println(flightPrices[counter][i]);
 				sum += flightPrices[counter][i];
 			}
 			output.printf("'%s', ", sum);

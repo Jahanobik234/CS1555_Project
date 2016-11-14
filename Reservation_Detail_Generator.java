@@ -10,6 +10,7 @@ public class Reservation_Detail_Generator
 	private PrintWriter output;
 	public int[][] flightPrices;
 	private String[] dates = {"12-04-2016", "12-05-2016", "12-06-2016", "12-07-2016", "12-08-2016", "12-09-2016", "12-10-2016", "12-11-2016"};
+	public String[] tripStarts;
 	public Reservation_Detail_Generator(String[] depCity, String[] arrCity, String[] flightNum, String[] dTime, String[] aTime, String[] schedule, int[][] prices)
 	{
 		try
@@ -24,6 +25,7 @@ public class Reservation_Detail_Generator
 		// Data Titles for Easier Readability to User Looking at Insert Statements
 		output.println("-- reservation_number, flight_number, flight_date, leg --");
 		
+		tripStarts = new String[DATA_COUNT];
 		flightPrices = new int[DATA_COUNT][3];
 		int[][] flightDays = new int[DATA_COUNT][3];
 		int[][] tripNums = new int[DATA_COUNT][3];
@@ -51,6 +53,7 @@ public class Reservation_Detail_Generator
 				if(!(Character.toString(sched[i]).equals("-")))
 				{
 					output.printf("to_date('<%s>'), 'MM-DD-YYYY'), ", dates[i]);
+					tripStarts[counter] = dates[i]; //Add To Trip Starts
 					flightDays[counter][0] = i;
 					if(Integer.parseInt(dTime[pick2]) < Integer.parseInt(aTime[pick2])) //Flight On Same Day
 						flightPrices[counter][0] = prices[pick2][1]; //High Value
