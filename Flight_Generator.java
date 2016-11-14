@@ -12,6 +12,9 @@ public class Flight_Generator
 	public String[] dep = new String[DATA_COUNT];
 	public String[] arr = new String[DATA_COUNT];
 	public String[] flightNum = new String[DATA_COUNT];
+	public String[] depTime = new String[DATA_COUNT];
+	public String[] arrTime = new String[DATA_COUNT];
+	public String[] schedule = new String[DATA_COUNT];
 	private PrintWriter output;
 	
 	public Flight_Generator()
@@ -58,38 +61,40 @@ public class Flight_Generator
 			output.printf("'%s', ", arr[counter]);
 			
 			// DEPARTURE TIME
-			int h1 = numGen.nextInt(24) + 1;
+			int h1 = numGen.nextInt(24);
 			int m1 = numGen.nextInt(4) * 15;
 			String hour1 = String.format("%02d", h1);
 			String minute1 = String.format("%02d", m1);
 			String dTime = hour1.concat(minute1);
 			
 			output.printf("'%s', ", dTime);
+			depTime[counter] = dTime;
 			
 			// ARRIVAL TIME
 			int h2;
-			do
-			{
-				h2 = (numGen.nextInt(24) + 1 + h1) % 24;
-			} while (h1 == h2);
+			h2 = (numGen.nextInt(12) + 1);
 			
 			int m2 = numGen.nextInt(4) * 15;
-			String hour2 = String.format("%02d", h2);
+			String hour2 = String.format("%02d", ((h1+h2) % 24));
 			String minute2 = String.format("%02d", m2);
-			dTime = hour2.concat(minute2);
+			String aTime = hour2.concat(minute2);
 			
-			output.printf("'%s', ", dTime);
+			output.printf("'%s', ", aTime);
+			arrTime[counter] = aTime;
 			
 			// WEEKLY SCHEDULE
 			output.print("'");
+			StringBuilder sb = new StringBuilder();
 			for(int i = 0; i < 7; i++)
 			{
-				output.printf("%s", getDay(i, numGen.nextInt(2)));
+				sb.append(getDay(i, numGen.nextInt(2)));
+				//output.printf("%s", getDay(i, numGen.nextInt(2)));
 			}
+			output.print(sb.toString());
+			schedule[counter] = sb.toString();
 			output.print("'");
-			
 			output.print(");\n");
-			counter ++;
+			counter++;
 		}
 		output.close();
 		System.out.println(counter + " Flights Created");

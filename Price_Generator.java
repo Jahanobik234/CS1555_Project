@@ -10,12 +10,15 @@ public class Price_Generator
 	private static String[] cities = {"PIT", "IND", "NYC", "MCO", "LAS", "JFK", "MIA", "HOU", "ATL", "DAL", "HON", "SEA", "DET", "CHI", "PHX", "CLT", "COL", "BOS", "DEN", "ANC"};	
 	private static String[] airlineID = {"10001", "20001", "30001", "40001", "50001", "60001", "70001", "80001", "90001", "10010"};
 
-	public static String[] arrCity;
-	public static String[] depCity;
+	public String[] arrCity;
+	public String[] depCity;
+	public int[][] prices;
+	private static int counter = 0;				// Counter for while loop
 	public Price_Generator()
 	{
 		arrCity = new String[DATA_COUNT];
 		depCity = new String[DATA_COUNT];
+		prices = new int[DATA_COUNT][2];
 		
 		try
 		{
@@ -104,5 +107,7 @@ public class Price_Generator
 		
 		output.printf("'%d', ", highPrice);
 		output.printf("'%d'", lowPrice);
+		prices[counter][0] = lowPrice;
+		prices[counter][1] = highPrice;
 	}
 }

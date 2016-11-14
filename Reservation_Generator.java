@@ -9,7 +9,7 @@ public class Reservation_Generator
 
 	private PrintWriter output;
 	
-	public Reservation_Generator(String[] ccNums, String[] cids)
+	public Reservation_Generator(String[] ccNums, String[] cids, int[][] prices)
 	{
 		Random gen = new Random();
 		
@@ -40,7 +40,12 @@ public class Reservation_Generator
 			output.printf("'%s', ", cids[custID]);
 			
 			// COST
-			output.print("'<cost>', ");
+			int sum = 0;
+			for(int i = 0; i < 3; i++)
+			{
+				sum += prices[counter][i];
+			}
+			output.printf("'%s', ", sum);
 			
 			// CREDIT CARD NUMBER
 			output.printf("'%s, ', ", ccNums[custID]);
