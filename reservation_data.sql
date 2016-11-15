@@ -1,15 +1,15 @@
 -- reservation_number, cid, cost, credit_card_num, reservation_date, ticketed --
-INSERT INTO RESERVATION VALUES ('00001', '00000020', '<start city>', '<end city>', '<cost>', '0300552568908593', to_date('<date>','MM-DD-YYYY'), '<Y/N>');
-INSERT INTO RESERVATION VALUES ('00002', '00000182', '<start city>', '<end city>', '<cost>', '6755141093948312', to_date('<date>','MM-DD-YYYY'), '<Y/N>');
-INSERT INTO RESERVATION VALUES ('00003', '00000159', '<start city>', '<end city>', '<cost>', '2579051142140044', to_date('<date>','MM-DD-YYYY'), '<Y/N>');
-INSERT INTO RESERVATION VALUES ('00004', '00000024', '<start city>', '<end city>', '<cost>', '4309487309231602', to_date('<date>','MM-DD-YYYY'), '<Y/N>');
-INSERT INTO RESERVATION VALUES ('00005', '00000138', '<start city>', '<end city>', '<cost>', '0818099613905306', to_date('<date>','MM-DD-YYYY'), '<Y/N>');
-INSERT INTO RESERVATION VALUES ('00006', '00000134', '<start city>', '<end city>', '<cost>', '5594044491373501', to_date('<date>','MM-DD-YYYY'), '<Y/N>');
-INSERT INTO RESERVATION VALUES ('00007', '00000167', '<start city>', '<end city>', '<cost>', '7341636778405636', to_date('<date>','MM-DD-YYYY'), '<Y/N>');
-INSERT INTO RESERVATION VALUES ('00008', '00000132', '<start city>', '<end city>', '<cost>', '4427979913517941', to_date('<date>','MM-DD-YYYY'), '<Y/N>');
-INSERT INTO RESERVATION VALUES ('00009', '00000170', '<start city>', '<end city>', '<cost>', '7708774034183650', to_date('<date>','MM-DD-YYYY'), '<Y/N>');
-INSERT INTO RESERVATION VALUES ('00010', '00000078', '<start city>', '<end city>', '<cost>', '1944577718413251', to_date('<date>','MM-DD-YYYY'), '<Y/N>');
-INSERT INTO RESERVATION VALUES ('00011', '00000190', '<start city>', '<end city>', '<cost>', '6018487050560348', to_date('<date>','MM-DD-YYYY'), '<Y/N>');
+INSERT INTO RESERVATION VALUES ('00001', '00000020', 'CLT', 'HOU', '270', '0300552568908593', to_date('12-06-2016','MM-DD-YYYY'), '<Y/N>');
+INSERT INTO RESERVATION VALUES ('00002', '00000182', 'COL', 'DET', '118', '6755141093948312', to_date('12-08-2016','MM-DD-YYYY'), '<Y/N>');
+INSERT INTO RESERVATION VALUES ('00003', '00000159', 'NYC', 'PIT', '154', '2579051142140044', to_date('12-04-2016','MM-DD-YYYY'), '<Y/N>');
+INSERT INTO RESERVATION VALUES ('00004', '00000024', 'HON', 'HOU', '124', '4309487309231602', to_date('12-10-2016','MM-DD-YYYY'), '<Y/N>');
+INSERT INTO RESERVATION VALUES ('00005', '00000138', 'PIT', 'ANC', '182', '0818099613905306', to_date('12-05-2016','MM-DD-YYYY'), '<Y/N>');
+INSERT INTO RESERVATION VALUES ('00006', '00000134', 'ANC', 'HOU', '293', '5594044491373501', to_date('12-05-2016','MM-DD-YYYY'), '<Y/N>');
+INSERT INTO RESERVATION VALUES ('00007', '00000167', 'PHX', 'DEN', '117', '7341636778405636', to_date('12-04-2016','MM-DD-YYYY'), '<Y/N>');
+INSERT INTO RESERVATION VALUES ('00008', '00000132', 'IND', 'HOU', '180', '4427979913517941', to_date('12-08-2016','MM-DD-YYYY'), '<Y/N>');
+INSERT INTO RESERVATION VALUES ('00009', '00000170', 'LAS', 'MCO', '109', '7708774034183650', to_date('12-05-2016','MM-DD-YYYY'), '<Y/N>');
+INSERT INTO RESERVATION VALUES ('00010', '00000078', 'PIT', 'DAL', '157', '1944577718413251', to_date('12-06-2016','MM-DD-YYYY'), '<Y/N>');
+INSERT INTO RESERVATION VALUES ('00011', '00000190', 'SEA', 'HOU', '168', '6018487050560348', to_date('12-05-2016','MM-DD-YYYY'), '<Y/N>');
 INSERT INTO RESERVATION VALUES ('00012', '00000180', '<start city>', '<end city>', '<cost>', '5045643629265490', to_date('<date>','MM-DD-YYYY'), '<Y/N>');
 INSERT INTO RESERVATION VALUES ('00013', '00000072', '<start city>', '<end city>', '<cost>', '2214717593617068', to_date('<date>','MM-DD-YYYY'), '<Y/N>');
 INSERT INTO RESERVATION VALUES ('00014', '00000136', '<start city>', '<end city>', '<cost>', '3037669395734974', to_date('<date>','MM-DD-YYYY'), '<Y/N>');
