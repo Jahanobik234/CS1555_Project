@@ -13,7 +13,7 @@ public class Price_Generator
 	public String[] depCity;
 	public int[][] prices;
 	private int counter = 0;				// Counter for while loop
-	public Price_Generator()
+	public Price_Generator(String[] dep, String[] arr, String[] flightNum)
 	{
 		try
 		{
@@ -40,7 +40,8 @@ public class Price_Generator
 			output.print("INSERT INTO PRICE VALUES (");
 
 			// DEPARTURE AND ARRIVAL CITY
-			departure_arrival_city(numGen, counter);
+			output.printf("'%s', ", dep[counter]);
+			output.printf("'%s', ", arr[counter]);
 			
 			// AIRLINE ID
 			airlineID(numGen);
@@ -53,26 +54,6 @@ public class Price_Generator
 		}
 		output.close();
 		System.out.println(counter + " Prices Created");
-	}
-	
-	// Generate Departure and Arrival Cities
-	private void departure_arrival_city(Random gen, int index)
-	{
-		int num1 = gen.nextInt(999) + 1;
-		int num2;
-		String depart_code = cities[num1 % 20];
-		String arrival_code;
-		do {
-			num2 = gen.nextInt(999) + 1;
-		}while((cities[num1 % 20].equals(cities[num2 % 20])) || (checkDup(num1, num2, index)));
-
-		arrival_code = cities[num2 % 20];
-		
-		arrCity[index] = arrival_code;
-		depCity[index] = depart_code;
-		
-		output.printf("'%s', ", depart_code);
-		output.printf("'%s', ", arrival_code);
 	}
 	
 	// Check Duplicate Flights
