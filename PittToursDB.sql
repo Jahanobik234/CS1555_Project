@@ -36,7 +36,7 @@ CREATE OR REPLACE TABLE Plane (
 	last_service DATE,
 	year INT,
 	owner_id VARCHAR(5),
-	CONSTRAINT PK_Plane PRIMARY KEY(plane_type) IMMEDIATE,
+	CONSTRAINT PK_Plane PRIMARY KEY(plane_type, owner_id) IMMEDIATE,
 	CONSTRAINT FK_Plane FOREIGN KEY(owner_id) REFERENCES Airline(airline_id) INITIALLY DEFERRED DEFERRABLE
 	CONSTRAINT capacityCheck CHECK (plane_capacity > 0) IMMEDIATE,
 	CONSTRAINT yearCheck CHECK (CAST(to_char(last_service, YYYY) AS INT) >= year) IMMEDIATE
@@ -49,7 +49,7 @@ CREATE OR REPLACE TABLE Price (
 	airline_id varchar(5),
 	high_price int,
 	low_price int,
-	CONSTRAINT Pk_Price PRIMARY KEY(departure_city, arrival_city) IMMEDIATE,
+	CONSTRAINT Pk_Price PRIMARY KEY(departure_city, arrival_city, airline_id) IMMEDIATE,
 	CONSTRAINT Fk_Price FOREIGN KEY(airline_id) REFERENCES Airline(airline_id) INITIALLY DEFERRED DEFERRABLE
 	CONSTRAINT cityCheckPrice CHECK departure_city <> arrival_city IMMEDIATE,
 	CONSTRAINT priceCheck CHECK high_price > low_price IMMEDIATE
@@ -77,6 +77,8 @@ CREATE OR REPLACE TABLE Customer (
 CREATE OR REPLACE TABLE Reservation (
 	reservation_number varchar(5),
 	cid varchar(9),
+	start_city char(3),
+	end_city char(3),
 	cost int,
 	credit_card_num varchar(16),
 	reservation_date date,

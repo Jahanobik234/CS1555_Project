@@ -39,20 +39,17 @@ public class Reservation_Generator
 			// CID
 			output.printf("'%s', ", cids[custID]);
 			
+			//Start City
+			output.print("'<start city>', ");
+			
+			//End City
+			output.print("'<end city>', ");
+			
 			// COST
-			for(int i = 0; i < 300; i++) {
-				for(int j = 0; j < 3; j++) {
-					System.out.print(flightPrices[i][j]); }
-				System.out.println(); }
-			int sum = 0;
-			for(int i = 0; i < 3; i++)
-			{
-				sum += flightPrices[counter][i];
-			}
-			output.printf("'%s', ", sum);
+			output.print("'<cost>', ");
 			
 			// CREDIT CARD NUMBER
-			output.printf("'%s, ', ", ccNums[custID]);
+			output.printf("'%s', ", ccNums[custID]);
 			
 			// RESERVATION DATE
 			output.print("to_date('<date>','MM-DD-YYYY'), ");

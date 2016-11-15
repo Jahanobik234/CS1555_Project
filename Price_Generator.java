@@ -8,7 +8,7 @@ public class Price_Generator
 	private static final int DATA_COUNT = 100;
 	private static PrintWriter output;
 	private static String[] cities = {"PIT", "IND", "NYC", "MCO", "LAS", "JFK", "MIA", "HOU", "ATL", "DAL", "HON", "SEA", "DET", "CHI", "PHX", "CLT", "COL", "BOS", "DEN", "ANC"};	
-	private static String[] airlineID = {"10001", "20001", "30001", "40001", "50001", "60001", "70001", "80001", "90001", "10010"};
+	private static String[] airlineID = {"00001", "00002", "00003", "00004", "00005", "00006", "00007", "00008", "00009", "00010"};
 	public String[] arrCity;
 	public String[] depCity;
 	public int[][] prices;

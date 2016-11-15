@@ -38,33 +38,15 @@ public class Reservation_Detail_Generator
 		while(counter < DATA_COUNT)
 		{
 			customer = numGen.nextInt(200);
-			numLegs = numGen.nextInt(3) + 1; //Number of Legs On Trip
+			numLegs = numGen.nextInt(4) + 1; //Number of Legs On Trip
 			String[] legDest = new String[1+numLegs]; //To Keep Track Of Where We Are Going
 			int legDestIndex = 0; //Index For Our Destinations
 			int leg = 0; //Index for Our Leg Number
 			pick2 = (numGen.nextInt(999) % 100);
 			output.print("INSERT INTO RESERVATION_DETAIL("); //First Leg
 			output.printf("'%05d', ", counter);
-			output.printf("'%s', ", flightNum[pick2]);
-			tripNums[counter][0] = pick2;
-			char[] sched = schedule[pick2].toCharArray();
-			for(int i = 0; i < 7; i++)
-			{
-				if(!(Character.toString(sched[i]).equals("-")))
-				{
-					output.printf("to_date('<%s>'), 'MM-DD-YYYY'), ", dates[i]);
-					tripStarts[counter] = dates[i]; //Add To Trip Starts
-					flightDays[counter][0] = i;
-					if(Integer.parseInt(dTime[pick2]) < Integer.parseInt(aTime[pick2])) //Flight On Same Day
-						flightPrices[counter][0] = prices[pick2][1]; //High Value
-					else
-						flightPrices[counter][0] = prices[pick2][0]; //Low Value
-						
-					System.out.println(flightPrices[counter][0]);
-					break;
-				}
-			}
-			
+			output.print("'<flight num>', ");
+			output.print("to_date('<%s>'), 'MM-DD-YYYY'), ");
 			output.printf("%d ", ++leg);
 			output.print(");\n");
 			legDest[legDestIndex++] = depCity[pick2];
@@ -72,34 +54,9 @@ public class Reservation_Detail_Generator
 			
 			while(leg < numLegs) //Additional Legs
 			{
-				do {
-					pick2 = (numGen.nextInt(999) % 100);
-				}while((depCity[pick2].equals(legDest[legDestIndex-1]) || (alreadyVisited(arrCity[pick2], legDest))));
-				
 				output.print("INSERT INTO RESERVATION_DETAIL(");
 				output.printf("'%05d', ", counter);
-				output.printf("'%s', ", flightNum[pick2]);
-				tripNums[counter][leg] = pick2;
-				for(int i = flightDays[counter][leg-1]; i < 7; i++)
-				{
-					if(!(Character.toString(sched[i]).equals("-")))
-					{
-						if((i != flightDays[counter][leg-1]) || ((i == flightDays[counter][leg-1]) && (Integer.parseInt(dTime[pick2]) > Integer.parseInt(aTime[tripNums[counter][leg-1]]))))
-						{
-							output.printf("to_date('<%s>'), 'MM-DD-YYYY'), ", dates[i]);
-							if(Integer.parseInt(dTime[pick2]) < Integer.parseInt(aTime[pick2]))
-							{
-								if(flightDays[leg].equals(flightDays[leg-1]) && depCity[0].equals(arrCity[numLegs-1])) //Same-Day Round Trip
-									flightPrices[counter][leg] = prices[pick2][1]; //High Value
-								else if(flightDays[leg].equals(flightDays[leg-1]) && !(depCity[0].equals(arrCity[numLegs-1]))) //Connection
-									flightPrices[counter][leg] = prices[pick2][0]; //Low Value
-							}
-							else
-								flightPrices[counter][0] = prices[pick2][0]; //Low Value
-							break;
-						}
-					}
-				}
+				output.print("'<flight num>', ");
 				output.printf("%d ", ++leg);			
 				output.print(");\n");
 				legDest[legDestIndex++] = arrCity[pick2];
@@ -109,7 +66,7 @@ public class Reservation_Detail_Generator
 		output.close();
 		System.out.println("Reservation Details Created");
 	}
-	
+	/*
 	private boolean alreadyVisited(String city, String[] destinations)
 	{
 		for(int i = 0; i < destinations.length; i++)
@@ -118,5 +75,5 @@ public class Reservation_Detail_Generator
 				return true;
 		}
 		return false;
-	}
+	}*/
 }
