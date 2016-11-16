@@ -89,7 +89,37 @@ public class Reservation_Detail_Generator
 					output.print(");\n");
 					legDest[legDestIndex++] = arrCity[pick2];
 					//Pricing Issues
-					
+					if(leg == numLegs)
+					{
+						if(legDest[0].equals(legDest[numLegs + 1]) //Roundtrip
+						{
+							//Price Will Be Sum of Two Prices
+							int priceIndex1, priceIndex2;
+							for(int r = (0 + (56*i)); r < 56; r++) //Search For This Flight
+							{
+								if(depCity[r].equals(legDest[0]) && arrCity.equals(legDest[1])) //We Found Starting Leg
+									priceIndex1 = r;
+								else if(depCity[r].equals(legDest[numLegs-1]) && arrCity.equals(legDest[numLegs])
+									priceIndex2 = r;
+							}
+							
+							//Since Flights Are On Separate Days, Add 2 Low Prices
+							reservationPrices[counter] = String.toString(Integer.parseInt(prices[priceIndex1][0]) + Integer.parseInt(prices[priceIndex2]));
+						}
+						
+						else //Not Roundtrip, Find Direct and Give Price
+						{
+							int priceIndex;
+							for(int r = (0 + (56*i)); r < 56; r++) //Search For This Flight
+							{
+								if(depCity[r].equals(legDest[0]) && arrCity.equals(legDest[numLegs])) //We Found Starting Leg
+									priceIndex1 = r;
+							}
+							
+							//Connections Happen On Different Days, Low Price
+							reservationPrices[counter] = String.toString(Integer.parseInt(prices[priceIndex][0]));
+						}
+					}
 					counter++;
 				}
 			}
