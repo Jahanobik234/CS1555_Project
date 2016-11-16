@@ -11,6 +11,8 @@ public class Reservation_Detail_Generator
 	private String[] dates = {"12-04-2016", "12-05-2016", "12-06-2016", "12-07-2016", "12-08-2016", "12-09-2016", "12-10-2016", "12-11-2016"};
 	public String[][] tripEndpoints;
 	public String[] reservationPrices;
+	public String[] reservationStarts;
+	public int counter;
 	public Reservation_Detail_Generator(String[] depCity, String[] arrCity, String[] flightNum, String[] dTime, String[] aTime, int[][] prices)
 	{
 		try
@@ -27,11 +29,12 @@ public class Reservation_Detail_Generator
 		
 		tripEndpoints = new String[DATA_COUNT];
 		reservationPrices = new String[DATA_COUNT];
+		reservationStarts = new String[DATA_COUNT];
 		Random numGen = new Random();
 		int numLegs;						// Random Number
 		int pick2;						// Random Number
 		int customer;			//Customer Generator
-		int counter = 0;				// User Counter
+		counter = 0;				//Counter
 		
 		for(int i = 0; i < 10; i++) //Create Some Reservations For Each Airline
 		{
@@ -51,6 +54,7 @@ public class Reservation_Detail_Generator
 				output.print(");\n");
 				legDest[legDestIndex++] = depCity[pick2];
 				tripEndpoints[counter][0] = depCity[pick2];
+				reservationStarts[counter] = dates[pick2%2]
 				legDest[legDestIndex++] = arrCity[pick2];
 				if(numLegs == 1)
 				{

@@ -9,7 +9,7 @@ public class Reservation_Generator
 
 	private PrintWriter output;
 	
-	public Reservation_Generator(String[] ccNums, String[] cids, int[][] flightPrices)
+	public Reservation_Generator(String[] ccNums, String[] cids, String[] reservationPrices, int counter, String[] tripEndpoints)
 	{
 		Random gen = new Random();
 		
@@ -40,22 +40,27 @@ public class Reservation_Generator
 			output.printf("'%s', ", cids[custID]);
 			
 			//Start City
-			output.print("'<start city>', ");
+			output.printf("'%s', ", tripEndpoints[0]);
 			
 			//End City
-			output.print("'<end city>', ");
+			output.printf("'%s', ", tripEndpoints[1]);
 			
 			// COST
-			output.print("'<cost>', ");
+			output.printf("'%s', ", reservationPrices[counter]);
 			
 			// CREDIT CARD NUMBER
 			output.printf("'%s', ", ccNums[custID]);
 			
 			// RESERVATION DATE
-			output.print("to_date('<date>','MM-DD-YYYY'), ");
+			output.print("to_date('<date>','MM-DD-YYYY'), ", reservationStarts[counter]);
 			
 			// TICKETED
-			output.print("'<Y/N>');\n");
+			if (numGen.nextInt(2) == 0)
+				output.print("'Y');\n");
+			else				
+				output.print("'N');\n");
+
+				
 			counter++;
 		}
 		output.close();
