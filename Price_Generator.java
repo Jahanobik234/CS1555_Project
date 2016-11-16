@@ -5,9 +5,8 @@ import java.io.*;
 
 public class Price_Generator
 {
-	private static final int DATA_COUNT = 100;
+	private static final int DATA_COUNT = 560;
 	private static PrintWriter output;
-	private static String[] cities = {"PIT", "IND", "NYC", "MCO", "LAS", "JFK", "MIA", "HOU", "ATL", "DAL", "HON", "SEA", "DET", "CHI", "PHX", "CLT", "COL", "BOS", "DEN", "ANC"};	
 	private static String[] airlineID = {"00001", "00002", "00003", "00004", "00005", "00006", "00007", "00008", "00009", "00010"};
 	public String[] arrCity;
 	public String[] depCity;
@@ -24,8 +23,6 @@ public class Price_Generator
 			System.out.println("Did not create file.");
 		}	
 		
-		arrCity = new String[DATA_COUNT];
-		depCity = new String[DATA_COUNT];
 		prices = new int[DATA_COUNT][2];
 	
 		// Data Titles for Easier Readability to User Looking at Insert Statements
@@ -34,8 +31,10 @@ public class Price_Generator
 		Random numGen = new Random();
 		int counter = 0;				// Counter for while loop
 		
-		while(counter < DATA_COUNT)
-		{	
+		for(int i = 0; i < 10; i++)
+		{
+			for(int j = 0; j < 56; j++)
+			{
 			// BEGIN
 			output.print("INSERT INTO PRICE VALUES (");
 
@@ -44,38 +43,19 @@ public class Price_Generator
 			output.printf("'%s', ", arr[counter]);
 			
 			// AIRLINE ID
-			airlineID(numGen);
+			output.printf("'%s', ", airlineID[i]);
 			
 			// HIGH AND LOW PRICE
 			high_low_price(numGen);
 			
 			output.println(");");
 			counter++;
+			}
 		}
 		output.close();
 		System.out.println(counter + " Prices Created");
 	}
-	
-	// Check Duplicate Flights
-	private boolean checkDup(int num1, int num2, int index)
-	{
-		for(int i = 0; i < index; i++)
-		{
-			if(arrCity[i].equals(cities[num2%20]) && depCity[i].equals(cities[num1%20]))
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	// Generate Airline Number
-	private void airlineID(Random gen)
-	{
-		int num = (gen.nextInt(10));	
-		output.printf("'%s', ", airlineID[num]);
-	}
-	
+
 	// Year
 	private void high_low_price(Random gen)
 	{
