@@ -14,8 +14,8 @@ public class Main_Generator
 		Flight_Generator fg = new Flight_Generator();
 		Price_Generator pg  = new Price_Generator(fg.dep, fg.arr, fg.flightNum);
 		Customer_Generator cg = new Customer_Generator();
-		Reservation_Detail_Generator rg = new Reservation_Detail_Generator(fg.dep, fg.arr, fg.flightNum, fg.depTime, fg.arrTime, fg.schedule, pg.prices);
-		Reservation_Generator rg1 = new Reservation_Generator(cg.ccNumbers, cg.cids, rg.reservationPrices, rg.counter, rg.tripEndpoints);
+		Reservation_Detail_Generator rg = new Reservation_Detail_Generator(fg.dep, fg.arr, fg.flightNum, fg.depTime, fg.arrTime, pg.prices);
+		Reservation_Generator rg1 = new Reservation_Generator(cg.ccNumbers, cg.cids, rg.reservationPrices, rg.counter, rg.tripEndpoints, rg.reservationStarts);
 		
 		System.out.println("Most Data Generated");
 	}

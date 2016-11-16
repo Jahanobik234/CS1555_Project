@@ -9,7 +9,7 @@ public class Reservation_Generator
 
 	private PrintWriter output;
 	
-	public Reservation_Generator(String[] ccNums, String[] cids, String[] reservationPrices, int counter, String[] tripEndpoints)
+	public Reservation_Generator(String[] ccNums, String[] cids, String[] reservationPrices, int counter, String[][] tripEndpoints, String[] reservationStarts)
 	{
 		Random gen = new Random();
 		
@@ -26,33 +26,33 @@ public class Reservation_Generator
 		output.println("-- reservation_number, cid, cost, credit_card_num, reservation_date, ticketed --");
 				
 		Random numGen = new Random();
-		int counter = 0;				// Counter for while loop
+		int count = 0;				// Counter for while loop
 		
-		while(counter < DATA_COUNT)
+		while(count < DATA_COUNT)
 		{
 			int custID = gen.nextInt(200);
 			output.print("INSERT INTO RESERVATION VALUES (");
 			
 			// RERVATION NUMBER
-			output.printf("'%05d', ", (counter + 1));
+			output.printf("'%05d', ", (count + 1));
 			
 			// CID
 			output.printf("'%s', ", cids[custID]);
 			
 			//Start City
-			output.printf("'%s', ", tripEndpoints[0]);
+			output.printf("'%s', ", tripEndpoints[count][0]);
 			
 			//End City
-			output.printf("'%s', ", tripEndpoints[1]);
+			output.printf("'%s', ", tripEndpoints[count][1]);
 			
 			// COST
-			output.printf("'%s', ", reservationPrices[counter]);
+			output.printf("'%s', ", reservationPrices[count]);
 			
 			// CREDIT CARD NUMBER
 			output.printf("'%s', ", ccNums[custID]);
 			
 			// RESERVATION DATE
-			output.print("to_date('<date>','MM-DD-YYYY'), ", reservationStarts[counter]);
+			output.printf("to_date('<date>','MM-DD-YYYY'), ", reservationStarts[count]);
 			
 			// TICKETED
 			if (numGen.nextInt(2) == 0)
