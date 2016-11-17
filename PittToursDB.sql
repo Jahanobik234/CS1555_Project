@@ -109,45 +109,44 @@ CREATE OR REPLACE TABLE Our_Date (
 );
 
 --Trigger 1
+-- DECLARE reservationCost INT;
+
 CREATE OR REPLACE TRIGGER adjustTicket 
-AFTER UPDATE ON Reservation_Detail
-REFERENCING NEW AS NEW_LEG
+AFTER UPDATE ON Price
+REFERENCING NEW AS NEW_PRICE
 FOR EACH ROW
-	WHEN NEW_LEG.price <> old.price
+	WHEN NEW_PRICE.price <> old.price
 BEGIN
-	DECLARE reservationCost INT;
-	SELECT cost INTO reservationCost
-	FROM Reservation R
-	WHERE NEW_LEG.reservation_number = R.reservation_number;
-	reservationCost = reservationCost - :old.price;
-	reservationCost = reservationCost + :NEW_LEG.price;
 	UPDATE Reservation R
-	SET cost = reservationCost
-	WHERE :NEW_LEG.reservation_number = R.reservation_number;
+	SET R.cost = NEW_PRICE.cost
+	WHERE (NEW_PRICE.departure_city = R.start_city) AND (NEW_PRICE.arrival_city = R.end_city) AND (R.Ticketed = 'N');
 END;
 /
 
 --Trigger 2
+DECLARE curr_capacity INT;
+DECLARE max_capacity INT;
+DECLARE new_type CHAR(4);
+
 CREATE OR REPLACE planeUpgrade
 AFTER INSERT OR UPDATE ON Reservation_Detail
 BEGIN
-	DECLARE curr_capacity INT;
 	SELECT COUNT(*) INTO curr_capacity
 	FROM Reservation_Detail
 	GROUP BY flight_number
 	WHERE :new.flight_number = flight_number;
 	
-	DECLARE max_capacity INT:
 	SELECT capacity INTO max_capacity
 	FROM (Flight NATURAL JOIN Plane) W
 	WHERE :new.flight_number = W.flight_number;
 	
-	DECLARE new_type CHAR(4);
-	IF(curr_capacity > max_capacity)
+	IF curr_capacity > max_capacity
 	THEN {
 		SELECT plane_type INTO new_type
 		FROM Plane P
-		WHERE P.capacity > curr_capacity;
+		WHERE (P.capacity > curr_capacity) AND (P.owner_id = (SELECT airline_id 
+																FROM Flight NATURAL JOIN Reservation_Detail 
+																WHERE :new.flight_number = Flight.flight_number));
 		
 		UPDATE Flight	
 		SET plane_type = new_type
@@ -158,28 +157,29 @@ END;
 /
 
 --Trigger 3
+DECLARE cancel_time CHAR(4);
+DECLARE curr_capacity INT;
+DECLARE curr_flightNum VARCHAR(3);
+DECLARE low_capacity INT;
+DECLARE new_type CHAR(4);
+
 CREATE OR REPLACE cancelReservation
 AFTER UPDATE ON Our_Date
-WHEN(to_char(SELECT * FROM Our_Date) + INTERVAL '30' MIN, HH24:MI) IN (SELECT departure_time FROM Flight)
+WHEN(to_char((SELECT * FROM Our_Date) + INTERVAL '30' MIN, 'HH24:MI') IN (SELECT departure_time FROM Flight))
 BEGIN
-	DECLARE cancel_time CHAR(4);
-	cancel_time := to_char(SELECT * FROM Our_Date) + INTERVAL '30' MIN, HH24:MI);
+	cancel_time := to_char((SELECT * FROM Our_Date) + INTERVAL '30' MIN, 'HH24:MI');
 	DELETE FROM Reservation
 	WHERE Ticketed == 'N' && reservation_number == (SELECT reservation_number FROM Reservation_Detail WHERE leg == 0 && cancel_time == departure_time);
-	--Fit Into Smaller Plane
-	DECLARE curr_capacity INT;
-	DECLARE curr_flightNum VARCHAR(3);
+	-- Fit Into Smaller Plane
 	SELECT COUNT(*) INTO curr_capacity, flight_number INTO curr_flightNum
 	FROM Reservation_Detail
 	GROUP BY flight_number
 	WHERE cancel_time == (SELECT departure_time FROM Flight F);
 	
-	DECLARE low_capacity INT:
 	SELECT capacity INTO low_capacity
 	FROM Plane P
 	WHERE curr_capacity > P.capacity;
 	
-	DECLARE new_type CHAR(4);
 	SELECT plane_type INTO new_type
 	FROM Plane P
 	WHERE low_capacity = capacity;
