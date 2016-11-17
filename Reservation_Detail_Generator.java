@@ -26,7 +26,14 @@ public class Reservation_Detail_Generator
 		
 		// Data Titles for Easier Readability to User Looking at Insert Statements
 		output.println("-- reservation_number, flight_number, flight_date, leg --");
-		
+		for(int y = 0; y < prices.length; y++)
+		{
+			for(int k = 0; k < prices[y].length; k++)
+			{
+				System.out.print(prices[y][k] + " ");
+			}
+			System.out.println();
+		}
 		Random numGen = new Random();
 		int numLegs;						// Random Number
 		int pick2;						// Random Number
@@ -106,13 +113,8 @@ public class Reservation_Detail_Generator
 						{
 							//Price Will Be Sum of Two Prices
 							int priceIndex1 = 0, priceIndex2 = 0;
-							for(int r = (0 + (55*i)); r < (55*(i+1)); r++) //Search For This Flight
-							{
-								if(depCity[r].equals(legDest[0]) && arrCity.equals(legDest[(numLegs/2)])) //We Found Starting Leg
-									priceIndex1 = r;
-								else if(depCity[r].equals(legDest[(numLegs/2)]) && arrCity.equals(legDest[legDestIndex-1]))
-									priceIndex2 = r;
-							}
+							priceIndex1 = getPriceIndex(legDest[0], legDest[numLegs/2], i, depCity, arrCity);
+							priceIndex2 = getPriceIndex(legDest[numLegs/2], legDest[legDestIndex-1], i, depCity, arrCity);
 							
 							//Since Flights Are On Separate Days, Add 2 Low Prices
 							reservationPrices[(i*30) + j] = Integer.toString((prices[priceIndex1][0]) + prices[priceIndex2][0]);
@@ -121,11 +123,7 @@ public class Reservation_Detail_Generator
 						else //Not Roundtrip, Find Direct and Give Price
 						{
 							int priceIndex = 0;
-							for(int r = (0 + (55*i)); r < (55*(i+1)); r++) //Search For This Flight
-							{
-								if(depCity[r].equals(tripEndpoints[(i*30) + j][0]) && arrCity.equals(tripEndpoints[(i*30) + j][1])) //We Found Starting Leg
-									priceIndex = r;
-							}
+							priceIndex = getPriceIndex(legDest[0], legDest[legDestIndex-1], i, depCity, arrCity);
 							
 							//Connections Happen On Different Days, Low Price
 							reservationPrices[(i*30) + j] = Integer.toString(prices[priceIndex][0]);
@@ -146,5 +144,21 @@ public class Reservation_Detail_Generator
 				return false;
 		}
 		return false;
+	}
+	
+	private int getPriceIndex(String startCity, String endCity, int airline, String[] depCity, String[] arrCity)
+	{
+		int startIndex = airline*56;
+		int returnIndex = 0;
+		for(int i = startIndex; i < (airline+1)*56; i++)
+		{
+			if(startCity.equals(depCity[i]) && endCity.equals(arrCity[i]))
+			{
+				returnIndex = i;
+				break;
+			}
+		}
+		
+		return returnIndex;
 	}
 }

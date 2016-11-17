@@ -10,7 +10,7 @@ public class Price_Generator
 	private static String[] airlineID = {"00001", "00002", "00003", "00004", "00005", "00006", "00007", "00008", "00009", "00010"};
 	public String[] arrCity;
 	public String[] depCity;
-	public int[][] prices;
+	public int[][] prices = new int[DATA_COUNT][2];;
 	private int counter = 0;				// Counter for while loop
 	public Price_Generator(String[] dep, String[] arr, String[] flightNum)
 	{
@@ -22,8 +22,6 @@ public class Price_Generator
 		{
 			System.out.println("Did not create file.");
 		}	
-		
-		prices = new int[DATA_COUNT][2];
 	
 		// Data Titles for Easier Readability to User Looking at Insert Statements
 		output.println("-- departure_city, arrival_city, airline_id, high_price, low_price --");
@@ -46,9 +44,19 @@ public class Price_Generator
 			output.printf("'%s', ", airlineID[i]);
 			
 			// HIGH AND LOW PRICE
-			high_low_price(numGen);
+			int highPrice, lowPrice;
+			do{
+			highPrice = numGen.nextInt(151) + 150; //High Price Somewhere Between 150-300
+			lowPrice = numGen.nextInt(101) + 50; //Low Price Between 50-150
+			}while(!(highPrice - lowPrice > 30));
+			
+			output.printf("'%d', ", highPrice);
+			output.printf("'%d'", lowPrice);
+			prices[counter][0] = lowPrice;
+			prices[counter][1] = highPrice;
 			
 			output.println(");");
+			
 			counter++;
 			}
 		}
@@ -56,18 +64,4 @@ public class Price_Generator
 		System.out.println(counter + " Prices Created");
 	}
 
-	// Year
-	private void high_low_price(Random gen)
-	{
-		int highPrice, lowPrice;
-		do{
-		highPrice = gen.nextInt(151) + 150; //High Price Somewhere Between 150-300
-		lowPrice = gen.nextInt(101) + 50; //Low Price Between 50-150
-		}while(!(highPrice - lowPrice > 30));
-		
-		output.printf("'%d', ", highPrice);
-		output.printf("'%d'", lowPrice);
-		prices[counter][0] = lowPrice;
-		prices[counter][1] = highPrice;
-	}
 }
