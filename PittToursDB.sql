@@ -3,6 +3,8 @@
 -- CS1555, Fall 2016
 
 -- Airline
+-- ASSUMPTIONS:
+--		1) 
 CREATE OR REPLACE TABLE Airline (
 	airline_id VARCHAR(5),
 	airline_name VARCHAR(50),
@@ -12,6 +14,8 @@ CREATE OR REPLACE TABLE Airline (
 );
 
 -- Flight Schedule
+-- ASSUMPTIONS:
+-- 		1) There are no delays or early departures for any flights
 CREATE OR REPLACE TABLE Flight (
 	flight_number VARCHAR(3),
 	plane_type CHAR(4),
@@ -29,6 +33,8 @@ CREATE OR REPLACE TABLE Flight (
 );
 
 -- Plane
+-- ASSUMPTIONS:
+--		
 CREATE OR REPLACE TABLE Plane (
 	plane_type CHAR(4),
 	manufacture VARCHAR(10),
@@ -43,6 +49,8 @@ CREATE OR REPLACE TABLE Plane (
 );
 
 -- Flight Pricing
+-- ASSUMPTIONS:
+--		
 CREATE OR REPLACE TABLE Price (
 	departure_city varchar(3),
 	arrival_city varchar(3),
@@ -56,6 +64,8 @@ CREATE OR REPLACE TABLE Price (
 );
 
 -- Customer
+-- ASSUMPTIONS:
+--		1) Two people can have the same name, but will have different cids
 CREATE OR REPLACE TABLE Customer (
 	cid varchar(9),
 	salutation varchar(3),
@@ -74,6 +84,8 @@ CREATE OR REPLACE TABLE Customer (
 );
 
 -- Reservation Information
+-- ASSUMPTIONS:
+--		1) Each customer uses their preferred credit card, the one provided in Customer
 CREATE OR REPLACE TABLE Reservation (
 	reservation_number varchar(5),
 	cid varchar(9),
@@ -91,6 +103,8 @@ CREATE OR REPLACE TABLE Reservation (
 );
 
 -- Reservation Detail
+-- ASSUMPTIONS:
+--		1) 
 CREATE OR REPLACE TABLE Reservation_Detail (
 	reservation_number varchar(5),
 	flight_number varchar(3),
@@ -103,14 +117,14 @@ CREATE OR REPLACE TABLE Reservation_Detail (
 );
 
 -- Our Time
+-- ASSUMPTIONS:
+-- 		1) Time is store as 4 digits without a colon, just like in Flight
 CREATE OR REPLACE TABLE Our_Date (
 	c_date date,
 	CONSTRAINT Pk_Date PRIMARY KEY(c_date) IMMEDIATE
 );
 
 --Trigger 1
--- DECLARE reservationCost INT;
-
 CREATE OR REPLACE TRIGGER adjustTicket 
 AFTER UPDATE ON Price
 REFERENCING NEW AS NEW_PRICE
@@ -165,9 +179,9 @@ DECLARE new_type CHAR(4);
 
 CREATE OR REPLACE cancelReservation
 AFTER UPDATE ON Our_Date
-WHEN(to_char((SELECT * FROM Our_Date) + INTERVAL '12' HH24, HH24:MI) LIKE (SELECT departure_time FROM Flight))
+WHEN(to_char((SELECT * FROM Our_Date) + INTERVAL '12' HH24, HH24MI) IN (SELECT departure_time FROM Flight))
 BEGIN
-	cancel_time := to_char((SELECT * FROM Our_Date) + INTERVAL '12' HH24, HH24:MI);
+	cancel_time := to_char((SELECT * FROM Our_Date) + INTERVAL '12' HH24, HH24MI);
 	DELETE FROM Reservation
 	WHERE Ticketed == 'N' AND reservation_number == (SELECT reservation_number FROM Reservation_Detail WHERE leg == 0 AND cancel_time == departure_time);
 	-- Fit Into Smaller Plane
@@ -182,7 +196,9 @@ BEGIN
 	
 	SELECT plane_type INTO new_type
 	FROM Plane P
-	WHERE low_capacity = capacity;
+	WHERE (low_capacity = capacity) AND (P.owner_id = (SELECT airline_id 
+																FROM Flight NATURAL JOIN Reservation_Detail 
+																WHERE curr_flightNum = Flight.flight_number));
 	
 	UPDATE Flight
 	SET plane_type = new_type
