@@ -83,7 +83,7 @@ CREATE OR REPLACE TABLE Customer (
 	phone varchar(10),
 	email varchar(30),
 	CONSTRAINT Pk_Customer PRIMARY KEY(cid) IMMEDIATE,
-	CONSTRAINT validCC CHECK CAST(to_char(credit_card_expire, YYYY) AS INT) > 2016 IMMEDIATE
+	CONSTRAINT validCC CHECK CAST(to_char(credit_card_expire, YYYY) AS INT) >= 2016 IMMEDIATE
 );
 
 -- Reservation Information
@@ -129,6 +129,7 @@ CREATE OR REPLACE TABLE Our_Date (
 );
 
 --Trigger 1
+--Changed Requirements Left Us Confused On How To Implement This Trigger With Regards to Airline ID and Roundtrips
 CREATE OR REPLACE TRIGGER adjustTicket 
 AFTER UPDATE ON Price
 REFERENCING NEW AS NEW_PRICE

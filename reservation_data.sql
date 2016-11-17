@@ -1,4 +1,4 @@
--- reservation_number, cid, cost, credit_card_num, reservation_date, ticketed --
+-- reservation_number, cid, depart city, arrival city, cost, credit_card_num, reservation_date, ticketed --
 INSERT INTO RESERVATION VALUES ('00001', '00000004', 'JFK', 'JFK', '142', '1481382097244185', to_date('12-05-2016'), 'MM-DD-YYYY'), 'N');
 INSERT INTO RESERVATION VALUES ('00002', '00000115', 'LAS', 'SAN', '67', '7959091037569776', to_date('12-05-2016'), 'MM-DD-YYYY'), 'Y');
 INSERT INTO RESERVATION VALUES ('00003', '00000095', 'LAS', 'SAN', '67', '3007765370384720', to_date('12-04-2016'), 'MM-DD-YYYY'), 'N');
