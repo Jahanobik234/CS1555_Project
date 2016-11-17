@@ -11,7 +11,7 @@ public class Flight_Generator
 	private String[] days = {"S", "M", "T", "W", "T", "F", "S", "-"};
 	public String[] dep = new String[DATA_COUNT];
 	public String[] arr = new String[DATA_COUNT];
-	public String[] flightNum = new String[DATA_COUNT];
+	public String[] flightNumbers = new String[DATA_COUNT];
 	public String[] depTime = new String[DATA_COUNT];
 	public String[] arrTime = new String[DATA_COUNT];
 	private PrintWriter output;
@@ -47,6 +47,7 @@ public class Flight_Generator
 						
 						// NUMBER
 						String number = String.format("%03d", counter + 1);
+						flightNumbers[counter] = number;
 						output.printf("'%s', ", number);
 						
 						// AIRLINE ID

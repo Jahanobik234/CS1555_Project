@@ -61,7 +61,7 @@ public class Reservation_Generator
 				output.print("'N');\n");
 
 				
-			counter++;
+			count++;
 		}
 		output.close();
 		System.out.println("Reservations Started");
