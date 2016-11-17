@@ -5,13 +5,13 @@ import java.io.*;
 
 public class Reservation_Detail_Generator
 {
-	private final int DATA_COUNT = 500;
+	private final int DATA_COUNT = 300;
 	
 	private PrintWriter output;
 	private String[] dates = {"12-04-2016", "12-05-2016", "12-06-2016", "12-07-2016", "12-08-2016", "12-09-2016", "12-10-2016", "12-11-2016"};
-	public String[][] tripEndpoints;
-	public String[] reservationPrices;
-	public String[] reservationStarts;
+	public String[][] tripEndpoints = new String[DATA_COUNT][2];
+	public String[] reservationPrices = new String[DATA_COUNT];
+	public String[] reservationStarts = new String[DATA_COUNT];
 	public int counter;
 	public Reservation_Detail_Generator(String[] depCity, String[] arrCity, String[] flightNum, String[] dTime, String[] aTime, int[][] prices)
 	{
@@ -27,9 +27,6 @@ public class Reservation_Detail_Generator
 		// Data Titles for Easier Readability to User Looking at Insert Statements
 		output.println("-- reservation_number, flight_number, flight_date, leg --");
 		
-		tripEndpoints = new String[DATA_COUNT][2];
-		reservationPrices = new String[DATA_COUNT];
-		reservationStarts = new String[DATA_COUNT];
 		Random numGen = new Random();
 		int numLegs;						// Random Number
 		int pick2;						// Random Number
@@ -38,63 +35,64 @@ public class Reservation_Detail_Generator
 		
 		for(int i = 0; i < 10; i++) //Create Some Reservations For Each Airline
 		{
-			for(int j = 0; j < 30; j++, counter++) //Create 30 Reservations For Each Flight
+			for(int j = 0; j < 30; j++) //Create 30 Reservations For Each Flight
 			{
 				customer = numGen.nextInt(200);
 				numLegs = numGen.nextInt(4) + 1; //Number of Legs On Trip
 				String[] legDest = new String[1+numLegs]; //To Keep Track Of Where We Are Going
 				int legDestIndex = 0; //Index For Our Destinations
 				int leg = 1; //Index for Our Leg Number
-				pick2 = (numGen.nextInt(999) % 56) + 1; //To Get One of 56 Flights Per Airline
+				pick2 = (numGen.nextInt(999) % 56); //To Get One of 56 Flights Per Airline
 				output.print("INSERT INTO RESERVATION_DETAIL("); //First Leg
-				output.printf("'%05d', ", (counter));
+				output.printf("'%05d', ", ((i*30) + j)+1);
 				output.printf("'%s', ", flightNum[(pick2 + (i * 56))]); //Get That Flight
-				output.printf("to_date('<%s>'), 'MM-DD-YYYY'), ", dates[pick2%2]); //First Flight Takes Off Sun, Mon
+				output.printf("to_date('%s'), 'MM-DD-YYYY'), ", dates[pick2%2]); //First Flight Takes Off Sun, Mon
 				output.printf("%d ", leg++);
 				output.print(");\n");
 				legDest[legDestIndex++] = depCity[pick2];
-				tripEndpoints[counter][0] = depCity[pick2];
-				reservationStarts[counter] = dates[pick2%2];
+				tripEndpoints[(i*30) + j][0] = depCity[pick2];
+				reservationStarts[(i*30) + j] = dates[pick2%2];
 				legDest[legDestIndex++] = arrCity[pick2];
 				if(numLegs == 1)
 				{
-					tripEndpoints[counter][1] = arrCity[pick2];
+					tripEndpoints[(i*30) + j][1] = arrCity[pick2];
 					if((dTime[(pick2 + (i * 56))].compareTo(aTime[(pick2 + (i * 56))]) < 0)) //Same Day, High Price
-						reservationPrices[counter] = Integer.toString(prices[(pick2 + (i * 56))][1]);
+						reservationPrices[(i*30) + j] = Integer.toString(prices[(pick2 + (i * 56))][1]);
 					else //Different Day, Low Price
-						reservationPrices[counter] = Integer.toString(prices[(pick2 + (i * 56))][0]);
+						reservationPrices[(i*30) + j] = Integer.toString(prices[(pick2 + (i * 56))][0]);
 				}
 				
 				while(leg <= numLegs) //Additional Legs
 				{
 					output.print("INSERT INTO RESERVATION_DETAIL(");
-					output.printf("'%05d', ", (counter));
-					pick2 = (numGen.nextInt(999) % 56) + 1; //To Get One of 56 Flights Per Airline 
+					output.printf("'%05d', ", (i*30) + j);
+					pick2 = (numGen.nextInt(999) % 56); //To Get One of 56 Flights Per Airline 
 					
 					if(leg == numLegs)
 					{
-						while(alreadyVisited(arrCity[(pick2 + (i * 56))], legDest, 1, legDestIndex-1) && !(legDest[legDestIndex-1].equals(depCity[(pick2 + (i * 56))])))
+						while(!alreadyVisited(arrCity[(pick2 + (i * 56))], legDest, 1, legDestIndex-1) && !(legDest[legDestIndex-1].equals(depCity[(pick2 + (i * 56))])))
 						{
-							pick2 = (numGen.nextInt(999) % 56) + 1; //To Get One of 56 Flights Per Airline 
+							pick2 = (numGen.nextInt(999) % 56); //To Get One of 56 Flights Per Airline 
 						}
 					}
 					
 					else
 					{
-						while(alreadyVisited(arrCity[(pick2 + (i * 56))], legDest, 0, legDestIndex-1)  && !(legDest[legDestIndex-1].equals(depCity[(pick2 + (i * 56))])))
+						while(!alreadyVisited(arrCity[(pick2 + (i * 56))], legDest, 0, legDestIndex-1)  && !(legDest[legDestIndex-1].equals(depCity[(pick2 + (i * 56))])))
 						{
-							pick2 = (numGen.nextInt(999) % 56) + 1; //To Get One of 56 Flights Per Airline 
+							pick2 = (numGen.nextInt(999) % 56); //To Get One of 56 Flights Per Airline 
 						}
 					}
 					
 					output.printf("'%s', ", flightNum[(pick2 + (i * 56))]); //Get That Flight
-					output.printf("to_date('<%s>'), 'MM-DD-YYYY'), ", dates[(pick2%2) + leg]); //First Flight Takes Off Tues-Sat
+					output.printf("to_date('%s'), 'MM-DD-YYYY'), ", dates[(pick2%2) + leg]); //First Flight Takes Off Tues-Sat
 					output.printf("%d ", leg++);			
 					output.print(");\n");
 					legDest[legDestIndex++] = arrCity[pick2];
 					//Pricing Issues
 					if(leg == numLegs)
 					{
+						tripEndpoints[(i*30) + j][1] = arrCity[(pick2 + (i * 56))];
 						if(legDest[0].equals(legDest[numLegs])) //Roundtrip
 						{
 							//Price Will Be Sum of Two Prices
@@ -108,7 +106,7 @@ public class Reservation_Detail_Generator
 							}
 							
 							//Since Flights Are On Separate Days, Add 2 Low Prices
-							reservationPrices[counter] = Integer.toString((prices[priceIndex1][0]) + prices[priceIndex2][0]);
+							reservationPrices[(i*30) + j] = Integer.toString((prices[priceIndex1][0]) + prices[priceIndex2][0]);
 						}
 						
 						else //Not Roundtrip, Find Direct and Give Price
@@ -121,7 +119,7 @@ public class Reservation_Detail_Generator
 							}
 							
 							//Connections Happen On Different Days, Low Price
-							reservationPrices[counter] = Integer.toString((prices[priceIndex][0]));
+							reservationPrices[(i*30) + j] = Integer.toString((prices[priceIndex][0]));
 						}
 					}
 				}
@@ -135,8 +133,8 @@ public class Reservation_Detail_Generator
 	{
 		for(int i = startIndex; i < endIndex; i++)
 		{
-			if(city.equals(destinations[i]))
-				return true;
+			if(city.equals(destinations[i])) 
+				return false;
 		}
 		return false;
 	}

@@ -52,7 +52,7 @@ public class Reservation_Generator
 			output.printf("'%s', ", ccNums[custID]);
 			
 			// RESERVATION DATE
-			output.printf("to_date('<date>','MM-DD-YYYY'), ", reservationStarts[count]);
+			output.printf("to_date('%s'), 'MM-DD-YYYY'), ", reservationStarts[count]);
 			
 			// TICKETED
 			if (numGen.nextInt(2) == 0)
