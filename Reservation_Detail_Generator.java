@@ -48,7 +48,7 @@ public class Reservation_Detail_Generator
 				numLegs = numGen.nextInt(4) + 1; //Number of Legs On Trip
 				String[] legDest = new String[1+numLegs]; //To Keep Track Of Where We Are Going
 				int legDestIndex = 0; //Index For Our Destinations
-				int leg = 1; //Index for Our Leg Number
+				int leg = 0; //Index for Our Leg Number
 				pick2 = (numGen.nextInt(999) % 56); //To Get One of 56 Flights Per Airline
 				output.print("INSERT INTO RESERVATION_DETAIL("); //First Leg
 				output.printf("'%05d', ", ((i*30) + j)+1);
@@ -77,13 +77,13 @@ public class Reservation_Detail_Generator
 						reservationPrices[(i*30) + j] = Integer.toString(prices[(pick2 + (i * 56))][0]);
 				}
 				
-				while(leg <= numLegs) //Additional Legs
+				while(leg < numLegs) //Additional Legs
 				{
 					output.print("INSERT INTO RESERVATION_DETAIL(");
 					output.printf("'%05d', ", ((i*30) + j)+1);
 					pick2 = (numGen.nextInt(999) % 56); //To Get One of 56 Flights Per Airline 
 					
-					if(leg == numLegs)
+					if(leg == numLegs-1)
 					{
 						while(!alreadyVisited(arrCity[(pick2 + (i * 56))], legDest, 1, legDestIndex-1) && !(legDest[legDestIndex-1].equals(depCity[(pick2 + (i * 56))])))
 						{
@@ -101,13 +101,13 @@ public class Reservation_Detail_Generator
 					
 					output.printf("'%s', ", flightNum[(pick2 + (i * 56))]); //Get That Flight
 					output.printf("to_date('%s'), 'MM-DD-YYYY'), ", dates[(pick2%2) + leg]); //First Flight Takes Off Tues-Sat
-					if(leg == numLegs)
+					if(leg == numLegs-1)
 						tripEndpoints[(i*30) + j][1] = arrCity[(pick2 + (i * 56))];
 					output.printf("%d ", leg++);
 					output.print(");\n");
 					legDest[legDestIndex++] = arrCity[(pick2 + (i * 56))];
 					//Pricing Issues
-					if(leg == numLegs + 1)
+					if(leg == numLegs)
 					{
 						if(legDest[0].equals(legDest[legDestIndex-1])) //Roundtrip
 						{

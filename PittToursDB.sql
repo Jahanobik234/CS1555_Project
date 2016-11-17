@@ -16,6 +16,7 @@ CREATE OR REPLACE TABLE Airline (
 -- Flight Schedule
 -- ASSUMPTIONS:
 -- 		1) There are no delays or early departures for any flights
+--		2) Every flight is at least offered on some day of the week
 CREATE OR REPLACE TABLE Flight (
 	flight_number VARCHAR(3),
 	plane_type CHAR(4),
@@ -34,7 +35,8 @@ CREATE OR REPLACE TABLE Flight (
 
 -- Plane
 -- ASSUMPTIONS:
---		
+-- 1) Each plane has a capacity of at least 0
+-- 2) Each plane has been serviced after its birth year		
 CREATE OR REPLACE TABLE Plane (
 	plane_type CHAR(4),
 	manufacture VARCHAR(10),
@@ -66,6 +68,7 @@ CREATE OR REPLACE TABLE Price (
 -- Customer
 -- ASSUMPTIONS:
 --		1) Two people can have the same name, but will have different cids
+--		2) A customer's credit card's expiration date must be later than the current year
 CREATE OR REPLACE TABLE Customer (
 	cid varchar(9),
 	salutation varchar(3),
@@ -86,6 +89,7 @@ CREATE OR REPLACE TABLE Customer (
 -- Reservation Information
 -- ASSUMPTIONS:
 --		1) Each customer uses their preferred credit card, the one provided in Customer
+--		2) ReservationDate must be after the current date
 CREATE OR REPLACE TABLE Reservation (
 	reservation_number varchar(5),
 	cid varchar(9),
@@ -104,7 +108,7 @@ CREATE OR REPLACE TABLE Reservation (
 
 -- Reservation Detail
 -- ASSUMPTIONS:
---		1) 
+--		1) Each Reservation Has At Least One Leg
 CREATE OR REPLACE TABLE Reservation_Detail (
 	reservation_number varchar(5),
 	flight_number varchar(3),
@@ -138,13 +142,12 @@ END;
 /
 
 --Trigger 2
-DECLARE curr_capacity INT;
-DECLARE max_capacity INT;
-DECLARE new_type CHAR(4);
-
 CREATE OR REPLACE planeUpgrade
 AFTER INSERT OR UPDATE ON Reservation_Detail
 BEGIN
+	DECLARE curr_capacity INT;
+	DECLARE max_capacity INT;
+	DECLARE new_type CHAR(4);
 	SELECT COUNT(*) INTO curr_capacity
 	FROM Reservation_Detail
 	GROUP BY flight_number
@@ -171,16 +174,15 @@ END;
 /
 
 --Trigger 3
-DECLARE cancel_time CHAR(4);
-DECLARE curr_capacity INT;
-DECLARE curr_flightNum VARCHAR(3);
-DECLARE low_capacity INT;
-DECLARE new_type CHAR(4);
-
 CREATE OR REPLACE cancelReservation
 AFTER UPDATE ON Our_Date
 WHEN(to_char((SELECT * FROM Our_Date) + INTERVAL '12' HH24, HH24MI) IN (SELECT departure_time FROM Flight))
 BEGIN
+	DECLARE cancel_time CHAR(4);
+	DECLARE curr_capacity INT;
+	DECLARE curr_flightNum VARCHAR(3);
+	DECLARE low_capacity INT;
+	DECLARE new_type CHAR(4);
 	cancel_time := to_char((SELECT * FROM Our_Date) + INTERVAL '12' HH24, HH24MI);
 	DELETE FROM Reservation
 	WHERE Ticketed == 'N' AND reservation_number == (SELECT reservation_number FROM Reservation_Detail WHERE leg == 0 AND cancel_time == departure_time);
