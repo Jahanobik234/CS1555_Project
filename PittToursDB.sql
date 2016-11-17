@@ -169,7 +169,7 @@ WHEN(to_char((SELECT * FROM Our_Date) + INTERVAL '12' HH24, HH24:MI) LIKE (SELEC
 BEGIN
 	cancel_time := to_char((SELECT * FROM Our_Date) + INTERVAL '12' HH24, HH24:MI);
 	DELETE FROM Reservation
-	WHERE Ticketed == 'N' && reservation_number == (SELECT reservation_number FROM Reservation_Detail WHERE leg == 0 && cancel_time == departure_time);
+	WHERE Ticketed == 'N' AND reservation_number == (SELECT reservation_number FROM Reservation_Detail WHERE leg == 0 AND cancel_time == departure_time);
 	-- Fit Into Smaller Plane
 	SELECT COUNT(*) INTO curr_capacity, flight_number INTO curr_flightNum
 	FROM Reservation_Detail
