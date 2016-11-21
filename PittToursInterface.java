@@ -78,6 +78,44 @@ public class PittToursInterface
 		
 		//Task 2 - Show Customer Info, Given Customer Name
 		System.out.println("Please Enter A Name To See Customer Information");
+		String customerName = scanner.nextLine();
+		try
+		{
+			resultSet = statement.executeQuery("SELECT * FROM CUSTOMER WHERE name = " + customerName); //Execute Query
+			String cid, salutation, fName, lName, ccNum, ccExpire, street, city, phone, email, freqMiles;
+			while(resultSet.next())
+			{
+				cid = resultSet.getString("cid");
+				salutation = resultSet.getString("salutation");
+				fName = resultSet.getString("first_name");
+				lName = resultSet.getString("last_name");
+				ccNum = resultSet.getString("credit_card_num");
+				ccExpire = resultSet.getString("credit_card_expire");
+				street = resultSet.getString("street");
+				city = resultSet.getString("city");
+				phone = resultSet.getString("phone");
+				email = resultSet.getString("email");
+				freqMiles = resultSet.getString("frequent_miles");
+				
+				System.out.println("CID:\t" + cid);
+				System.out.println("Salutation:\t" + salutation);
+				System.out.println("First Name:\t" + fName);
+				System.out.println("Last Name:\t" + lName);
+				System.out.println("Credit Card Number:\t" + ccNum);
+				System.out.println("Credit Card Expire Date:\t" + ccExpire);
+				System.out.printf("Address:\t%s, %s", street, city);
+				System.out.println("Phone:\t" + phone);
+				System.out.println("Email:\t" + email);
+				if(freqMiles != null)
+					System.out.println("Frequent Miles Number:\t" + freqMiles);
+			}
+			
+		}
+		
+		catch(SQLException e)
+		{
+			System.out.println(e.getMessage());
+		}
 		//Task 3 - Find Price for Flights Between Two Cities
 		
 		//Task 4 - Find All Routes Between Two Cities
