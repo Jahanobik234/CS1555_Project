@@ -57,9 +57,6 @@ public class Customer_Generator
 				femaleName(pick1, pick2);					// First name 1 - 100; Last Name 0 - 19
 			}
 			
-			// FREQUENT MILES
-			frequentMiles(numGen, (pick1 % 10));			// 0 - 9
-			
 			// CREDIT CARD NUMBER
 			ccNum(counter);
 			
@@ -77,6 +74,9 @@ public class Customer_Generator
 			
 			// EMAIL
 			email(counter + 1);
+			
+			// FREQUENT MILES
+			frequentMiles(numGen, (pick1 % 10));			// 0 - 9
 			
 			output.println(");");
 			counter ++;
@@ -111,10 +111,10 @@ public class Customer_Generator
 	public static void frequentMiles(Random gen, int num)
 	{
 		if(num > 7) {
-			output.printf("'%s', ", AirlineID[gen.nextInt(10)]);
+			output.printf("'%s'", AirlineID[gen.nextInt(10)]);
 			}
 		else
-			output.printf("%s, ", "NULL");
+			output.printf("%s", "NULL");
 	}
 	
 	// Generate random 16 digit credit card number
@@ -170,6 +170,6 @@ public class Customer_Generator
 	// Use first and last name to create email with cid "@pitt.edu"
 	public static void email(int usrID)
 	{
-		output.printf("'%s@pitt.edu'", usrID);
+		output.printf("'%s@pitt.edu', ", usrID);
 	}
 }
