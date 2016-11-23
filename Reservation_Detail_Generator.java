@@ -26,14 +26,6 @@ public class Reservation_Detail_Generator
 		
 		// Data Titles for Easier Readability to User Looking at Insert Statements
 		output.println("-- reservation_number, flight_number, flight_date, leg --");
-		for(int y = 0; y < prices.length; y++)
-		{
-			for(int k = 0; k < prices[y].length; k++)
-			{
-				System.out.print(prices[y][k] + " ");
-			}
-			System.out.println();
-		}
 		Random numGen = new Random();
 		int numLegs;						// Random Number
 		int pick2;						// Random Number
