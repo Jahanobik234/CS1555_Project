@@ -21,7 +21,7 @@ public class PittToursInterface
 		System.out.println("Welcome to PittTours by Stayer/Hanobik!");
 		Scanner reader = new Scanner(System.in);
 		System.out.println("Please select either Administrator or User By Entering Corresponding Number:");
-		System.out.printf("\t%-20s\n\t%-20s", "(1) Administrator", ")2) User");
+		System.out.printf("\t%-20s\n\t%-20s", "(1) Administrator", "(2) User");
 		String userSelection = reader.nextLine();
 		
 		while(!userSelection.equals("1") || !userSelection.equals("2"))
