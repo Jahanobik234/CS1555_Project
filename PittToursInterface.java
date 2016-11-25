@@ -383,65 +383,245 @@ public class PittToursInterface
 		System.out.printf("%-50s", "(9) Show Reservation Information");
 		System.out.printf("%-50s", "(10) Buy Ticket From Existing Reservation");
 		System.out.printf("%-50s", "(11) Quit");
-
 		
-		//Task 1 - Add Customer
-		
-		
-		//Task 2 - Show Customer Info, Given Customer Name
-		System.out.println("Please Enter A Name To See Customer Information");
-		String customerName = reader.nextLine();
-		try
+		int selection = -1;
+		boolean redo = false;
+		do
 		{
-			resultSet = statement.executeQuery("SELECT * FROM CUSTOMER WHERE name = " + customerName); //Execute Query
-			String cid, salutation, fName, lName, ccNum, ccExpire, street, city, phone, email, freqMiles;
-			while(resultSet.next())
+			do
 			{
-				cid = resultSet.getString("cid");
-				salutation = resultSet.getString("salutation");
-				fName = resultSet.getString("first_name");
-				lName = resultSet.getString("last_name");
-				ccNum = resultSet.getString("credit_card_num");
-				ccExpire = resultSet.getString("credit_card_expire");
-				street = resultSet.getString("street");
-				city = resultSet.getString("city");
-				phone = resultSet.getString("phone");
-				email = resultSet.getString("email");
-				freqMiles = resultSet.getString("frequent_miles");
+				try
+				{
+					selection = reader.nextInt();
+					reader.nextLine();			// Clear buffer
+					redo = false;
+				}
+				catch(InputMismatchException badInput)
+				{
+					System.out.print("Please choose an option from above. ");
+					redo = true;
+				}
+			}while(redo);						// Loop until input doesn't produce errors
+		}while(selection > 11 || selection < 1);	// Loop until integer is within the range
+
+		switch(selection)
+		{
+			case 1:
+			//Task 1 - Add Customer
+			String cid, salutation, fName, lName, ccNum, ccExpire, street, city, phone, email, freqMiles;
+			System.out.print("Please enter your preferred salutation: ");
+			salutation = reader.nextLine();
+			System.out.print("Please enter your first name: ");
+			fName = reader.nextLine();
+			System.out.print("Please enter your last name: ");
+			lName = reader.nextLine();
+			
+			String nameTest = "SELECT COUNT(*) FROM CUSTOMER WHERE first_name = '" + fName + "' AND last_name = '" + lName + "';";
+			resultSet = statement.executeQuery(nameTest); //Checking To See If We Have Same First and Last Name
+			if(resultSet.next() == null)
+			{
+				System.out.print("Please enter your credit card number (without any delimiters): ");
+				ccNum = reader.nextLine();
+				System.out.print("Please enter your credit card's expiration date in the form MM/YY: ");
+				ccExpire = reader.nextLine();
+				System.out.print("Please enter your street address (including number): ");
+				street = reader.nextLine();
+				System.out.print("Please enter your city: ");
+				city = reader.nextLine();
+				System.out.print("Please enter your state: ");
+				state = reader.nextLine();
+				System.out.print("Please enter your phone number (without any delimiters): ");
+				phone = reader.nextLine();
+				System.out.print("Please enter your email address: ");
+				email = reader.nextLine();
 				
-				System.out.println("CID:\t" + cid);
-				System.out.println("Salutation:\t" + salutation);
-				System.out.println("First Name:\t" + fName);
-				System.out.println("Last Name:\t" + lName);
-				System.out.println("Credit Card Number:\t" + ccNum);
-				System.out.println("Credit Card Expire Date:\t" + ccExpire);
-				System.out.printf("Address:\t%s, %s", street, city);
-				System.out.println("Phone:\t" + phone);
-				System.out.println("Email:\t" + email);
-				if(freqMiles != null)
-					System.out.println("Frequent Miles Number:\t" + freqMiles);
+				String cidReceiver = "SELECT cid FROM CUSTOMER;";
+				resultSet = statement.executeQuery(cidReceiver);
+				int newCID = Integer.parseInt(resultSet.last()) + 1;
+				
+				String insertStatement = "INSERT INTO CUSTOMER VALUES('" + newCID + "', '" + salutation + "', '" + fName + "', '" + lName + "', '" 
+				+ "', '" + ccNum + "', to_date('" + ccExpire + "', 'MM/YY')" + "', '" + street + "', '" + city + "', '" + state + "', '" + phone 
+				+ "', '" + email + "NULL";
+				
+				try	// Perform and commit update
+				{
+					connection.setAutoCommit(false);
+					statement.executeUpdate(insertStatement);
+					connection.commit();
+					System.out.println("Addition Successful with for Customer " + newCID);
+				}
+				catch(SQLException e1)	// Rollback if update failed
+				{
+					try
+					{
+						connection.rollback();
+					}
+					catch(SQLException e2)
+					{
+						System.out.println(e2.toString());
+					}
+				}
+				
 			}
 			
+			else
+			{
+				System.out.println("There is already a user with this first and last name! Returning To Main Menu!");
+			}
+			break;
+			
+			case 2:
+			//Task 2 - Show Customer Info, Given Customer Name
+			System.out.println("Please Enter A Name To See Customer Information");
+			String customerName = reader.nextLine();
+			try
+			{
+				resultSet = statement.executeQuery("SELECT * FROM CUSTOMER WHERE name = " + customerName); //Execute Query
+				String cid, salutation, fName, lName, ccNum, ccExpire, street, city, state, phone, email, freqMiles;
+				while(resultSet.next())
+				{
+					cid = resultSet.getString("cid");
+					salutation = resultSet.getString("salutation");
+					fName = resultSet.getString("first_name");
+					lName = resultSet.getString("last_name");
+					ccNum = resultSet.getString("credit_card_num");
+					ccExpire = resultSet.getString("credit_card_expire");
+					street = resultSet.getString("street");
+					city = resultSet.getString("city");
+					state = resultSet.getState("state");
+					phone = resultSet.getString("phone");
+					email = resultSet.getString("email");
+					freqMiles = resultSet.getString("frequent_miles");
+					
+					System.out.println("CID:\t" + cid);
+					System.out.println("Salutation:\t" + salutation);
+					System.out.println("First Name:\t" + fName);
+					System.out.println("Last Name:\t" + lName);
+					System.out.println("Credit Card Number:\t" + ccNum);
+					System.out.println("Credit Card Expire Date:\t" + ccExpire);
+					System.out.printf("Address:\t%s %s, %s", street, city, state);
+					System.out.println("Phone:\t" + phone);
+					System.out.println("Email:\t" + email);
+					if(freqMiles != null)
+						System.out.println("Frequent Miles Number:\t" + freqMiles);
+				}
+				
+			}
+			
+			catch(SQLException e)
+			{
+				System.out.println(e.getMessage());
+			}
+			
+			break;
+			
+			case 3:
+			//Task 3 - Find Price for Flights Between Two Cities
+			String city1, city2;
+			System.out.print("Please enter the first city airport code: ");
+			city1 = reader.nextLine();
+			
+			do
+			{
+				System.out.print("Please enter the second city airport code: ");
+				city2 = reader.nextLine();
+			}while(city1.equals(city2));
+			
+			String flightQuery = "SELECT * FROM FLIGHT WHERE departure_city = '" + city1 + "' AND arrival_city = '" + city2 + "';";
+			resultSet = statement.executeQuery(flightQuery);
+			while(resultSet.next())
+			{
+				System.out.println("One-Way Between " + city1 + " and " + city2 + "on Airline: " + resultSet.getString("airline_id"));
+				System.out.println("High Price: " + resultSet.getInt("high_price"));
+				System.out.println("Low Price: " + resultSet.getInt("low_price"));
+			}
+			
+			flightQuery = "SELECT * FROM FLIGHT WHERE departure_city = '" + city2 + "' AND arrival_city = '" + city1 + "';";
+			resultSet = statement.executeQuery(flightQuery);
+			while(resultSet.next())
+			{
+				System.out.println("One-Way Between " + city2 + " and " + city1 + "on Airline: " + resultSet.getString("airline_id"));
+				System.out.println("High Price: " + resultSet.getInt("high_price"));
+				System.out.println("Low Price: " + resultSet.getInt("low_price"));
+			}
+			
+			flightQuery = "SELECT * FROM FLIGHT WHERE departure_city = '" + city1 + "' AND arrival_city = '" + city2 + "';";
+			resultSet = statement.executeQuery(flightQuery);
+			while(resultSet.next())
+			{
+				int depTime, arrTime;
+				depTime = Integer.parseInt(resultSet.nextString("departure_time");
+				arrTime = Integer.parseInt(resultSet.nextString("arrival_time");
+				
+				if(depTime > arrTime)
+				{
+					System.out.println("Roundtrip Between " + city1 + " and " + city2 + "on Airline: " + resultSet.getString("airline_id"));
+					System.out.println("Price: " + resultSet.getInt("high_price");
+				}
+				
+				else
+				{
+					System.out.println("Roundtrip Between " + city1 + " and " + city2 + "on Airline: " + resultSet.getString("airline_id"));
+					System.out.println("Price: " + resultSet.getInt("low_price");
+				}
+			}
+			break;
+			
+			//Task 4 - Find All Routes Between Two Cities
+			
+			//Task 5 - Find All Routes Between Two Cities Of A Given Airline
+			
+			//Task 6 - Find All Routes With Available Seats Between Two Cities On Given Day
+			
+			//Task 7 - For A Given Airline, Find All Routes With Available Seats Between Two Cities On A Given Date
+			
+			//Task 8 - Add Reservation
+			
+			//Task 9 - Show Reservation Information, Given Reservation Number
+			case 9:
+			System.out.println("Please Enter a Reservation Number: ");
+			String reservationNum = reader.nextLine();
+			
+			String flightQuery = "SELECT flight_number FROM RESERVATION_DETAIL WHERE reservation_number = '" + reservationNum + "';";
+			resultSet = statement.executeQuery(flightQuery);
+			if(resultSet.next() == null)
+			{
+				System.out.println("Error with Reservation Number");
+			}
+			
+			else
+			{
+				System.out.println("The following flight numbers make up this Reservation #" + reservationNum);
+				while(resultSet.next())
+				{
+					System.out.println(resultSet.getString("flight_number"));
+				}
+			}
+			break;
+			//Task 10 - Buy Ticket From Existing Reservation
+			System.out.println("Please Enter a Reservation Number: ");
+			String reservationNum = reader.nextLine();
+			
+			String updateReservation = "UPDATE RESERVATION SET Ticketed = 'Y' WHERE Reservation_Number = '" + reservationNum + "';";
+			try	// Perform and commit update
+			{
+				connection.setAutoCommit(false);
+				statement.executeUpdate(updateReservation);
+				connection.commit();
+			}
+			catch(SQLException e1)	// Rollback if update failed
+			{
+				try
+				{
+					connection.rollback();
+				}
+				catch(SQLException e2)
+				{
+					System.out.println(e2.toString());
+				}
+			}
+			break;
+		
 		}
-		
-		catch(SQLException e)
-		{
-			System.out.println(e.getMessage());
-		}
-		//Task 3 - Find Price for Flights Between Two Cities
-		
-		//Task 4 - Find All Routes Between Two Cities
-		
-		//Task 5 - Find All Routes Between Two Cities Of A Given Airline
-		
-		//Task 6 - Find All Routes With Available Seats Between Two Cities On Given Day
-		
-		//Task 7 - For A Given Airline, Find All Routes With Available Seats Between Two Cities On A Given Date
-		
-		//Task 8 - Add Reservation
-		
-		//Task 9 - Show Reservation Information, Given Reservation Number
-		
-		//Task 10 - Buy Ticket From Existing Reservation
 	}
 }
