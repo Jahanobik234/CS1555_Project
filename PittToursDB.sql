@@ -10,29 +10,7 @@ CREATE TABLE Airline (
 	airline_name VARCHAR(50),
 	airline_abbreviation VARCHAR(20),
 	year_founded int,
-	CONSTRAINT PK_Airline PRIMARY KEY(airline_id),
-);
-
--- Flight Schedule
--- ASSUMPTIONS:
--- 		1) There are no delays or early departures for any flights
---		2) Every flight is at least offered on some day of the week
-DROP TABLE Flight CASCADE CONSTRAINTS;
-CREATE TABLE Flight (
-	flight_number VARCHAR(3),
-	airline_id VARCHAR(5),
-	plane_type CHAR(4),
-	departure_city VARCHAR(3),
-	arrival_city VARCHAR(3),
-	departure_time VARCHAR(4),
-	arrival_time VARCHAR(4),
-	weekly_schedule VARCHAR(7),
-	CONSTRAINT PK_Flight PRIMARY KEY(flight_number),
-	CONSTRAINT FK1_Flight FOREIGN KEY(plane_type) REFERENCES Plane(plane_type) INITIALLY DEFERRED DEFERRABLE,
-	CONSTRAINT FK2_Flight FOREIGN KEY(airline_id) REFERENCES Airline(airline_id) INITIALLY DEFERRED DEFERRABLE,
-	CONSTRAINT cityCheckFlight CHECK (departure_city <> arrival_city),
-	CONSTRAINT scheduleCheck CHECK (weekly_schedule <> '-------'),
-	CONSTRAINT timeCheck CHECK((departure_time BETWEEN '00:00' AND '23:59') AND (arrival_time BETWEEN '00:00' AND '23:59'))	
+	CONSTRAINT PK_Airline PRIMARY KEY(airline_id)
 );
 
 -- Plane
@@ -51,6 +29,28 @@ CREATE TABLE Plane (
 	CONSTRAINT FK_Plane FOREIGN KEY(owner_id) REFERENCES Airline(airline_id) INITIALLY DEFERRED DEFERRABLE,
 	CONSTRAINT capacityCheck CHECK (plane_capacity > 0),
 	CONSTRAINT yearCheck CHECK (CAST(to_char(last_service, 'YYYY') AS INT) >= year)
+);
+
+-- Flight Schedule
+-- ASSUMPTIONS:
+-- 		1) There are no delays or early departures for any flights
+--		2) Every flight is at least offered on some day of the week
+--DROP TABLE Flight CASCADE CONSTRAINTS;
+CREATE TABLE Flight (
+	flight_number VARCHAR(3),
+	airline_id VARCHAR(5),
+	plane_type CHAR(4),
+	departure_city VARCHAR(3),
+	arrival_city VARCHAR(3),
+	departure_time VARCHAR(4),
+	arrival_time VARCHAR(4),
+	weekly_schedule VARCHAR(7),
+	CONSTRAINT PK_Flight PRIMARY KEY(flight_number),
+	CONSTRAINT FK1_Flight FOREIGN KEY(plane_type) REFERENCES Plane(plane_type) INITIALLY DEFERRED DEFERRABLE,
+	CONSTRAINT FK2_Flight FOREIGN KEY(airline_id) REFERENCES Airline(airline_id) INITIALLY DEFERRED DEFERRABLE,
+	CONSTRAINT cityCheckFlight CHECK (departure_city <> arrival_city),
+	CONSTRAINT scheduleCheck CHECK (weekly_schedule <> '-------'),
+	CONSTRAINT timeCheck CHECK((departure_time BETWEEN '00:00' AND '23:59') AND (arrival_time BETWEEN '00:00' AND '23:59'))	
 );
 
 -- Flight Pricing
@@ -96,7 +96,7 @@ CREATE TABLE Customer (
 -- ASSUMPTIONS:
 --		1) Each customer uses their preferred credit card, the one provided in Customer
 --		2) ReservationDate must be after the current date
-DROP TABLE Reservation CASCADE CONSTRAINTS;
+--DROP TABLE Reservation CASCADE CONSTRAINTS;
 CREATE TABLE Reservation (
 	reservation_number varchar(5),
 	cid varchar(9),
@@ -109,14 +109,14 @@ CREATE TABLE Reservation (
 	CONSTRAINT Pk_Reservation PRIMARY KEY(reservation_number),
 	CONSTRAINT Fk_Reservation FOREIGN KEY(cid) REFERENCES Customer(cid) INITIALLY DEFERRED DEFERRABLE,
 	CONSTRAINT Fk_Reservation FOREIGN KEY(credit_card_num) REFERENCES Customer(credit_card_num) INITIALLY DEFERRED DEFERRABLE,
-	CONSTRAINT customerCCCheck CHECK (credit_card_num IN (SELECT credit_card_num FROM Customer C WHERE C.cid = cid)),
+	CONSTRAINT customerCCCheck CHECK (credit_card_num == (SELECT credit_card_num FROM Customer C WHERE C.cid = cid)),
 	CONSTRAINT reserveDateCheck CHECK (reservation_date >= sysdate)
 );
 
 -- Reservation Detail
 -- ASSUMPTIONS:
 --		1) Each Reservation Has At Least One Leg
-DROP TABLE Reservation_Detail CASCADE CONSTRAINTS;
+--DROP TABLE Reservation_Detail CASCADE CONSTRAINTS;
 CREATE TABLE Reservation_Detail (
 	reservation_number varchar(5),
 	flight_number varchar(3),
@@ -348,7 +348,7 @@ CREATE OR REPLACE TRIGGER adjustTicket
 AFTER UPDATE ON Price
 REFERENCING NEW AS NEW_PRICE
 FOR EACH ROW
-	WHEN NEW_PRICE.price <> old.price
+	WHEN (NEW_PRICE.high_price <> old.high_price OR NEW_PRICE.low_price <> old.low_price)
 BEGIN
 	UPDATE Reservation R
 	SET R.cost = NEW_PRICE.cost
@@ -391,14 +391,15 @@ END;
 --Trigger 3
 CREATE OR REPLACE TRIGGER cancelReservation
 AFTER UPDATE ON Our_Date
-WHEN(to_char((SELECT * FROM Our_Date) + INTERVAL '12' HH24, HH24MI) IN (SELECT departure_time FROM Flight))
+FOR EACH ROW
+	WHEN(to_char((SELECT * FROM Our_Date) + INTERVAL '12' hour, HH24MI) IN (SELECT departure_time FROM Flight))
 DECLARE cancel_time CHAR(4);
 DECLARE curr_capacity INT;
 DECLARE curr_flightNum VARCHAR(3);
 DECLARE low_capacity INT;
 DECLARE new_type CHAR(4);
 BEGIN
-	cancel_time := to_char((SELECT * FROM Our_Date) + INTERVAL '12' HH24, HH24MI);
+	cancel_time := to_char((SELECT * FROM Our_Date) + INTERVAL '12' hour, HH24MI);
 	DELETE FROM Reservation
 	WHERE Ticketed == 'N' AND reservation_number == (SELECT reservation_number FROM Reservation_Detail WHERE leg == 0 AND cancel_time == departure_time);
 	-- Fit Into Smaller Plane
