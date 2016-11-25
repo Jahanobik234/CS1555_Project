@@ -42,20 +42,20 @@ public class Reservation_Detail_Generator
 				int legDestIndex = 0; //Index For Our Destinations
 				int leg = 0; //Index for Our Leg Number
 				pick2 = (numGen.nextInt(999) % 56); //To Get One of 56 Flights Per Airline
-				output.print("INSERT INTO RESERVATION_DETAIL("); //First Leg
+				output.print("INSERT INTO RESERVATION_DETAIL VALUES("); //First Leg
 				output.printf("'%05d', ", ((i*30) + j)+1);
 				output.printf("'%s', ", flightNum[(pick2 + (i * 56))]); //Get That Flight
 				if(numLegs == 1)
 				{
-					output.printf("to_date('%s'), 'MM-DD-YYYY'), ", dates[pick2%7]); //First Flight Takes Off Anyday
+					output.printf("to_date('%s', 'MM-DD-YYYY'), ", dates[pick2%7]); //First Flight Takes Off Anyday
 					reservationStarts[(i*30) + j] = dates[pick2%7];
 				}
 				else
 				{
-					output.printf("to_date('%s'), 'MM-DD-YYYY'), ", dates[pick2%2]); //First Flight Takes Off Sun, Mon
+					output.printf("to_date('%s', 'MM-DD-YYYY'), ", dates[pick2%2]); //First Flight Takes Off Sun, Mon
 					reservationStarts[(i*30) + j] = dates[pick2%2];
 				}
-				output.printf("%d ", (leg++));
+				output.printf("%d", (leg++));
 				output.print(");\n");
 				legDest[legDestIndex++] = depCity[pick2];
 				tripEndpoints[(i*30) + j][0] = depCity[pick2];
@@ -71,7 +71,7 @@ public class Reservation_Detail_Generator
 				
 				while(leg < numLegs) //Additional Legs
 				{
-					output.print("INSERT INTO RESERVATION_DETAIL(");
+					output.print("INSERT INTO RESERVATION_DETAIL VALUES(");
 					output.printf("'%05d', ", ((i*30) + j)+1);
 					pick2 = (numGen.nextInt(999) % 56); //To Get One of 56 Flights Per Airline 
 					
@@ -92,10 +92,10 @@ public class Reservation_Detail_Generator
 					}
 					
 					output.printf("'%s', ", flightNum[(pick2 + (i * 56))]); //Get That Flight
-					output.printf("to_date('%s'), 'MM-DD-YYYY'), ", dates[(pick2%2) + leg]); //First Flight Takes Off Tues-Sat
+					output.printf("to_date('%s', 'MM-DD-YYYY'), ", dates[(pick2%2) + leg]); //First Flight Takes Off Tues-Sat
 					if(leg == numLegs-1)
 						tripEndpoints[(i*30) + j][1] = arrCity[(pick2 + (i * 56))];
-					output.printf("%d ", leg++);
+					output.printf("%d", leg++);
 					output.print(");\n");
 					legDest[legDestIndex++] = arrCity[(pick2 + (i * 56))];
 					//Pricing Issues
