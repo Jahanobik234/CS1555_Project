@@ -96,7 +96,7 @@ CREATE TABLE Customer (
 -- ASSUMPTIONS:
 --		1) Each customer uses their preferred credit card, the one provided in Customer
 --		2) ReservationDate must be after the current date
---DROP TABLE Reservation CASCADE CONSTRAINTS;
+DROP TABLE Reservation CASCADE CONSTRAINTS;
 CREATE TABLE Reservation (
 	reservation_number varchar(5),
 	cid varchar(9),
@@ -116,7 +116,7 @@ CREATE TABLE Reservation (
 -- Reservation Detail
 -- ASSUMPTIONS:
 --		1) Each Reservation Has At Least One Leg
---DROP TABLE Reservation_Detail CASCADE CONSTRAINTS;
+DROP TABLE Reservation_Detail CASCADE CONSTRAINTS;
 CREATE TABLE Reservation_Detail (
 	reservation_number varchar(5),
 	flight_number varchar(3),
@@ -593,8 +593,8 @@ INSERT INTO RESERVATION_DETAIL VALUES('00099', '176', to_date('12-05-2016', 'MM-
 INSERT INTO RESERVATION_DETAIL VALUES('00099', '175', to_date('12-05-2016', 'MM-DD-YYYY'), 2);
 INSERT INTO RESERVATION_DETAIL VALUES('00100', '185', to_date('12-06-2016', 'MM-DD-YYYY'), 1);
 INSERT INTO RESERVATION_DETAIL VALUES('00101', '216', to_date('12-09-2016', 'MM-DD-YYYY'), 1);
-INSERT INTO RESERVATION_DETAIL VALUES('00102', '188', to_date('12-05-2016', 'MM-DD-YYYY'), 0);
-INSERT INTO RESERVATION_DETAIL VALUES('00102', '214', to_date('12-06-2016', 'MM-DD-YYYY'), 1);
+INSERT INTO RESERVATION_DETAIL VALUES('00102', '188', to_date('12-05-2016', 'MM-DD-YYYY'), 1);
+INSERT INTO RESERVATION_DETAIL VALUES('00102', '214', to_date('12-06-2016', 'MM-DD-YYYY'), 2);
 INSERT INTO RESERVATION_DETAIL VALUES('00103', '169', to_date('12-04-2016', 'MM-DD-YYYY'), 1);
 INSERT INTO RESERVATION_DETAIL VALUES('00103', '181', to_date('12-05-2016', 'MM-DD-YYYY'), 2);
 INSERT INTO RESERVATION_DETAIL VALUES('00104', '174', to_date('12-05-2016', 'MM-DD-YYYY'), 1);
@@ -1123,8 +1123,8 @@ END;
 
 --Trigger 3
 CREATE OR REPLACE TRIGGER cancelReservation
-AFTER UPDATE ON Our_Date
-FOR EACH ROW
+AFTER UPDATE OF c_date ON Our_Date
+--FOR EACH ROW
 	WHEN(to_char((SELECT * FROM Our_Date) + INTERVAL '12' hour, HH24MI) IN (SELECT departure_time FROM Flight))
 DECLARE cancel_time CHAR(4);
 DECLARE curr_capacity INT;
