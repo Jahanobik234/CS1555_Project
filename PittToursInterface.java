@@ -568,14 +568,122 @@ public class PittToursInterface
 			break;
 			
 			//Task 4 - Find All Routes Between Two Cities
+			case: 4
+			String city1, city2;
+			System.out.print("Please enter the first city airport code: ");
+			city1 = reader.nextLine();
+			
+			do
+			{
+				System.out.print("Please enter the second city airport code: ");
+				city2 = reader.nextLine();
+			}while(city1.equals(city2));
+			
+			//Roundtrip First
+			String onewayQuery = "SELECT * FROM FLIGHT WHERE departure_city = '" + city1 + "' AND arrival_city = '" + city2 + "';";
+			
+			resultSet = statement.executeQuery(onewayQuery);
+			
+			System.out.println("One-Way Flights Between " + city1 + " and " + city2);
+			while(resultSet.next())
+			{
+				System.out.printf("Flight Number: %s\n", resultSet.getString("airline_id"));
+				System.out.printf("Depature City: %s\n", resultSet.getString("departure_city"));
+				System.out.printf("Arrival City: %s\n", resultSet.getString("arrival_city"));
+				System.out.printf("Departure Time: %s\n", resultSet.getString("departure_time"));
+				System.out.printf("Arrival Time: %s\n", resultSet.getString("arrival_time"));
+				System.out.println("--------------------");
+			}
+			
+			//Trips With Connections
+			String connectionFlights = "SELECT * FROM (FLIGHT F JOIN FLIGHT G ON F.arrival_city = G.departure_city) T WHERE (F.departure_city = '"
+			+ city1 + "' AND G.arrival_city = '" + city2 + "');"; //This Will Have to Be Filtered A Bit More
+			
+			resultSet = statement.executeQuery(connectionFlights);
+			System.out.println("Connecting Flights Between " + city1 + " and " + city2);
+			while(resultSet.next())
+			{
+				if(checkSchedules(resultSet.getString(8), resultSet.getString(16)) && (Integer.parseInt(resultSet.getString(7)) + 1) % 2400 < Integer.parseInt(resultSet.getString(14)))
+				{
+					System.out.printf("Flight Number (Flight 1): %s\n", resultSet.getString(1));
+					System.out.printf("Depature City: %s\n", resultSet.getString(4));
+					System.out.printf("Arrival City: %s\n", resultSet.getString(5));
+					System.out.printf("Departure Time: %s\n", resultSet.getString(6));
+					System.out.printf("Arrival Time: %s\n", resultSet.getString(7));
+					System.out.printf("Flight Number (Flight 2): %s\n", resultSet.getString(9));
+					System.out.printf("Depature City: %s\n", resultSet.getString(12));
+					System.out.printf("Arrival City: %s\n", resultSet.getString(13));
+					System.out.printf("Departure Time: %s\n", resultSet.getString(14));
+					System.out.printf("Arrival Time: %s\n", resultSet.getString(15));
+					System.out.println("--------------------");
+				}
+			}
+			
+			break;
 			
 			//Task 5 - Find All Routes Between Two Cities Of A Given Airline
+			case 5:
+			String city1, city2, airlineID;
+			System.out.print("Please enter the first city airport code: ");
+			city1 = reader.nextLine();
+			
+			do
+			{
+				System.out.print("Please enter the second city airport code: ");
+				city2 = reader.nextLine();
+			}while(city1.equals(city2));
+			
+			System.out.print("Please Enter An Airline ID: ");
+			airlineID = reader.nextLine();
+			
+			//Roundtrip First
+			String onewayQuery = "SELECT * FROM FLIGHT WHERE departure_city = '" + city1 + "' AND arrival_city = '" + city2 + "' AND airline_id = '" + airlineID + "';";
+			
+			resultSet = statement.executeQuery(onewayQuery);
+			
+			System.out.println("One-Way Flights Between " + city1 + " and " + city2 + " on Airline" + airlineID);
+			while(resultSet.next())
+			{
+				System.out.printf("Flight Number: %s\n", resultSet.getString("airline_id"));
+				System.out.printf("Depature City: %s\n", resultSet.getString("departure_city"));
+				System.out.printf("Arrival City: %s\n", resultSet.getString("arrival_city"));
+				System.out.printf("Departure Time: %s\n", resultSet.getString("departure_time"));
+				System.out.printf("Arrival Time: %s\n", resultSet.getString("arrival_time"));
+				System.out.println("--------------------");
+			}
+			
+			//Trips With Connections
+			String connectionFlights = "SELECT * FROM (FLIGHT F JOIN FLIGHT G ON F.arrival_city = G.departure_city) T WHERE (F.departure_city = '"
+			+ city1 + "' AND G.arrival_city = '" + city2 + "' AND airline_id = '" + airlineID + "');"; //This Will Have to Be Filtered A Bit More
+			
+			resultSet = statement.executeQuery(connectionFlights);
+			System.out.println("Connecting Flights Between " + city1 + " and " + city2 + " on Airline" + airlineID);
+			while(resultSet.next())
+			{
+				if(checkSchedules(resultSet.getString(8), resultSet.getString(16)) && (Integer.parseInt(resultSet.getString(7)) + 1) % 2400 < Integer.parseInt(resultSet.getString(14)))
+				{
+					System.out.printf("Flight Number (Flight 1): %s\n", resultSet.getString(1));
+					System.out.printf("Depature City: %s\n", resultSet.getString(4));
+					System.out.printf("Arrival City: %s\n", resultSet.getString(5));
+					System.out.printf("Departure Time: %s\n", resultSet.getString(6));
+					System.out.printf("Arrival Time: %s\n", resultSet.getString(7));
+					System.out.printf("Flight Number (Flight 2): %s\n", resultSet.getString(9));
+					System.out.printf("Depature City: %s\n", resultSet.getString(12));
+					System.out.printf("Arrival City: %s\n", resultSet.getString(13));
+					System.out.printf("Departure Time: %s\n", resultSet.getString(14));
+					System.out.printf("Arrival Time: %s\n", resultSet.getString(15));
+					System.out.println("--------------------");
+				}
+			}
+			
+			break;
 			
 			//Task 6 - Find All Routes With Available Seats Between Two Cities On Given Day
 			
 			//Task 7 - For A Given Airline, Find All Routes With Available Seats Between Two Cities On A Given Date
 			
 			//Task 8 - Add Reservation
+			
 			
 			//Task 9 - Show Reservation Information, Given Reservation Number
 			case 9:
@@ -623,5 +731,19 @@ public class PittToursInterface
 			break;
 		
 		}
+	}
+	
+	private static boolean checkSchedules(String sched1, String sched2) //Checks To See If Schedules Contain At Least One Similar Day
+	{
+		char[] s1, s2;
+		s1 = sched1.toCharArray();
+		s2 = sched2.toCharArray();
+		for(int i = 0; i < sched1.length; i++)
+		{
+			if(s1[i] != '-' && s2[i] != "-")
+				return true;
+		}
+		
+		return false;
 	}
 }
