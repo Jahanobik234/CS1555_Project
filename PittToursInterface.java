@@ -683,6 +683,30 @@ public class PittToursInterface
 			//Task 7 - For A Given Airline, Find All Routes With Available Seats Between Two Cities On A Given Date
 			
 			//Task 8 - Add Reservation
+			int legNum = 0;
+			String[4][2] legInfo = new String[4][2]; //To Hold User Flight Info
+			for(int i = 0; i < 4; i++)
+			{
+				System.out.print("Please Enter the Flight Number for Leg " + legNum + ": ");
+				legInfo[i][0] = reader.nextLine();
+				if(legInfo[i][0].equals("0"))
+				{
+					legInfo[i][0] = null;
+					break;
+				}
+				
+				System.out.print("Please Enter a Date For Flight " + legInfo[i][0] + ": ");
+				legInfo[i][1] = reader.nextLine();
+				legNum++;
+			}
+			
+			String[] flightInfo = new String[legNum + 1];
+			String flightQuery = "SELECT * FROM FLIGHT WHERE flight_number = ";
+			for(int i = 0; i < legNum+1; i++)
+			{
+				resultSet = statement.executeQuery(flightQuery + legInfo[i][1]);
+				flightInfo[i] = resultSet.next();
+			}
 			
 			
 			//Task 9 - Show Reservation Information, Given Reservation Number
