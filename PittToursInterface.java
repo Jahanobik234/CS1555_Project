@@ -47,11 +47,25 @@ public class PittToursInterface
 		
 			if(userSelection.equals("1"))
 			{
-				administratorInterface(reader);
+				try
+				{
+					administratorInterface(reader);
+				}
+				catch(SQLException adminErr)
+				{
+					System.out.println(adminErr.toString());
+				}
 			}
 			else if(userSelection.equals("2"))
 			{
-				userInterface(reader);
+				try
+				{
+					userInterface(reader);
+				}
+				catch(SQLException userErr)
+				{
+					System.out.println(userErr.toString());
+				}
 			}
 			else
 			{
@@ -60,7 +74,8 @@ public class PittToursInterface
 		}while(userSelection != "3");
 	}
 	
-	public static void administratorInterface(Scanner reader) //Interface Methods/Functions for Administrator
+	//Interface Methods/Functions for Administrator
+	public static void administratorInterface(Scanner reader) throws SQLException
 	{
 		String inputFile;
 		String line;
@@ -527,7 +542,8 @@ public class PittToursInterface
 		}
 	}
 	
-	public static void userInterface(Scanner reader) //Interface Methods/Functions for User
+	//Interface Methods/Functions for User
+	public static void userInterface(Scanner reader) throws SQLException
 	{
 		System.out.println("Please Select An Option From The Following List:");
 		System.out.printf("%-50s", "(1) Add Customer");
