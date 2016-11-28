@@ -700,14 +700,77 @@ public class PittToursInterface
 				legNum++;
 			}
 			
-			String[] flightInfo = new String[legNum + 1];
-			String flightQuery = "SELECT * FROM FLIGHT WHERE flight_number = ";
-			for(int i = 0; i < legNum+1; i++)
+			int currCapacity, maxCapacity;
+			boolean seatAvail = true;
+			for(int i = 0; i < legNum+1 && seatAvail; i++)
 			{
-				resultSet = statement.executeQuery(flightQuery + legInfo[i][1]);
-				flightInfo[i] = resultSet.next();
+				resultSet = statement.executeQuery("SELECT COUNT(*) FROM RESERVATION_DETAIL WHERE to_date(legInfo[i][1], 'MM-DD-YYYY') = flight_date AND flight_number = " + legInfo[i][0]);
+				resultSet.next();
+				currCapacity = resultSet.nextLine();
+				
+				resultSet = statement.executeQuery("SELECT plane_capacity FROM FLIGHT F JOIN PLANE P ON F.plane_type = P.plane_type WHERE flight_number = " + legInfo[i][0]);
+				resultSet.next();
+				maxCapacity = Integer.parseInt(resultSet.nextString());
+				
+				if(currCapacity >= maxCapacity) //There is room on the plane_capacity
+				{
+					System.out.println("Flight " + legInfo[i][0] + " does not have any open seats! Reservation Cancelled!");
+					seatAvail = false;
+				}
 			}
 			
+			System.out.println("Seats Available On All Flights. Creating Reservation...");
+			System.out.println("What is your Customer ID (CID): ");
+			String custID = reader.nextLine();
+			resultSet = statement.executeQuery("SELECT MAX(reservation_number) FROM RESERVATION;");
+			resultSet.next();
+			int newReservationNumber = Integer.parseInt(resultSet.nextString()) + 1;
+			resultSet = statement.executeQuery("SELECT * FROM FLIGHT WHERE departure_city = (SELECT departure_city FROM FLIGHT WHERE flight_number = '" 
+			+ legInfo[0][0] + "') AND arrival_city = (SELECT arrival_city FROM FLIGHT WHERE flight_number = '" + legInfo[legNum][0]
+			+ "') AND airline_id = (SELECT airline_id FROM FLIGHT WHERE flight_number = '" + legInfo[0][0] + "';");
+			resultSet.next();
+			String flightNum = resultSet.getString("flight_number");
+			String depCity = resultSet.getString("departure_city");
+			String arrCity = resultSet.getString("arrival_city");
+			int price;
+			if(Integer.parseInt(resultSet.getString("departure_time")) < Integer.parseInt(resultSet.getString("arrivalTime"))) //High Price, Same Day
+			{
+				resultSet = statement.executeQuery("SELECT high_price FROM PRICE WHERE flight_number = '" + flightNum + "';");
+				resultSet.next();
+				price = resultSet.nextInt();
+			}
+			
+			else
+			{
+				resultSet = statement.executeQuery("SELECT low_price FROM PRICE WHERE flight_number = '" + flightNum + "';");
+				resultSet.next();
+				price = resultSet.nextInt();
+			}
+			
+			System.out.print("Please enter the credit card number you would like to use for this transaction: ");
+			String ccNumber = reader.nextLine();
+			
+			try	// Perform and commit update
+			{
+				connection.setAutoCommit(false);
+				statement.executeUpdate("INSERT INTO RESERVATION VALUES('" + newReservationNumber + "', '" + custID + "', '" +  depCity + "', '" 
+				+ arrCity + "', '" + price + "', '" + "', '" + ccNumber + "', " + "to_date('" + legInfo[0][1] + "', 'MM-DD-YYYY'), 'Y';");
+				connection.commit();
+				System.out.println("Addition Addition of Reservation # " + newReservationNumber);
+			}
+			catch(SQLException e1)	// Rollback if update failed
+			{
+				try
+				{
+					connection.rollback();
+				}
+				catch(SQLException e2)
+				{
+					System.out.println(e2.toString());
+				}
+			}
+			
+			break;
 			
 			//Task 9 - Show Reservation Information, Given Reservation Number
 			case 9:
