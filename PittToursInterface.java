@@ -28,28 +28,35 @@ public class PittToursInterface
 			System.exit(1);
 		}
 		
-		System.out.println("Welcome to PittTours by Hanobik/Stayer!");
-		Scanner reader = new Scanner(System.in);
-		System.out.println("Please select either Administrator or User By Entering Corresponding Number:");
-		System.out.printf("\t%-20s\n\t%-20s", "(1) Administrator", "(2) User");
-		String userSelection = reader.nextLine();
+		do
+		{
+			System.out.println("Welcome to PittTours by Hanobik/Stayer!");
+			Scanner reader = new Scanner(System.in);
+			System.out.println("Please select either Administrator or User By Entering Corresponding Number:");
+			System.out.printf("\t%-20s\n\t%-20s\n\t%-20s\n", "(1) Administrator", "(2) User", "(3) Exit");
+			String userSelection = reader.nextLine();
 		
-		while(!userSelection.equals("1") && !userSelection.equals("2"))
-		{
-				System.out.println("Invalid Input! Please Try Again!");
-				System.out.println("Please select either Administrator or User By Entering Corresponding Number:");
-				System.out.printf("\t%-20s\n\t%-20s", "(1) Administrator", ")2) User");
-				userSelection = reader.nextLine();
-		}
+			while(!userSelection.equals("1") && !userSelection.equals("2") && !userSelection.equals("3"))
+			{
+					System.out.println("Invalid Input! Please Try Again!");
+					System.out.println("Please select either Administrator or User By Entering Corresponding Number:");
+					System.out.printf("\t%-20s\n\t%-20s\n\t%-20s\n", "(1) Administrator", "(2) User", "(3) Exit");
+					userSelection = reader.nextLine();
+			}
 		
-		if(userSelection.equals("1"))
-		{
-			administratorInterface(reader);
-		}
-		else
-		{
-			userInterface(reader);
-		}
+			if(userSelection.equals("1"))
+			{
+				administratorInterface(reader);
+			}
+			else if(userSelection.equals("2"))
+			{
+				userInterface(reader);
+			}
+			else
+			{
+				System.out.println("Thank you for choosing Pitt Tours by Hanobik/Stayer!");
+			}
+		}while(userSelection != "3");
 	}
 	
 	public static void administratorInterface(Scanner reader) //Interface Methods/Functions for Administrator
@@ -404,7 +411,56 @@ public class PittToursInterface
 				break;
 			// TASK 6 - Generate Passenger Manifest For Specific Flight On Given Day
 			case 6:
+				String userInput;
+				Scanner userKeyboard - new Scanner(System.in);
+				String fDate;							// Flight Date
+				String fNum;							// Flight Number
 				
+				do
+				{
+					System.out.println("Which would you like to enter? (1) Flight Date or (2) Flight Number");
+					userInput = userKeyboard.nextLine();
+				}while(!userInput.equals("1") && !userInput.equals("2");
+				
+				if(userInput.equals("1"))
+				{
+					// Get Flight Date
+					System.out.print("Please enter flight date (MM/DD/YYYY): ");
+					userInput = userKeyboard.nextLine();
+					// Show all flights on given date
+					try
+					{
+						
+					}
+					catch(SQLException invalidDate)
+					{
+						
+					}
+					// Get Flight Number
+				}
+				else if(userInput.equals("2"))
+				{
+					// Get Flight Number
+					System.out.print("Please enter flight number: ");
+					userInput = userKeyboard.nextLine();
+					// Show all flights with given flight number
+					try
+					{
+						
+					}
+					catch(SQLException invalidNumber)
+					{
+						
+					}
+					// Get Flight Date
+				}
+				else
+				{
+					// Unreachable
+					System.out.println("Not a valid input.");
+				}
+				
+				// Generate Manifest
 				break;
 		}
 	}
