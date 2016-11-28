@@ -28,13 +28,14 @@ public class PittToursInterface
 			System.exit(1);
 		}
 		
+		String userSelection;
 		do
 		{
 			System.out.println("Welcome to PittTours by Hanobik/Stayer!");
 			Scanner reader = new Scanner(System.in);
 			System.out.println("Please select either Administrator or User By Entering Corresponding Number:");
 			System.out.printf("\t%-20s\n\t%-20s\n\t%-20s\n", "(1) Administrator", "(2) User", "(3) Exit");
-			String userSelection = reader.nextLine();
+			userSelection = reader.nextLine();
 		
 			while(!userSelection.equals("1") && !userSelection.equals("2") && !userSelection.equals("3"))
 			{
@@ -412,7 +413,7 @@ public class PittToursInterface
 			// TASK 6 - Generate Passenger Manifest For Specific Flight On Given Day
 			case 6:
 				String userInput;
-				Scanner userKeyboard - new Scanner(System.in);
+				userKeyboard = new Scanner(System.in);
 				String fDate;							// Flight Date
 				String fNum;							// Flight Number
 				
@@ -420,7 +421,7 @@ public class PittToursInterface
 				{
 					System.out.println("Which would you like to enter? (1) Flight Date or (2) Flight Number");
 					userInput = userKeyboard.nextLine();
-				}while(!userInput.equals("1") && !userInput.equals("2");
+				}while(!userInput.equals("1") && !userInput.equals("2"));
 				
 				if(userInput.equals("1"))
 				{
@@ -806,7 +807,7 @@ public class PittToursInterface
 				System.out.println(e.getMessage());
 			}
 			//Task 6 - Find All Routes With Available Seats Between Two Cities On Given Day
-			case 6;
+			case 6:
 				break;
 			//Task 7 - For A Given Airline, Find All Routes With Available Seats Between Two Cities On A Given Date
 			case 7:
