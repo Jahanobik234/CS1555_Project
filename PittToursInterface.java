@@ -87,10 +87,49 @@ public class PittToursInterface
 		
 		switch(selection)
 		{	
-			//Task 1 - Erase the Database
+			// TASK 1 - Erase the Database
 			case 1:
+				Scanner userKeyboard = new Scanner(System.in);
+				System.out.print("Please confirm database deletion by typing 'yes': ");
+				String confirm = userKeyboard.nextLine();
+				
+				if(confirm.equals("yes"))
+				{
+					// Delete Database
+					String deleteFrom = "DELETE FROM ";
+					String[] tablename = {"Airline;", "Customer;", "Flight;", "Price;", "Plane;", "Reservation;", "Reservation Detail;"};
+					String temp;
+					for(String table : tablename)
+					{
+						temp = deleteFrom.concat(table);
+						try									// Perform and commit update
+						{
+							connection.setAutoCommit(false);
+							statement.executeUpdate(temp);
+							connection.commit(); 
+						}
+						catch(SQLException e1)				// Rollback if update failed
+						{
+							try
+							{
+								connection.rollback();
+							}
+							catch(SQLException err)
+							{
+								System.out.println(err.toString());
+							}
+						}
+					}
+				}
+				else
+				{
+					// Abort Deletion
+					System.out.println("Database Deletion Aborted.");
+				}
+				
 				break;
-			//Task 2 - Load Airline Information
+				
+			// TASK 2 - Load Airline Information
 			case 2:
 				String airline_id;
 				String airline_name;
@@ -153,7 +192,7 @@ public class PittToursInterface
 				}
 				file.close();							// Close file
 				break;
-			//Task 3 - Load Schedule Information
+			// TASK 3 - Load Schedule Information
 			case 3:
 				String flight_number;
 				airline_id = null;						// Already declared above
@@ -227,7 +266,7 @@ public class PittToursInterface
 				}
 				file.close();							// Close file
 				break;
-			//Task 4 - Load Pricing Information
+			// TASK 4 - Load Pricing Information
 			case 4:
 				departure_city = null;					// Already declared above
 				arrival_city = null;					// Already declared above
@@ -294,7 +333,7 @@ public class PittToursInterface
 				}
 				file.close();							// Close file
 				break;
-			//Task 5 - Load Plane Information
+			// TASK 5 - Load Plane Information
 			case 5:
 				plane_type = null;						// Already declared above
 				String manufacturer;
@@ -363,8 +402,9 @@ public class PittToursInterface
 				}
 				file.close();							// Close file
 				break;
-			//Task 6 - Generate Passenger Manifest For Specific Flight On Given Day
+			// TASK 6 - Generate Passenger Manifest For Specific Flight On Given Day
 			case 6:
+				
 				break;
 		}
 	}
@@ -410,7 +450,7 @@ public class PittToursInterface
 		switch(selection)
 		{
 			case 1:
-			//Task 1 - Add Customer
+			// TASK 1 - Add Customer
 			try
 			{
 				System.out.print("Please enter your preferred salutation: ");
@@ -710,9 +750,11 @@ public class PittToursInterface
 				System.out.println(e.getMessage());
 			}
 			//Task 6 - Find All Routes With Available Seats Between Two Cities On Given Day
-			
+			case 6;
+				break;
 			//Task 7 - For A Given Airline, Find All Routes With Available Seats Between Two Cities On A Given Date
-			
+			case 7:
+				break;
 			//Task 8 - Add Reservation
 			case 8:
 			try
