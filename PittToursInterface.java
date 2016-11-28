@@ -177,7 +177,7 @@ public class PittToursInterface
 					airline_abbreviation = parsed[2];
 					year_founded = parsed[3];
 				
-					// Concatenate all data and previous line to create insert statement
+					//Concatenate all data and previous line to create insert statement
 					line = insert.concat("('" + airline_id + "', '" + airline_name + "' ,'" + airline_abbreviation + "', '" + year_founded + "')");
 			
 					try									// Perform and commit update
@@ -431,13 +431,38 @@ public class PittToursInterface
 					// Show all flights on given date
 					try
 					{
-						
+						resultSet = statement.executeQuery("SELECT flight_date, flight_num FROM Reservation_detail " +
+															"WHERE flight_date = to_date('" + userInput +
+															"', 'MM/DD/YYYY') GROUP BY flight_num");
+						fDate = userInput;
 					}
 					catch(SQLException invalidDate)
 					{
-						
+						System.out.println("No flights exist for this date.");
+						break;
 					}
+					
+					// PRINT resultSet
+					while(resultSet.next())
+					{
+						String flight_date = resultSet.getString("flight_date");
+						String flight_num = resultSet.getString("flight_num");
+						System.out.println("Flight Number: " + flight_num + "\tDeparts On: " + flight_date);
+					}
+					
 					// Get Flight Number
+					try
+					{
+						resultSet = statement.executeQuery("SELECT R.cid FROM Reservation_detail D NATURAL JOIN Reservation R" +
+															"WHERE D.flight_number = " + userInput + " AND " + 
+															"D.flight_date = to_date('" + fDate + "', 'MM/DD/YYYY)");
+						fNum = userInput; 
+					}
+					catch(SQLException invalidEntry1)
+					{
+						System.out.println(invalidEntry1.toString());
+						break;
+					}
 				}
 				else if(userInput.equals("2"))
 				{
@@ -447,13 +472,40 @@ public class PittToursInterface
 					// Show all flights with given flight number
 					try
 					{
-						
+						resultSet = statement.executeQuery("SELECT flight_date, flight_num FROM Reservation_detail " +
+															"WHERE flight_number = " + userInput);
+						fNum = userInput; 
 					}
 					catch(SQLException invalidNumber)
 					{
-						
+						System.out.println("Invalid Flight Number.");
+						break;
 					}
+					
+					// PRINT resultSet
+					while(resultSet.next())
+					{
+						String flight_date = resultSet.getString("flight_date");
+						String flight_num = resultSet.getString("flight_num");
+						System.out.println("Flight Number: " + flight_num + "\tDeparts On: " + flight_date);
+					}
+					
 					// Get Flight Date
+					System.out.print("Please Select Flight Date: ");
+					userInput = userKeyboard.nextLine();
+					
+					try
+					{
+						resultSet = statement.executeQuery("SELECT R.cid FROM Reservation_detail D NATURAL JOIN Reservation R" +
+															"WHERE D.flight_number = " + fNum + " AND " + 
+															"D.flight_date = to_date('" + userInput + "', 'MM/DD/YYYY)");
+						fDate = userInput; 
+					}
+					catch(SQLException invalidEntry2)
+					{
+						System.out.println(invalidEntry2.toString());
+						break;
+					}
 				}
 				else
 				{
@@ -461,7 +513,16 @@ public class PittToursInterface
 					System.out.println("Not a valid input.");
 				}
 				
-				// Generate Manifest
+				// Generate Manifest: NEED TO FIX THIS SOMEHOW
+				
+// 				String[] cids = resultSet.getArray("R.cid");
+// 				resultSet.getArray("R.cid");
+// 				
+// 				for(int i = 0; i < cids.length; i++)
+// 				{
+// 					resultSet = statement.executeQuery("SELECT * FROM Customer WHERE cid = " + cids[i]);
+// 					// Need to print out each customer
+// 				}
 				break;
 		}
 	}
@@ -544,7 +605,7 @@ public class PittToursInterface
 					
 					String insertStatement = "INSERT INTO CUSTOMER VALUES('" + newCID + "', '" + salutation + "', '" + fName + "', '" + lName + "', '" 
 					+ "', '" + ccNum + "', to_date('" + ccExpire + "', 'MM/YY')" + "', '" + street + "', '" + city + "', '" + state + "', '" + phone 
-					+ "', '" + email + "NULL";
+					+ "', '" + email + ", NULL)";
 					
 					try	// Perform and commit update
 					{
@@ -564,9 +625,7 @@ public class PittToursInterface
 							System.out.println(e2.toString());
 						}
 					}
-					
 				}
-				
 				else
 				{
 					System.out.println("There is already a user with this first and last name! Returning To Main Menu!");
