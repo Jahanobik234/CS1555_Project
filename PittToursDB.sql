@@ -2627,7 +2627,7 @@ BEGIN
 		FROM Plane P
 		WHERE (P.capacity > curr_capacity) AND (P.owner_id = (SELECT airline_id 
 																FROM Flight NATURAL JOIN Reservation_Detail 
-																WHERE :new.flight_number = Flight.flight_number));
+																WHERE :new.flight_number = Flight.flight_number))
 		
 		updateFlightType(new_type, :new.flight_number);
 	}
@@ -2639,35 +2639,43 @@ END;
 CREATE OR REPLACE TRIGGER cancelReservation
 AFTER UPDATE OF c_date ON Our_Date
 FOR EACH ROW
-	WHEN(to_char((SELECT * FROM Our_Date) + INTERVAL '12' hour, HH24MI) IN (SELECT departure_time FROM Flight))
+-- 	WHEN(EXISTS(SELECT departure_time 
+-- 					FROM Flight 
+-- 					WHERE to_char((SELECT * FROM Our_Date) + INTERVAL '12' hour, HH24MI) = departure_time))
 DECLARE cancel_time CHAR(4);
 DECLARE curr_capacity INT;
 DECLARE curr_flightNum VARCHAR(3);
 DECLARE low_capacity INT;
 DECLARE new_type CHAR(4);
 BEGIN
-	cancel_time := to_char((SELECT * FROM Our_Date) + INTERVAL '12' hour, HH24MI);
-	DELETE FROM Reservation
-	WHERE Ticketed == 'N' AND reservation_number == (SELECT reservation_number FROM Reservation_Detail WHERE leg == 0 AND cancel_time == departure_time);
-	-- Fit Into Smaller Plane
-	SELECT COUNT(*) INTO curr_capacity, flight_number INTO curr_flightNum
-	FROM Reservation_Detail
-	GROUP BY flight_number
-	WHERE cancel_time == (SELECT departure_time FROM Flight F);
+	IF EXISTS(SELECT departure_time 
+					FROM Flight 
+					WHERE to_char((SELECT * FROM Our_Date) + INTERVAL '12' hour, HH24MI) = departure_time))
+	THEN
+	{
+		cancel_time := to_char((SELECT * FROM Our_Date) + INTERVAL '12' hour, HH24MI);
+		DELETE FROM Reservation
+		WHERE Ticketed == 'N' AND reservation_number == (SELECT reservation_number FROM Reservation_Detail WHERE leg == 0 AND cancel_time == departure_time);
+		-- Fit Into Smaller Plane
+		SELECT COUNT(*) INTO curr_capacity, flight_number INTO curr_flightNum
+		FROM Reservation_Detail
+		GROUP BY flight_number
+		WHERE cancel_time == (SELECT departure_time FROM Flight F);
 	
-	SELECT capacity INTO low_capacity
-	FROM Plane P
-	WHERE curr_capacity > P.capacity;
+		SELECT capacity INTO low_capacity
+		FROM Plane P
+		WHERE curr_capacity > P.capacity;
 	
-	SELECT plane_type INTO new_type
-	FROM Plane P
-	WHERE (low_capacity = capacity) AND (P.owner_id = (SELECT airline_id 
-																FROM Flight NATURAL JOIN Reservation_Detail 
-																WHERE curr_flightNum = Flight.flight_number));
+		SELECT plane_type INTO new_type
+		FROM Plane P
+		WHERE (low_capacity = capacity) AND (P.owner_id = (SELECT airline_id 
+																	FROM Flight NATURAL JOIN Reservation_Detail 
+																	WHERE curr_flightNum = Flight.flight_number));
 	
-	UPDATE Flight
-	SET plane_type = new_type
-	WHERE flight_number == curr_flightNum;
-	
+		UPDATE Flight
+		SET plane_type = new_type
+		WHERE flight_number == curr_flightNum;
+	}
+	END IF;
 END;
 /
