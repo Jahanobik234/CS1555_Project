@@ -810,7 +810,8 @@ public class PittToursInterface
 				System.out.println("Connecting Flights Between " + city1 + " and " + city2);
 				while(resultSet.next())
 				{
-					if(checkSchedules(resultSet.getString(8), resultSet.getString(16)) && (Integer.parseInt(resultSet.getString(7)) + 1) % 2400 < Integer.parseInt(resultSet.getString(14)))
+					if(checkSchedules(resultSet.getString("F.weekly_schedule"), resultSet.getString("G.weekly_schedule")) && 
+						(Integer.parseInt(resultSet.getString("F.arrival_time")) + 1) % 2400 < Integer.parseInt(resultSet.getString("G.departure_time")))
 					{
 						System.out.printf("Flight Number (Flight 1): %s\n", resultSet.getString("F.flight_number"));
 						System.out.printf("Depature City: %s\n", resultSet.getString("F.departure_city"));
@@ -875,7 +876,8 @@ public class PittToursInterface
 				System.out.println("Connecting Flights Between " + city1 + " and " + city2 + " on Airline " + airlineID);
 				while(resultSet.next())
 				{
-					if(checkSchedules(resultSet.getString(8), resultSet.getString(16)) && (Integer.parseInt(resultSet.getString(7)) + 1) % 2400 < Integer.parseInt(resultSet.getString(14)))
+					if(checkSchedules(resultSet.getString("F.weekly_schedule"), resultSet.getString("G.weekly_schedule")) && 
+						(Integer.parseInt(resultSet.getString("F.arrival_time")) + 1) % 2400 < Integer.parseInt(resultSet.getString("G.departure_time")))
 					{
 						System.out.printf("Flight Number (Flight 1): %s\n", resultSet.getString("F.flight_number"));
 						System.out.printf("Depature City: %s\n", resultSet.getString("F.departure_city"));
@@ -942,7 +944,8 @@ public class PittToursInterface
 				System.out.println("Connecting Flights Between " + city1 + " and " + city2 + " on Date " + givenDate);
 				while(resultSet.next())
 				{
-					if(checkSchedules(resultSet.getString(8), resultSet.getString(16)) && (Integer.parseInt(resultSet.getString(7)) + 1) % 2400 < Integer.parseInt(resultSet.getString(14)))
+					if(checkSchedules(resultSet.getString("F.weekly_schedule"), resultSet.getString("G.weekly_schedule")) && 
+						(Integer.parseInt(resultSet.getString("F.arrival_time")) + 1) % 2400 < Integer.parseInt(resultSet.getString("G.departure_time")))
 					{
 						System.out.printf("Flight Number (Flight 1): %s\n", resultSet.getString("F.flight_number"));
 						System.out.printf("Departure City: %s\n", resultSet.getString("F.departure_city"));
@@ -1016,7 +1019,8 @@ public class PittToursInterface
 				System.out.println("Connecting Flights Between " + city1 + " and " + city2 + " on Date " + givenDate);
 				while(resultSet.next())
 				{
-					if(checkSchedules(resultSet.getString(8), resultSet.getString(16)) && (Integer.parseInt(resultSet.getString(7)) + 1) % 2400 < Integer.parseInt(resultSet.getString(14)))
+					if(checkSchedules(resultSet.getString("T.F.weekly_schedule"), resultSet.getString("T.G.weekly_schedule")) && 
+						(Integer.parseInt(resultSet.getString("T.F.arrival_time")) + 1) % 2400 < Integer.parseInt(resultSet.getString("T.G.departure_time")))
 					{
 						System.out.printf("Airline ID (Flight 1): %s\n", resultSet.getString("F.airline_id"));
 						System.out.printf("Flight Number (Flight 1): %s\n", resultSet.getString("F.flight_number"));
