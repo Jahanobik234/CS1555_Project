@@ -803,8 +803,8 @@ public class PittToursInterface
 				
 				//Trips With Connections
 				connectionFlights = "SELECT * "
-				+ "FROM FLIGHT F JOIN FLIGHT G ON F.arrival_city = G.departure_city " 
-				+ "WHERE F.departure_city = '" + city1 + "' AND G.arrival_city = '" + city2 + "'"; //This Will Have to Be Filtered A Bit More
+								+ "FROM FLIGHT F JOIN FLIGHT G ON F.arrival_city = G.departure_city " 
+								+ "WHERE F.departure_city = '" + city1 + "' AND G.arrival_city = '" + city2 + "'"; //This Will Have to Be Filtered A Bit More
 				
 				resultSet = statement.executeQuery(connectionFlights);
 				System.out.println("Connecting Flights Between " + city1 + " and " + city2);
@@ -869,7 +869,7 @@ public class PittToursInterface
 				
 				//Trips With Connections
 				connectionFlights = "SELECT * FROM (FLIGHT F JOIN FLIGHT G ON F.arrival_city = G.departure_city) T WHERE (F.departure_city = '"
-				+ city1 + "' AND G.arrival_city = '" + city2 + "') AND (airline_id = '" + airlineID + "');"; //This Will Have to Be Filtered A Bit More
+							+ city1 + "' AND G.arrival_city = '" + city2 + "') AND (airline_id = '" + airlineID + "');"; //This Will Have to Be Filtered A Bit More
 				
 				resultSet = statement.executeQuery(connectionFlights);
 				System.out.println("Connecting Flights Between " + city1 + " and " + city2 + " on Airline " + airlineID);
