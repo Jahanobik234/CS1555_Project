@@ -5,12 +5,14 @@ import java.io.*;
 
 public class Plane_Generator
 {
-	private final int DATA_COUNT = 30;
+	private final int DATA_COUNT = 60;
 	private String[] manuf = {"Boeing", "Airbus", "Embraer", "Bombardier", "Learjet"};	
 	private String[] alpha = {"B", "A", "E", "M", "L"};
-	private String[] airlineID = {"00001", "00002", "00003", "00004", "00005", "00006", "00007", "00008", "00009", "00010"};
+	public String[] airlineID = {"00001", "00002", "00003", "00004", "00005", "00006", "00007", "00008", "00009", "00010"};
 	public String[] planeType = new String[DATA_COUNT];
+	public String[][] airlinePlanes = new String[DATA_COUNT][2];
 	private PrintWriter output;
+	private int counter = 0; // Counter for while loop
 	
 	public Plane_Generator()
 	{
@@ -27,7 +29,6 @@ public class Plane_Generator
 		output.println("-- plane_type, manufacturer, plane_capacity, last_service_date, year, owner_id -- ");
 		
 		Random numGen = new Random();
-		int counter = 0;				// Counter for while loop
 		
 		while(counter < DATA_COUNT)
 		{
@@ -76,6 +77,7 @@ public class Plane_Generator
 		} while (duplicate(t, index));
 		
 		planeType[index] = t;
+		airlinePlanes[counter][1] = t;
 		output.printf("'%s', ", t);
 		return num % 5;
 	}
@@ -132,5 +134,6 @@ public class Plane_Generator
 	{
 		int num = gen.nextInt(10);
 		output.printf("'%s'", airlineID[num]);
+		airlinePlanes[counter][0] = airlineID[num];
 	}
 }

@@ -30,6 +30,13 @@ public class Flight_Generator
 		// Data Titles for Easier Readability to User Looking at Insert Statements
 		output.println("-- flight_number, airline_id, plane_type, departure_city, arrival_city, departure_time, arrival_time, weekly_schedule --");
 		
+		for(int i = 0; i < 60; i++)
+		{
+			for(int j = 0; j < 2; j++)
+				System.out.print(pg.airlinePlanes[i][j] + " ");
+			System.out.println();
+		}
+		
 		Random numGen = new Random();
 		int counter = 0;				// User Counter
 		int cityNum = 0;
@@ -54,7 +61,9 @@ public class Flight_Generator
 						output.printf("'%05d', ", (i));
 						
 						// PLANE TYPE
-						output.printf("'%s', ", pg.planeType[numGen.nextInt(30)]);
+						int temp;
+						do{temp = numGen.nextInt(60);} while(!(pg.airlinePlanes[temp][0].equals(pg.airlineID[i-1])));
+						output.printf("'%s', ", pg.airlinePlanes[temp][1]);
 						
 						// DEPARTURE CITY			
 						dep[flightNum] = departureCity;
