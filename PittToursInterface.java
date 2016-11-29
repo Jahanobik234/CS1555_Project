@@ -722,25 +722,25 @@ public class PittToursInterface
 					city2 = reader.nextLine();
 				}while(city1.equals(city2));
 				
-				flightQuery = "SELECT * FROM FLIGHT WHERE departure_city = '" + city1 + "' AND arrival_city = '" + city2 + "'";
+				flightQuery = "SELECT * FROM Price WHERE departure_city = '" + city1 + "' AND arrival_city = '" + city2 + "'";
 				resultSet = statement.executeQuery(flightQuery);
 				while(resultSet.next())
 				{
-					System.out.println("One-Way Between " + city1 + " and " + city2 + "on Airline: " + resultSet.getString("airline_id"));
+					System.out.println("One-Way Between " + city1 + " and " + city2 + " on Airline: " + resultSet.getString("airline_id"));
 					System.out.println("High Price: " + resultSet.getInt("high_price"));
 					System.out.println("Low Price: " + resultSet.getInt("low_price"));
 				}
 				
-				flightQuery = "SELECT * FROM FLIGHT WHERE departure_city = '" + city2 + "' AND arrival_city = '" + city1 + "'";
+				flightQuery = "SELECT * FROM Price WHERE departure_city = '" + city2 + "' AND arrival_city = '" + city1 + "'";
 				resultSet = statement.executeQuery(flightQuery);
 				while(resultSet.next())
 				{
-					System.out.println("One-Way Between " + city2 + " and " + city1 + "on Airline: " + resultSet.getString("airline_id"));
+					System.out.println("One-Way Between " + city2 + " and " + city1 + " on Airline: " + resultSet.getString("airline_id"));
 					System.out.println("High Price: " + resultSet.getInt("high_price"));
 					System.out.println("Low Price: " + resultSet.getInt("low_price"));
 				}
 				
-				flightQuery = "SELECT * FROM FLIGHT WHERE departure_city = '" + city1 + "' AND arrival_city = '" + city2 + "'";
+				flightQuery = "SELECT * FROM Price WHERE departure_city = '" + city1 + "' AND arrival_city = '" + city2 + "'";
 				resultSet = statement.executeQuery(flightQuery);
 				while(resultSet.next())
 				{
