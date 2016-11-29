@@ -2575,19 +2575,19 @@ INSERT INTO RESERVATION_DETAIL VALUES('00300', '531', to_date('12-09-2016', 'MM-
 
 commit;
 
-CREATE OR REPLACE FUNCTION getCapacity(IN flightNum VARCHAR(5))
-RETURNS int
+CREATE OR REPLACE FUNCTION getCapacity(flightNum IN VARCHAR2) RETURN INT 
+AS
+capacity int;
 BEGIN
-	DECLARE capacity int;
 	SELECT COUNT(*) INTO capacity
 	FROM Reservation_Detail
-	GROUP BY flight_number
-	WHERE flightNum = flight_number;
-	RETURN capacity;
+	WHERE flight_number = flightNum
+	GROUP BY flight_number;
+	RETURN (capacity);
 END;
 /
 
-CREATE OR REPLACE PROCEDURE updateFlightType(IN new_type CHAR(4), IN flightNum VARCHAR(5))
+CREATE OR REPLACE PROCEDURE updateFlightType(new_type IN CHAR, flightNum IN VARCHAR) AS
 BEGIN
 	UPDATE Flight	
 	SET plane_type = new_type
