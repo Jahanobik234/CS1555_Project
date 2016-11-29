@@ -743,7 +743,7 @@ public class PittToursInterface
 					System.out.println("\tLow Price: " + resultSet.getInt("low_price"));
 				}
 				
-				flightQuery = "SELECT * FROM Price P JOIN Flight on Airline_ID WHERE P.departure_city = '" + city1 + "' AND P.arrival_city = '" + city2 + "'";
+				flightQuery = "SELECT * FROM Price P JOIN Flight F ON P.airline_id = F.airline_id WHERE P.departure_city = '" + city1 + "' AND P.arrival_city = '" + city2 + "'";
 				resultSet = statement.executeQuery(flightQuery);
 				while(resultSet.next())
 				{
@@ -754,13 +754,13 @@ public class PittToursInterface
 					if(depTime > arrTime)
 					{
 						System.out.println("Roundtrip Between " + city1 + " and " + city2 + "on Airline: " + resultSet.getString("airline_id"));
-						System.out.println("\tPrice: " + resultSet.getInt("high_price"));
+						System.out.println("\tPrice: " + resultSet.getInt("P.high_price"));
 					}
 					
 					else
 					{
 						System.out.println("Roundtrip Between " + city1 + " and " + city2 + "on Airline: " + resultSet.getString("airline_id"));
-						System.out.println("\tPrice: " + resultSet.getInt("low_price"));
+						System.out.println("\tPrice: " + resultSet.getInt("P.low_price"));
 					}
 				}
 			}
