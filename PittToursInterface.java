@@ -19,7 +19,8 @@ public class PittToursInterface
 	{
 		try
 		{
-			connection = DriverManager.getConnection("ses167@thoth.cs.pitt.edu", "ses167", "3929130");
+			DriverManager.registerDriver (new oracle.jdbc.driver.OracleDriver());
+			connection = DriverManager.getConnection("jdbc:oracle:thin:@class3.cs.pitt.edu:1521:dbclass", "ses167", "3929130");
 			statement = connection.createStatement();
 		}
 		catch(SQLException sqle)
