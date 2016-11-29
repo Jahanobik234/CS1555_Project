@@ -2575,6 +2575,26 @@ INSERT INTO RESERVATION_DETAIL VALUES('00300', '531', to_date('12-09-2016', 'MM-
 
 commit;
 
+CREATE OR REPLACE FUNCTION getCapacity(IN flightNum VARCHAR(5))
+RETURNS int
+BEGIN
+	DECLARE capacity int;
+	SELECT COUNT(*) INTO capacity
+	FROM Reservation_Detail
+	GROUP BY flight_number
+	WHERE flightNum = flight_number;
+	RETURN capacity;
+END;
+/
+
+CREATE OR REPLACE PROCEDURE updateFlightType(IN new_type CHAR(4), IN flightNum VARCHAR(5))
+BEGIN
+	UPDATE Flight	
+	SET plane_type = new_type
+	WHERE flightNum = flight_number;
+END;
+/
+
 --Trigger 1
 --Changed Requirements Left Us Confused On How To Implement This Trigger With Regards to Airline ID and Roundtrips
 CREATE OR REPLACE TRIGGER adjustTicket 
@@ -2596,11 +2616,7 @@ DECLARE curr_capacity INT;
 DECLARE max_capacity INT;
 DECLARE new_type CHAR(4);
 BEGIN
-	SELECT COUNT(*) INTO curr_capacity
-	FROM Reservation_Detail
-	GROUP BY flight_number
-	WHERE :new.flight_number = flight_number;
-	
+	getCapacity(:new.flight_number, curr_capacity);
 	SELECT capacity INTO max_capacity
 	FROM (Flight NATURAL JOIN Plane) W
 	WHERE :new.flight_number = W.flight_number;
@@ -2613,9 +2629,7 @@ BEGIN
 																FROM Flight NATURAL JOIN Reservation_Detail 
 																WHERE :new.flight_number = Flight.flight_number));
 		
-		UPDATE Flight	
-		SET plane_type = new_type
-		WHERE :new.flight_number = flight_number;
+		updateFlightType(new_type, :new.flight_number);
 	}
 	END IF;
 END;
