@@ -667,11 +667,14 @@ public class PittToursInterface
 			
 			// TASK 2 - Show Customer Info, Given Customer Name
 			case 2:			
-			System.out.println("Please Enter A Name To See Customer Information");
-			String customerName = reader.nextLine();
+			System.out.print("Please Enter Customer First Name: ");
+			String customerFirstName = reader.nextLine();
+			System.out.print("Please Enter Customer Last Name: ");			
+			String customerLastName = reader.nextLine();
 			try
 			{
-				resultSet = statement.executeQuery("SELECT * FROM CUSTOMER WHERE name = " + customerName); //Execute Query
+				resultSet = statement.executeQuery("SELECT * FROM CUSTOMER WHERE first_name = '" + customerFirstName + "' AND " +
+													"last_name = '" + customerLastName + "'"); //Execute Query
 				while(resultSet.next())
 				{
 					cid = resultSet.getString("cid");
@@ -687,17 +690,17 @@ public class PittToursInterface
 					email = resultSet.getString("email");
 					freqMiles = resultSet.getString("frequent_miles");
 					
-					System.out.println("CID:\t" + cid);
-					System.out.println("Salutation:\t" + salutation);
-					System.out.println("First Name:\t" + fName);
-					System.out.println("Last Name:\t" + lName);
-					System.out.println("Credit Card Number:\t" + ccNum);
-					System.out.println("Credit Card Expire Date:\t" + ccExpire);
-					System.out.printf("Address:\t%s %s, %s", street, city, state);
-					System.out.println("Phone:\t" + phone);
-					System.out.println("Email:\t" + email);
+					System.out.println("*************************************");
+					System.out.print("\tCID:" + cid);
+					System.out.println("\tName: " + salutation + ". " + fName + " " + lName);
+					System.out.print("\tCredit Card Number: " + ccNum);
+					System.out.println("\tCredit Card Expire Date: " + ccExpire);
+					System.out.printf("\tAddress: %s %s, %s\n", street, city, state);
+					System.out.print("\tPhone: " + phone);
+					System.out.println("\tEmail: " + email);
 					if(freqMiles != null)
-						System.out.println("Frequent Miles Number:\t" + freqMiles);
+						System.out.println("\tFrequent Miles Number: " + freqMiles);
+					System.out.println("*************************************");
 				}
 				
 			}
@@ -727,8 +730,8 @@ public class PittToursInterface
 				while(resultSet.next())
 				{
 					System.out.println("One-Way Between " + city1 + " and " + city2 + " on Airline: " + resultSet.getString("airline_id"));
-					System.out.println("High Price: " + resultSet.getInt("high_price"));
-					System.out.println("Low Price: " + resultSet.getInt("low_price"));
+					System.out.println("\tHigh Price: " + resultSet.getInt("high_price"));
+					System.out.println("\tLow Price: " + resultSet.getInt("low_price"));
 				}
 				
 				flightQuery = "SELECT * FROM Price WHERE departure_city = '" + city2 + "' AND arrival_city = '" + city1 + "'";
@@ -736,11 +739,11 @@ public class PittToursInterface
 				while(resultSet.next())
 				{
 					System.out.println("One-Way Between " + city2 + " and " + city1 + " on Airline: " + resultSet.getString("airline_id"));
-					System.out.println("High Price: " + resultSet.getInt("high_price"));
-					System.out.println("Low Price: " + resultSet.getInt("low_price"));
+					System.out.println("\tHigh Price: " + resultSet.getInt("high_price"));
+					System.out.println("\tLow Price: " + resultSet.getInt("low_price"));
 				}
 				
-				flightQuery = "SELECT * FROM Price WHERE departure_city = '" + city1 + "' AND arrival_city = '" + city2 + "'";
+				flightQuery = "SELECT * FROM Price JOIN Flight on Airline_ID WHERE departure_city = '" + city1 + "' AND arrival_city = '" + city2 + "'";
 				resultSet = statement.executeQuery(flightQuery);
 				while(resultSet.next())
 				{
@@ -751,22 +754,22 @@ public class PittToursInterface
 					if(depTime > arrTime)
 					{
 						System.out.println("Roundtrip Between " + city1 + " and " + city2 + "on Airline: " + resultSet.getString("airline_id"));
-						System.out.println("Price: " + resultSet.getInt("high_price"));
+						System.out.println("\tPrice: " + resultSet.getInt("high_price"));
 					}
 					
 					else
 					{
 						System.out.println("Roundtrip Between " + city1 + " and " + city2 + "on Airline: " + resultSet.getString("airline_id"));
-						System.out.println("Price: " + resultSet.getInt("low_price"));
+						System.out.println("\tPrice: " + resultSet.getInt("low_price"));
 					}
 				}
-				break;
 			}
 			
 			catch(SQLException e)
 			{
 				System.out.println(e.getMessage());
 			}
+			break;
 			
 			// TASK 4 - Find All Routes Between Two Cities
 			case 4:
@@ -820,14 +823,13 @@ public class PittToursInterface
 						System.out.println("--------------------");
 					}
 				}
-				
-				break;
 			}
 			
 			catch(SQLException e)
 			{
 				System.out.println(e.getMessage());
 			}
+			break;
 			
 			// TASK 5 - Find All Routes Between Two Cities Of A Given Airline
 			case 5:
@@ -885,14 +887,12 @@ public class PittToursInterface
 						System.out.println("--------------------");
 					}
 				}
-			
-				break;
 			}
-			
 			catch(SQLException e)
 			{
 				System.out.println(e.getMessage());
 			}
+			break;
 			
 			// TASK 6 - Find All Routes With Available Seats Between Two Cities On Given Day
 			case 6:
@@ -1125,14 +1125,12 @@ public class PittToursInterface
 						System.out.println(e2.toString());
 					}
 				}
-				
-				break;
 			}
-			
 			catch(SQLException e)
 			{
 				System.out.println(e.getMessage());
 			}
+			break;
 			
 			// TASK 9 - Show Reservation Information, Given Reservation Number
 			case 9:
@@ -1157,13 +1155,15 @@ public class PittToursInterface
 						System.out.println(resultSet.getString("flight_number"));
 					}
 				}
-				break;
 			}
 			catch(SQLException e)
 			{
 				System.out.println(e.getMessage());
 			}
+			break;
+			
 			//Task 10 - Buy Ticket From Existing Reservation
+			case 10:
 			System.out.println("Please Enter a Reservation Number: ");
 			reservationNum = reader.nextLine();
 			
@@ -1186,6 +1186,9 @@ public class PittToursInterface
 				}
 			}
 			break;
+			
+			case 11:
+			// DO NOTHING
 		}
 	}
 	
