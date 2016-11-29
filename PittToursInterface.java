@@ -71,6 +71,7 @@ public class PittToursInterface
 			else
 			{
 				System.out.println("Thank you for choosing Pitt Tours by Hanobik/Stayer!");
+				userSelection = "3";
 			}
 		}while(userSelection != "3");
 	}
@@ -88,6 +89,7 @@ public class PittToursInterface
 		System.out.printf("%-50s\n", "(4) Load Pricing Information");
 		System.out.printf("%-50s\n", "(5) Load Plane Information");
 		System.out.printf("%-50s\n", "(6) Generate Passenger Manifest For Specific Flight On Given Day");
+		System.out.printf("%-50s\n", "(7) Exit");
 			
 		int selection = -1;
 		boolean redo = false;
@@ -177,6 +179,8 @@ public class PittToursInterface
 					catch(IOException ioe)
 					{
 						System.out.print("File doesn't exist. Input proper filename: ");
+						System.out.print("Name of file: ");
+						inputFile = reader.nextLine();
 						redo = true;
 					}		
 				}while(redo);
@@ -544,6 +548,8 @@ public class PittToursInterface
 // 					// Need to print out each customer
 // 				}
 				break;
+			case 7:
+				// Do Nothing and Exit
 		}
 	}
 	
@@ -551,17 +557,17 @@ public class PittToursInterface
 	public static void userInterface(Scanner reader) throws SQLException
 	{
 		System.out.println("Please Select An Option From The Following List:");
-		System.out.printf("%-50s", "(1) Add Customer");
-		System.out.printf("%-50s", "(2) Show Customer Information");
-		System.out.printf("%-50s", "(3) Find Flight Price Between Two Cities");
-		System.out.printf("%-50s", "(4) Find Routes Between Two Cities");
-		System.out.printf("%-50s", "(5) Find Routes Between Two Cities Specific To Airline");
-		System.out.printf("%-50s", "(6) Find All Routes Between Two Cities With Available Seats On Given Date");
-		System.out.printf("%-50s", "(7) Find All Routes Between Two Cities On Specified Airline With Available Seats On Given Date");
-		System.out.printf("%-50s", "(8) Add Reservation");
-		System.out.printf("%-50s", "(9) Show Reservation Information");
-		System.out.printf("%-50s", "(10) Buy Ticket From Existing Reservation");
-		System.out.printf("%-50s", "(11) Quit");
+		System.out.printf("%-50s\n", "(1) Add Customer");
+		System.out.printf("%-50s\n", "(2) Show Customer Information");
+		System.out.printf("%-50s\n", "(3) Find Flight Price Between Two Cities");
+		System.out.printf("%-50s\n", "(4) Find Routes Between Two Cities");
+		System.out.printf("%-50s\n", "(5) Find Routes Between Two Cities Specific To Airline");
+		System.out.printf("%-50s\n", "(6) Find All Routes Between Two Cities With Available Seats On Given Date");
+		System.out.printf("%-50s\n", "(7) Find All Routes Between Two Cities On Specified Airline With Available Seats On Given Date");
+		System.out.printf("%-50s\n", "(8) Add Reservation");
+		System.out.printf("%-50s\n", "(9) Show Reservation Information");
+		System.out.printf("%-50s\n", "(10) Buy Ticket From Existing Reservation");
+		System.out.printf("%-50s\n", "(11) Quit");
 		
 		int selection = -1;
 		boolean redo = false;
