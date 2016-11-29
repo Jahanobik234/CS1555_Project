@@ -8,8 +8,7 @@ public class Plane_Generator
 	private final int DATA_COUNT = 30;
 	private String[] manuf = {"Boeing", "Airbus", "Embraer", "Bombardier", "Learjet"};	
 	private String[] alpha = {"B", "A", "E", "M", "L"};
-	private String[] airlineID = {"10001", "20001", "30001", "40001", "50001", "60001", "70001", "80001", "90001", "10010"};
-	
+	private String[] airlineID = {"00001", "00002", "00003", "00004", "00005", "00006", "00007", "00008", "00009", "00010"};
 	public String[] planeType = new String[DATA_COUNT];
 	private PrintWriter output;
 	

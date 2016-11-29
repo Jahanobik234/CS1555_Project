@@ -37,7 +37,7 @@ public class Reservation_Generator
 			output.printf("'%05d', ", (count + 1));
 			
 			// CID
-			output.printf("'%s', ", cids[custID]);
+			output.printf("%s, ", cids[custID]);
 			
 			//Start City
 			output.printf("'%s', ", tripEndpoints[count][0]);
