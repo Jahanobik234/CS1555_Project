@@ -4,6 +4,7 @@
 
 -- Airline
 -- ASSUMPTIONS:
+--		N/A
 DROP TABLE Airline CASCADE CONSTRAINTS;
 CREATE TABLE Airline (
 	airline_id VARCHAR(5),
@@ -55,7 +56,7 @@ CREATE TABLE Flight (
 
 -- Flight Pricing
 -- ASSUMPTIONS:
---		
+--		N/A
 DROP TABLE Price CASCADE CONSTRAINTS;
 CREATE TABLE Price (
 	departure_city varchar(3),
@@ -73,7 +74,6 @@ CREATE TABLE Price (
 -- ASSUMPTIONS:
 --		1) Two people can have the same name, but will have different cids
 --		2) A customer's credit card's expiration date must be later than the current year
---		3)
 DROP TABLE Customer CASCADE CONSTRAINTS;
 CREATE TABLE Customer (
 	cid varchar(9),

@@ -30,10 +30,10 @@ public class PittToursInterface
 		}
 		
 		String userSelection;
+		System.out.println("Welcome to PittTours by Hanobik/Stayer!");
+		Scanner reader = new Scanner(System.in);
 		do
 		{
-			System.out.println("Welcome to PittTours by Hanobik/Stayer!");
-			Scanner reader = new Scanner(System.in);
 			System.out.println("Please select either Administrator or User By Entering Corresponding Number:");
 			System.out.printf("\t%-20s\n\t%-20s\n\t%-20s\n", "(1) Administrator", "(2) User", "(3) Exit");
 			userSelection = reader.nextLine();
