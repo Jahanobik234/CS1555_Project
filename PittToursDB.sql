@@ -2611,11 +2611,13 @@ END;
 
 --Trigger 2
 CREATE OR REPLACE TRIGGER planeUpgrade
-AFTER INSERT OR UPDATE ON Reservation_Detail
+AFTER UPDATE OR INSERT ON Reservation_Detail
+FOR EACH ROW
+DECLARE
+	curr_capacity INT;
+	max_capacity INT;
+	new_type CHAR;
 BEGIN
-	DECLARE curr_capacity INT;
-	DECLARE max_capacity INT;
-	DECLARE new_type CHAR(4);
 	curr_capacity := getCapacity(:new.flight_number);
 	SELECT capacity INTO max_capacty
 	FROM (Flight NATURAL JOIN Plane) W
@@ -2625,11 +2627,11 @@ BEGIN
 	THEN {
 		SELECT plane_type INTO new_type
 		FROM Plane P
-		WHERE (P.capacity > curr_capacity) AND (P.owner_id = (SELECT airline_id 
-																FROM Flight NATURAL JOIN Reservation_Detail 
-																WHERE :new.flight_number = Flight.flight_number))
+		WHERE (P.capacity > curr_capacity) AND P.owner_id IN (SELECT airline_id 
+															  FROM Flight NATURAL JOIN Reservation_Detail 
+															  WHERE :new.flight_number = flight_number);
 		
-		updateFlightType(new_type, :new.flight_number);
+		CALL updateFlightType(new_type, :new.flight_number);
 	}
 	END IF;
 END;
