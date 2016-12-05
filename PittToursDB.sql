@@ -2591,7 +2591,7 @@ CREATE OR REPLACE PROCEDURE updateFlightType(new_type IN CHAR, flightNum IN VARC
 BEGIN
 	UPDATE Flight	
 	SET plane_type = new_type
-	WHERE flightNum = flight_number;
+	WHERE flight_number = flightNum;
 END;
 /
 
@@ -2612,12 +2612,12 @@ END;
 --Trigger 2
 CREATE OR REPLACE TRIGGER planeUpgrade
 AFTER INSERT OR UPDATE ON Reservation_Detail
-DECLARE curr_capacity INT;
-DECLARE max_capacity INT;
-DECLARE new_type CHAR(4);
 BEGIN
-	getCapacity(:new.flight_number, curr_capacity);
-	SELECT capacity INTO max_capacity
+	DECLARE curr_capacity INT;
+	DECLARE max_capacity INT;
+	DECLARE new_type CHAR(4);
+	curr_capacity := getCapacity(:new.flight_number);
+	SELECT capacity INTO max_capacty
 	FROM (Flight NATURAL JOIN Plane) W
 	WHERE :new.flight_number = W.flight_number;
 	
