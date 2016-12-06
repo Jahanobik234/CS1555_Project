@@ -2616,68 +2616,84 @@ FOR EACH ROW
 DECLARE
 	curr_capacity INT;
 	max_capacity INT;
-	new_type CHAR;
+	new_type_rec Plane%rowtype;
+	CURSOR new_type_cur IS 
+	SELECT *
+	FROM Plane P 
+	WHERE P.owner_id = (SELECT airline_id
+						FROM Flight
+						WHERE flight_number = :new.flight_number);
 BEGIN
 	curr_capacity := getCapacity(:new.flight_number);
-	SELECT capacity INTO max_capacty
-	FROM (Flight NATURAL JOIN Plane) W
-	WHERE :new.flight_number = W.flight_number;
+	SELECT plane_capacity INTO max_capacity
+	FROM Flight, Plane
+	WHERE Flight.flight_number = :new.flight_number;
 	
 	IF curr_capacity > max_capacity
-	THEN {
-		SELECT plane_type INTO new_type
-		FROM Plane P
-		WHERE (P.capacity > curr_capacity) AND P.owner_id IN (SELECT airline_id 
-															  FROM Flight NATURAL JOIN Reservation_Detail 
-															  WHERE :new.flight_number = flight_number);
-		
-		CALL updateFlightType(new_type, :new.flight_number);
-	}
+	THEN 
+		OPEN new_type_cur;
+
+		IF new_type_cur%ROWCOUNT > 0
+		THEN	
+			LOOP
+				FETCH new_type_cur INTO new_type_rec;
+				EXIT WHEN new_type_rec.plane_capacity > curr_capacity OR new_type_cur%NOTFOUND;
+			END LOOP;
+		END IF;
+		updateFlightType(new_type_rec.plane_type, :new.flight_number);
 	END IF;
+		
 END;
 /
 
 --Trigger 3
 CREATE OR REPLACE TRIGGER cancelReservation
-AFTER UPDATE OF c_date ON Our_Date
+AFTER UPDATE OR INSERT ON Our_Date
 FOR EACH ROW
--- 	WHEN(EXISTS(SELECT departure_time 
--- 					FROM Flight 
--- 					WHERE to_char((SELECT * FROM Our_Date) + INTERVAL '12' hour, HH24MI) = departure_time))
-DECLARE cancel_time CHAR(4);
-DECLARE curr_capacity INT;
-DECLARE curr_flightNum VARCHAR(3);
-DECLARE low_capacity INT;
-DECLARE new_type CHAR(4);
+DECLARE 
+	cancel_time CHAR;
+	curr_capacity INT;
+	curr_flightNum VARCHAR(5);
+	low_capacity INT;
+	new_type CHAR;
+	nextSmallestCapacity INT;
+	c_departTime VARCHAR(4);
+	CURSOR UntixReservations IS	
+	SELECT *
+	FROM Reservation
+	WHERE Ticketed = 'N';
+	reserv_rec Reservation%rowtype;
 BEGIN
-	IF EXISTS(SELECT departure_time 
-					FROM Flight 
-					WHERE to_char((SELECT * FROM Our_Date) + INTERVAL '12' hour, HH24MI) = departure_time))
-	THEN
-	{
-		cancel_time := to_char((SELECT * FROM Our_Date) + INTERVAL '12' hour, HH24MI);
-		DELETE FROM Reservation
-		WHERE Ticketed == 'N' AND reservation_number == (SELECT reservation_number FROM Reservation_Detail WHERE leg == 0 AND cancel_time == departure_time);
-		-- Fit Into Smaller Plane
-		SELECT COUNT(*) INTO curr_capacity, flight_number INTO curr_flightNum
-		FROM Reservation_Detail
-		GROUP BY flight_number
-		WHERE cancel_time == (SELECT departure_time FROM Flight F);
-	
-		SELECT capacity INTO low_capacity
-		FROM Plane P
-		WHERE curr_capacity > P.capacity;
-	
-		SELECT plane_type INTO new_type
-		FROM Plane P
-		WHERE (low_capacity = capacity) AND (P.owner_id = (SELECT airline_id 
-																	FROM Flight NATURAL JOIN Reservation_Detail 
-																	WHERE curr_flightNum = Flight.flight_number));
-	
-		UPDATE Flight
-		SET plane_type = new_type
-		WHERE flight_number == curr_flightNum;
-	}
-	END IF;
+	OPEN UntixReservations;
+		IF UntixReservations%ROWCOUNT > 0
+		THEN
+			LOOP
+				FETCH UntixReservations INTO reserv_rec;
+				SELECT departure_time INTO c_departTime
+				FROM Flight
+				WHERE flight_number = (SELECT flight_number FROM RESERVATION_DETAIL WHERE reserv_rec.reservation_number = reservation_number AND leg = 0);
+				IF to_char(:new.c_date + INTERVAL '12' hour, 'HH24MI', 'HH24MI') > c_departTime
+				THEN 
+					DELETE FROM Reservation
+					WHERE reservation_number = reserv_rec.reservation_number;
+					DELETE FROM Reservation_Detail
+					WHERE reservation_number = reserv_rec.reservation_number;
+					
+					curr_capacity := getCapacity(reserv_rec.flight_number);
+					SELECT MAX(plane_capacity) INTO nextSmallestCapacity
+					FROM (SELECT * FROM Plane WHERE plane_capacity < curr_capacity);
+					
+					SELECT plane_type INTO new_type
+					FROM Plane
+					WHERE plane_capacity = nextSmallestCapacity;
+					
+					IF curr_capacity <= nextSmallestCapacity
+					THEN
+						updateFlightType(new_type, reserv_rec.flight_number);
+					END IF;
+				END IF;
+				EXIT WHEN UntixReservations%NOTFOUND;
+			END LOOP;
+		END IF;
 END;
 /
