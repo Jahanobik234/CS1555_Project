@@ -2658,6 +2658,7 @@ DECLARE
 	new_type CHAR;
 	nextSmallestCapacity INT;
 	c_departTime VARCHAR(4);
+	c_flightNum VARCHAR(3);
 	CURSOR UntixReservations IS	
 	SELECT *
 	FROM Reservation
@@ -2669,9 +2670,14 @@ BEGIN
 		THEN
 			LOOP
 				FETCH UntixReservations INTO reserv_rec;
+				SELECT flight_number INTO c_flightNum
+				FROM RESERVATION_DETAIL 
+				WHERE reserv_rec.reservation_number = reservation_number AND leg = 0;
+				
 				SELECT departure_time INTO c_departTime
 				FROM Flight
-				WHERE flight_number = (SELECT flight_number FROM RESERVATION_DETAIL WHERE reserv_rec.reservation_number = reservation_number AND leg = 0);
+				WHERE flight_number = flightNum;
+				
 				IF to_char(:new.c_date + INTERVAL '12' hour, 'HH24MI', 'HH24MI') > c_departTime
 				THEN 
 					DELETE FROM Reservation
@@ -2679,7 +2685,7 @@ BEGIN
 					DELETE FROM Reservation_Detail
 					WHERE reservation_number = reserv_rec.reservation_number;
 					
-					curr_capacity := getCapacity(reserv_rec.flight_number);
+					curr_capacity := getCapacity(c_flightNum);
 					SELECT MAX(plane_capacity) INTO nextSmallestCapacity
 					FROM (SELECT * FROM Plane WHERE plane_capacity < curr_capacity);
 					
@@ -2689,7 +2695,7 @@ BEGIN
 					
 					IF curr_capacity <= nextSmallestCapacity
 					THEN
-						updateFlightType(new_type, reserv_rec.flight_number);
+						updateFlightType(new_type, c_flightNum);
 					END IF;
 				END IF;
 				EXIT WHEN UntixReservations%NOTFOUND;
