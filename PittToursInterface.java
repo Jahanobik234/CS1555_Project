@@ -122,11 +122,12 @@ public class PittToursInterface
 				if(confirm.equals("yes"))
 				{
 					// Delete Database
-					String deleteFrom = "DELETE FROM ";
+					String deleteFrom;
 					String[] tablename = {"Airline;", "Customer;", "Flight;", "Price;", "Plane;", "Reservation;", "Reservation Detail;"};
 					String temp;
 					for(String table : tablename)
 					{
+						deleteFrom = "DELETE FROM ";
 						temp = deleteFrom.concat(table);
 						try									// Perform and commit update
 						{
@@ -161,7 +162,7 @@ public class PittToursInterface
 				String airline_name;
 				String airline_abbreviation;
 				String year_founded;
-				String insert = "INSERT INTO Airline VALUES ";	// For concatenation later
+				String insert;							// For concatenation later
 				System.out.print("Name of file: ");
 				inputFile = reader.nextLine();
 			
@@ -188,15 +189,23 @@ public class PittToursInterface
 				// READ FILE AND PERFORM UPDATES
 				while(file.hasNext())
 				{
+					insert = "INSERT INTO Airline VALUES ";
 					line = file.nextLine();				// Read a single line in the file
 					String[] parsed = line.split(",");	// Split the line into its different parts
 			
 					// STORE DATA
-					airline_id = parsed[0];
-					airline_name = parsed[1];
-					airline_abbreviation = parsed[2];
-					year_founded = parsed[3];
-				
+					try
+					{
+						airline_id = parsed[0];
+						airline_name = parsed[1];
+						airline_abbreviation = parsed[2];
+						year_founded = parsed[3];
+					}
+					catch(ArrayIndexOutOfBoundsException wrongData)
+					{
+						System.out.println("Data is formatted incorrectly.");
+						break;
+					}			
 					//Concatenate all data and previous line to create insert statement
 					line = insert.concat("('" + airline_id + "', '" + airline_name + "' ,'" + airline_abbreviation + "', '" + year_founded + "')");
 			
@@ -204,13 +213,15 @@ public class PittToursInterface
 					{
 						connection.setAutoCommit(false);
 						statement.executeUpdate(line);
-						connection.commit(); 
+						connection.commit();
+						System.out.println("Insert Complete.");
 					}
 					catch(SQLException e1)				// Rollback if update failed
 					{
 						try
 						{
 							connection.rollback();
+							System.out.println(e1.toString());
 						}
 						catch(SQLException e2)
 						{
@@ -232,7 +243,6 @@ public class PittToursInterface
 				String arrival_time;
 				String weekly_schedule;
 				
-				insert = "INSERT INTO Flight VALUES ";	// For concatenation later
 				System.out.print("Name of file: ");
 				inputFile = reader.nextLine();
 			
@@ -271,6 +281,7 @@ public class PittToursInterface
 					weekly_schedule = parsed[7];
 				
 					// Concatenate all data and previous line to create insert statement
+					insert = "INSERT INTO Flight VALUES ";	// For concatenation
 					line = insert.concat("('" + flight_number + "', '" + airline_id + "', '" + plane_type + "', '" + 
 											departure_city + "', '" + arrival_city + "', '" + departure_time + "', '" + 
 											arrival_time + "', '" + weekly_schedule + ")");
@@ -279,13 +290,15 @@ public class PittToursInterface
 					{
 						connection.setAutoCommit(false);
 						statement.executeUpdate(line);
-						connection.commit(); 
+						connection.commit();
+						System.out.println("Insert Complete.");
 					}
 					catch(SQLException e1)				// Rollback if update failed
 					{
 						try
 						{
 							connection.rollback();
+							System.out.println(e1.toString());
 						}
 						catch(SQLException e2)
 						{
@@ -304,7 +317,6 @@ public class PittToursInterface
 				String high_price;
 				String low_price;
 				
-				insert = "INSERT INTO Price VALUES ";	// For concatenation later
 				System.out.print("Name of file: ");
 				inputFile = reader.nextLine();
 			
@@ -329,8 +341,9 @@ public class PittToursInterface
 				// READ FILE AND PERFORM UPDATES
 				while(file.hasNext())
 				{
-					line = file.nextLine();				// Read a single line in the file
-					String[] parsed = line.split(",");	// Split the line into its different parts
+					insert = "INSERT INTO Price VALUES ";	// For concatenation later
+					line = file.nextLine();					// Read a single line in the file
+					String[] parsed = line.split(",");		// Split the line into its different parts
 			
 					// STORE DATA
 					departure_city = parsed[0];
@@ -339,25 +352,67 @@ public class PittToursInterface
 					high_price = parsed[3];
 					low_price = parsed[4];
 					
-					// Concatenate all data and previous line to create insert statement
-					line = insert.concat("('" + departure_city + "', '" + arrival_city + "', '" + airline_id + "', " + 
-											high_price + ", " + low_price + ")");
-			
-					try									// Perform and commit update
+					// Check for data existence, if so, then update the price
+					String str = "SELECT * FROM Price WHERE (departure_city = ";
+					try
 					{
+						str = str.concat("'" + departure_city + "') AND (arrival_city = '" +
+										arrival_city + "') AND (airline_id = '" + airline_id +
+										"')");
 						connection.setAutoCommit(false);
-						statement.executeUpdate(line);
-						connection.commit(); 
+						resultSet = statement.executeQuery(str);
+						connection.commit();
 					}
-					catch(SQLException e1)				// Rollback if update failed
+					catch(SQLException invalidQ)
 					{
-						try
+						System.out.println(invalidQ.toString());
+					}
+					
+					if(resultSet.next())					// Tuple exists
+					{
+						// Check price, only 1 tuple at most since match was made on primary key
+						String high = resultSet.getString("high_price");
+						String low = resultSet.getString("low_price");
+						if(!high_price.equals(high) || !low_price.equals(low))	// Price is different than new price
 						{
-							connection.rollback();
+							// Perform update
+							try
+							{
+								resultSet.updateString("high_price", high_price);
+								resultSet.updateString("low_price", low_price);
+								System.out.println("Update Complete.");
+							}
+							catch(SQLException err)
+							{
+								System.out.println(err.toString());
+							}
 						}
-						catch(SQLException e2)
+						// Otherwise, do nothing with the new information
+					}
+					// Otherwise, concatenate all data and previous line to create insert statement
+					else
+					{
+						line = insert.concat("('" + departure_city + "', '" + arrival_city + "', '" + airline_id + "', " + 
+											high_price + ", " + low_price + ")");
+						
+						try									// Perform and commit update
 						{
-							System.out.println(e2.toString());
+							connection.setAutoCommit(false);
+							statement.executeUpdate(line);
+							connection.commit();
+							System.out.println("Insert Complete."); 
+						}
+						catch(SQLException e1)				// Rollback if update failed
+						{
+							try
+							{
+								connection.rollback();
+								System.out.println(e1.toString());
+							}
+							catch(SQLException e2)
+							{
+								System.out.println(e2.toString());
+							}
 						}
 					}
 				}
@@ -373,7 +428,6 @@ public class PittToursInterface
 				String year;
 				String owner_id;
 				
-				insert = "INSERT INTO Plane VALUES ";	// For concatenation later
 				System.out.print("Name of file: ");
 				inputFile = reader.nextLine();
 			
@@ -410,20 +464,23 @@ public class PittToursInterface
 					owner_id = parsed[5];
 					
 					// Concatenate all data and previous line to create insert statement
+					insert = "INSERT INTO Plane VALUES ";	// For concatenation
 					line = insert.concat("('" + plane_type + "', '" + manufacturer + "', " + plane_capacity + ", '" + 
-											last_service + "', to_date('" + year + "','MM/DD/YYYY'), '" + owner_id + "')");
+											last_service + "'," + year + ", '" + owner_id + "')");
 			
 					try									// Perform and commit update
 					{
 						connection.setAutoCommit(false);
 						statement.executeUpdate(line);
-						connection.commit(); 
+						connection.commit();
+						System.out.println("Insert Complete.");
 					}
 					catch(SQLException e1)				// Rollback if update failed
 					{
 						try
 						{
 							connection.rollback();
+							System.out.println(e1.toString());
 						}
 						catch(SQLException e2)
 						{
@@ -631,7 +688,7 @@ public class PittToursInterface
 					int newCID = resultSet.getInt(1) + 1;
 					
 					String insertStatement = "INSERT INTO CUSTOMER VALUES('" + newCID + "', '" + salutation + "', '" + fName + "', '" + lName + "', '" 
-					+ "', '" + ccNum + "', to_date('" + ccExpire + "', 'MM/YY')" + "', '" + street + "', '" + city + "', '" + state + "', '" + phone 
+					+ "', '" + ccNum + "', " + ccExpire + ", '" + street + "', '" + city + "', '" + state + "', '" + phone 
 					+ "', '" + email + ", NULL)";
 					
 					try	// Perform and commit update
@@ -1119,7 +1176,7 @@ public class PittToursInterface
 				{
 					connection.setAutoCommit(false);
 					statement.executeUpdate("INSERT INTO RESERVATION VALUES('" + newReservationNumber + "', '" + custID + "', '" +  depCity + "', '" 
-							+ arrCity + "', '" + price + "', '" + "', '" + ccNumber + "', " + "to_date('" + legInfo[0][1] + "', 'MM-DD-YYYY'), 'Y';");
+							+ arrCity + "', '" + price + "', '" + "', '" + ccNumber + "', " + legInfo[0][1] + ", 'Y';");
 					connection.commit();
 					System.out.println("Addition Addition of Reservation # " + newReservationNumber);
 				}
