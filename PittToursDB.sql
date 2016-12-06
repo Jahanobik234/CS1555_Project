@@ -2599,10 +2599,38 @@ END;
 --Changed Requirements Left Us Confused On How To Implement This Trigger With Regards to Airline ID and Roundtrips
 CREATE OR REPLACE TRIGGER adjustTicket 
 AFTER UPDATE ON Price
-REFERENCING NEW AS NEW_PRICE
 FOR EACH ROW
-	WHEN (NEW_PRICE.high_price <> old.high_price OR NEW_PRICE.low_price <> old.low_price)
+DECLARE
+	CURSOR untixReservations IS
+	SELECT * FROM Reservation WHERE Ticketed = 'N';
+	c_airlineID VARCHAR(5);
+	reserv_rec Reservation%rowtype;
+
 BEGIN
+	SELECT airline_id INTO c_airlineID
+	FROM Flight
+	WHERE flight_number = :new.flight_number;
+	
+	UPDATE Reservation_Detail
+	SET high_price = :new.high_price
+	WHERE departure_city = :new.departure_city AND arrival_city = :new.arrival_city AND airline_id = c_airlineID;
+	
+	OPEN untixReservations;
+	IF untixReservations%ROWCOUNT > 0
+	THEN
+		LOOP
+			FETCH untixReservations INTO reserv_rec;
+			IF reserv_rec.departure_city = :new.departure_city AND reserv_rec.arrival_city = :new.arrival_city AND :new.airline_id = (SELECT airline_id
+																																	  FROM Flight
+																																	  WHERE flight_number = reserv_rec.flight_number);
+			THEN
+			ELSE IF reserv_rec.departure_city = reserv_rec.arrival_city
+			THEN
+			
+			END IF;
+		END LOOP;
+	END IF;
+
 	UPDATE Reservation R
 	SET R.cost = NEW_PRICE.cost
 	WHERE (NEW_PRICE.departure_city = R.start_city) AND (NEW_PRICE.arrival_city = R.end_city) AND (R.Ticketed = 'N');
