@@ -2605,15 +2605,12 @@ DECLARE
 	SELECT * FROM Reservation WHERE Ticketed = 'N';
 	c_airlineID VARCHAR(5);
 	reserv_rec Reservation%rowtype;
+	tempPrice INT;
 
 BEGIN
 	SELECT airline_id INTO c_airlineID
 	FROM Flight
 	WHERE flight_number = :new.flight_number;
-	
-	UPDATE Reservation_Detail
-	SET high_price = :new.high_price
-	WHERE departure_city = :new.departure_city AND arrival_city = :new.arrival_city AND airline_id = c_airlineID;
 	
 	OPEN untixReservations;
 	IF untixReservations%ROWCOUNT > 0
@@ -2624,10 +2621,26 @@ BEGIN
 																																	  FROM Flight
 																																	  WHERE flight_number = reserv_rec.flight_number);
 			THEN
+				IF reserv_rec.cost = :old.low_price
+				THEN
+					UPDATE Reservation
+					SET cost = :new.low_price
+					WHERE reservation_number = reserv_rec.reservation_number;
+				ELSE IF reserv_rec.cost = :old.high_price
+				THEN
+					UPDATE Reservation
+					SET cost = :new.high_price
+					WHERE reservation_number = reserv_rec.reservation_number;
+				END IF;
 			ELSE IF reserv_rec.departure_city = reserv_rec.arrival_city
 			THEN
-			
+				SELECT to_number(cost) INTO tempPrice 
+				FROM Reservation
+				WHERE reservation_number = reserv_rec.reservation_number;
+				tempPrice := tempPrice - to_number(SELECT
+				
 			END IF;
+			EXIT WHEN untixReservations%NOTFOUND;
 		END LOOP;
 	END IF;
 
