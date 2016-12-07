@@ -123,7 +123,7 @@ public class PittToursInterface
 				{
 					// Delete Database
 					String deleteFrom;
-					String[] tablename = {"Airline;", "Customer;", "Flight;", "Price;", "Plane;", "Reservation;", "Reservation Detail;"};
+					String[] tablename = {"Airline", "Customer", "Flight", "Price", "Plane", "Reservation", "Reservation Detail"};
 					String temp;
 					for(String table : tablename)
 					{
@@ -134,12 +134,14 @@ public class PittToursInterface
 							connection.setAutoCommit(false);
 							statement.executeUpdate(temp);
 							connection.commit(); 
+							System.out.println("Database Successfully Deleted.");
 						}
 						catch(SQLException e1)				// Rollback if update failed
 						{
 							try
 							{
 								connection.rollback();
+								System.out.println(e1.toString());
 							}
 							catch(SQLException err)
 							{
@@ -468,8 +470,8 @@ public class PittToursInterface
 					
 					// Concatenate all data and previous line to create insert statement
 					insert = "INSERT INTO Plane VALUES ";	// For concatenation
-					line = insert.concat("('" + plane_type + "', '" + manufacturer + "', " + plane_capacity + ", " + 
-											last_service + "," + year + ", '" + owner_id + "')");
+					line = insert.concat("('" + plane_type + "', '" + manufacturer + "', " + plane_capacity + ", '" + 
+											last_service + "'," + year + ", '" + owner_id + "')");
 			
 					try									// Perform and commit update
 					{
