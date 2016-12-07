@@ -2603,50 +2603,49 @@ FOR EACH ROW
 DECLARE
 	CURSOR untixReservations IS
 	SELECT * FROM Reservation WHERE Ticketed = 'N';
-	c_airlineID VARCHAR(5);
 	reserv_rec Reservation%rowtype;
 	tempPrice INT;
 
 BEGIN
-	SELECT airline_id INTO c_airlineID
-	FROM Flight
-	WHERE flight_number = :new.flight_number;
-	
 	OPEN untixReservations;
 	IF untixReservations%ROWCOUNT > 0
 	THEN
 		LOOP
 			FETCH untixReservations INTO reserv_rec;
-			IF reserv_rec.departure_city = :new.departure_city AND reserv_rec.arrival_city = :new.arrival_city AND :new.airline_id = (SELECT airline_id
-																																	  FROM Flight
-																																	  WHERE flight_number = reserv_rec.flight_number);
+			IF reserv_rec.start_city = :new.departure_city AND reserv_rec.end_city = :new.arrival_city AND :new.airline_id = (SELECT airline_id FROM Reservation_Detail WHERE flight_number = 
 			THEN
 				IF reserv_rec.cost = :old.low_price
 				THEN
 					UPDATE Reservation
 					SET cost = :new.low_price
-					WHERE reservation_number = reserv_rec.reservation_number;
-				ELSE IF reserv_rec.cost = :old.high_price
+					WHERE start_city = reserv_rec.start_city AND end_city = reserv_rec.end_city AND reservation_number = reserv_rec.reservation_number;
+				ELSIF reserv_rec.cost = :old.high_price
 				THEN
 					UPDATE Reservation
 					SET cost = :new.high_price
-					WHERE reservation_number = reserv_rec.reservation_number;
+					WHERE start_city = reserv_rec.start_city AND end_city = reserv_rec.end_city AND reservation_number = reserv_rec.reservation_number;
 				END IF;
-			ELSE IF reserv_rec.departure_city = reserv_rec.arrival_city
+			ELSIF reserv_rec.start_city = reserv_rec.end_city AND EXISTS(SELECT *
+																		 FROM Reservation_Detail 
+																		 WHERE reservation_number = reserv_rec.reservation_number AND flight_number = (SELECT flight_number 
+																																					  FROM FLIGHT
+																																					  WHERE departure_city = :new.departure_city AND arrival_city = :new.arrival_city AND airline_id = :new.airline_id))
 			THEN
 				SELECT to_number(cost) INTO tempPrice 
 				FROM Reservation
 				WHERE reservation_number = reserv_rec.reservation_number;
-				tempPrice := tempPrice - to_number(SELECT
+				
+				tempPrice := tempPrice - to_number(:old.low_price);
+				tempPrice := tempPrice + to_number(:new.low_price);
+				UPDATE Reservation
+				SET cost = to_char(tempPrice)
+				WHERE reservation_number = reserv_rec.reservation_number;
 				
 			END IF;
-			EXIT WHEN untixReservations%NOTFOUND;
+		EXIT WHEN untixReservations%NOTFOUND;
 		END LOOP;
 	END IF;
-
-	UPDATE Reservation R
-	SET R.cost = NEW_PRICE.cost
-	WHERE (NEW_PRICE.departure_city = R.start_city) AND (NEW_PRICE.arrival_city = R.end_city) AND (R.Ticketed = 'N');
+	
 END;
 /
 
@@ -2717,7 +2716,7 @@ BEGIN
 				
 				SELECT departure_time INTO c_departTime
 				FROM Flight
-				WHERE flight_number = flightNum;
+				WHERE flight_number = c_flightNum;
 				
 				IF to_char(:new.c_date + INTERVAL '12' hour, 'HH24MI', 'HH24MI') > c_departTime
 				THEN 
