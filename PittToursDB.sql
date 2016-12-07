@@ -2706,15 +2706,19 @@ DECLARE
 	FROM Reservation
 	WHERE Ticketed = 'N';
 	reserv_rec Reservation%rowtype;
+	legCounter INT;
+	numberLegs INT;
 BEGIN
 	OPEN UntixReservations;
 		IF UntixReservations%ROWCOUNT > 0
 		THEN
 			LOOP
 				FETCH UntixReservations INTO reserv_rec;
-				SELECT flight_number INTO c_flightNum
-				FROM RESERVATION_DETAIL 
-				WHERE reserv_rec.reservation_number = reservation_number AND leg = 0;
+				legCounter := 0;
+				SELECT COUNT(*) INTO numberLegs
+				FROM Reservation_Detail
+				WHERE reservation_number = reserv_rec.reservation_number
+				GROUP BY reservation_number;
 				
 				SELECT departure_time INTO c_departTime
 				FROM Flight
@@ -2724,8 +2728,14 @@ BEGIN
 				THEN 
 					DELETE FROM Reservation
 					WHERE reservation_number = reserv_rec.reservation_number;
+					
+					LOOP
+					SELECT flight_number INTO c_flightNum
+					FROM RESERVATION_DETAIL 
+					WHERE reserv_rec.reservation_number = reservation_number AND leg = legCounter;
+					
 					DELETE FROM Reservation_Detail
-					WHERE reservation_number = reserv_rec.reservation_number;
+					WHERE reservation_number = reserv_rec.reservation_number AND leg = legCounter;
 					
 					curr_capacity := getCapacity(c_flightNum);
 					SELECT MAX(plane_capacity) INTO nextSmallestCapacity
@@ -2739,6 +2749,9 @@ BEGIN
 					THEN
 						updateFlightType(new_type, c_flightNum);
 					END IF;
+					legCounter := legCounter + 1;
+					EXIT WHEN legCounter = numberLegs;
+					END LOOP;
 				END IF;
 				EXIT WHEN UntixReservations%NOTFOUND;
 			END LOOP;
