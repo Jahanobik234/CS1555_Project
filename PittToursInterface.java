@@ -207,7 +207,7 @@ public class PittToursInterface
 						break;
 					}			
 					//Concatenate all data and previous line to create insert statement
-					line = insert.concat("('" + airline_id + "', '" + airline_name + "' ,'" + airline_abbreviation + "', '" + year_founded + "')");
+					line = insert.concat("('" + airline_id + "', '" + airline_name + "' ,'" + airline_abbreviation + "', " + year_founded + ")");
 			
 					try									// Perform and commit update
 					{
@@ -260,6 +260,7 @@ public class PittToursInterface
 					catch(IOException ioe)
 					{
 						System.out.print("File doesn't exist. Input proper filename: ");
+						inputFile = reader.nextLine();
 						redo = true;
 					}		
 				}while(redo);
@@ -284,7 +285,7 @@ public class PittToursInterface
 					insert = "INSERT INTO Flight VALUES ";	// For concatenation
 					line = insert.concat("('" + flight_number + "', '" + airline_id + "', '" + plane_type + "', '" + 
 											departure_city + "', '" + arrival_city + "', '" + departure_time + "', '" + 
-											arrival_time + "', '" + weekly_schedule + ")");
+											arrival_time + "', '" + weekly_schedule + "')");
 			
 					try									// Perform and commit update
 					{
@@ -334,6 +335,7 @@ public class PittToursInterface
 					catch(IOException ioe)
 					{
 						System.out.print("File doesn't exist. Input proper filename: ");
+						inputFile = reader.nextLine();
 						redo = true;
 					}		
 				}while(redo);
@@ -445,6 +447,7 @@ public class PittToursInterface
 					catch(IOException ioe)
 					{
 						System.out.print("File doesn't exist. Input proper filename: ");
+						inputFile = reader.nextLine();
 						redo = true;
 					}		
 				}while(redo);
@@ -465,8 +468,8 @@ public class PittToursInterface
 					
 					// Concatenate all data and previous line to create insert statement
 					insert = "INSERT INTO Plane VALUES ";	// For concatenation
-					line = insert.concat("('" + plane_type + "', '" + manufacturer + "', " + plane_capacity + ", '" + 
-											last_service + "'," + year + ", '" + owner_id + "')");
+					line = insert.concat("('" + plane_type + "', '" + manufacturer + "', " + plane_capacity + ", " + 
+											last_service + "," + year + ", '" + owner_id + "')");
 			
 					try									// Perform and commit update
 					{
