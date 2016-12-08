@@ -157,7 +157,7 @@ public class PittToursInterface2
 				{
 					System.out.print("Name of file: ");
 					inputFile = reader.nextLine();
-					if(!inputFile.equals("-1")) flag = admin_task4(inputFile);
+					if(!inputFile.equals("-1")) flag = admin_task5(inputFile);
 				}while(flag != 0 && !inputFile.equals("-1"));
 				break;
 			
@@ -474,11 +474,10 @@ public class PittToursInterface2
 		Scanner file = openFile(filename);
 		if(file.toString().equals(null))
 		{
-System.out.println("Should not continue");
-		return -1;
+			System.out.println("File Not Found.");
+			return -1;
 		}
 		
-System.out.println("Continue");
 		// READ FILE AND PERFORM UPDATES
 		while(file.hasNext())
 		{
@@ -542,7 +541,7 @@ System.out.println("Continue");
 		Scanner file = openFile(filename);
 		if(file.toString().equals(null))
 		{
-System.out.println("Should not continue");
+			System.out.println("File Not Found.");
 			return -1;
 		}
 		
@@ -605,7 +604,7 @@ System.out.println("Should not continue");
 		Scanner file = openFile(filename);
 		if(file.toString().equals(null))
 		{
-System.out.println("Should not continue");
+			System.out.println("File Not Found.");
 			return -1;
 		}
 		
@@ -638,53 +637,59 @@ System.out.println("Should not continue");
 			{
 				System.out.println(invalidQ.toString());
 			}
-			
-			if(resultSet.next())					// Tuple exists
+			try
 			{
-				// Check price, only 1 tuple at most since match was made on primary key
-				String high = resultSet.getString("high_price");
-				String low = resultSet.getString("low_price");
-				if(!high_price.equals(high) || !low_price.equals(low))	// Price is different than new price
+				if(resultSet.next())					// Tuple exists
 				{
-					// Perform update
-					try
+					// Check price, only 1 tuple at most since match was made on primary key
+					String high = resultSet.getString("high_price");
+					String low = resultSet.getString("low_price");
+					if(!high_price.equals(high) || !low_price.equals(low))	// Price is different than new price
 					{
-						resultSet.updateString("high_price", high_price);
-						resultSet.updateString("low_price", low_price);
-						System.out.println("Update Complete.");
+						// Perform update
+						try
+						{
+							resultSet.updateString("high_price", high_price);
+							resultSet.updateString("low_price", low_price);
+							System.out.println("Update Complete.");
+						}
+						catch(SQLException err)
+						{
+							System.out.println(err.toString());
+						}
 					}
-					catch(SQLException err)
-					{
-						System.out.println(err.toString());
-					}
+					// Otherwise, do nothing with the new information
 				}
-				// Otherwise, do nothing with the new information
-			}
-			// Otherwise, concatenate all data and previous line to create insert statement
-			else
-			{
-				line = insert.concat("('" + departure_city + "', '" + arrival_city + "', '" + airline_id + "', " + 
-									high_price + ", " + low_price + ")");
+				// Otherwise, concatenate all data and previous line to create insert statement
+				else
+				{
+					line = insert.concat("('" + departure_city + "', '" + arrival_city + "', '" + airline_id + "', " + 
+										high_price + ", " + low_price + ")");
 				
-				try									// Perform and commit update
-				{
-					connection.setAutoCommit(false);
-					statement.executeUpdate(line);
-					connection.commit();
-					System.out.println("Insert Complete."); 
-				}
-				catch(SQLException e1)				// Rollback if update failed
-				{
-					try
+					try									// Perform and commit update
 					{
-						connection.rollback();
-						System.out.println(e1.toString());
+						connection.setAutoCommit(false);
+						statement.executeUpdate(line);
+						connection.commit();
+						System.out.println("Insert Complete."); 
 					}
-					catch(SQLException e2)
+					catch(SQLException e1)				// Rollback if update failed
 					{
-						System.out.println(e2.toString());
+						try
+						{
+							connection.rollback();
+							System.out.println(e1.toString());
+						}
+						catch(SQLException e2)
+						{
+							System.out.println(e2.toString());
+						}
 					}
 				}
+			}
+			catch(SQLException e)
+			{
+				System.out.println(e.toString());
 			}
 		}
 		file.close();							// Close file
@@ -705,7 +710,7 @@ System.out.println("Should not continue");
 		Scanner file = openFile(filename);
 		if(file.toString().equals(null))
 		{
-System.out.println("Should not continue");
+			System.out.println("File Not Found.");
 			return -1;
 		}
 		
@@ -773,13 +778,22 @@ System.out.println("Should not continue");
 									String city, String state, String phone, String email)
 	{
 		String cidReceiver = "SELECT MAX(cid) FROM CUSTOMER";
-		resultSet = statement.executeQuery(cidReceiver);
-		int newCID = resultSet.getInt("MAX(cid)") + 1;
-		
+		int newCID = -1;
+		try
+		{
+			resultSet = statement.executeQuery(cidReceiver);
+			resultSet.next();
+			newCID = resultSet.getInt("MAX(cid)") + 1;
+		}
+		catch(SQLException e)
+		{
+			System.out.println(e.toString());
+		}
+				
 		int flag = 0;
 		String insertStatement = "INSERT INTO CUSTOMER VALUES('" + newCID + "', '" + sal + "', '" + fName + "', '" + lName + "', '" 
-						+ "', '" + ccNum + "', " + ccExpire + ", '" + street + "', '" + city + "', '" + state + "', '" + phone 
-						+ "', '" + email + ", NULL)";
+							+ ccNum + "', " + ccExpire + ", '" + street + "', '" + city + "', '" + state + "', '" + phone 
+							+ "', '" + email + ", NULL)";
 		
 		try	// Perform and commit update
 		{
@@ -821,6 +835,11 @@ System.out.println("Should not continue");
 		{
 			resultSet = statement.executeQuery("SELECT * FROM CUSTOMER WHERE first_name = '" + first + "' AND " +
 												"last_name = '" + last + "'"); //Execute Query
+			if(!result.hasNext())
+			{
+				System.out.println("No Customer With That Name Exists.");
+				return;
+			}
 			while(resultSet.next())
 			{
 				cid = resultSet.getString("cid");
@@ -861,6 +880,13 @@ System.out.println("Should not continue");
 		{
 			flightQuery = "SELECT * FROM Price WHERE departure_city = '" + city1 + "' AND arrival_city = '" + city2 + "'";
 			resultSet = statement.executeQuery(flightQuery);
+			
+			if(!resultSet.hasNext())
+			{
+				System.out.println("No Flights Exist.");
+				return;
+			}
+			
 			while(resultSet.next())
 			{
 				System.out.println("One-Way Between " + city1 + " and " + city2 + " on Airline: " + resultSet.getString("airline_id"));
@@ -913,6 +939,12 @@ System.out.println("Should not continue");
 			onewayQuery = "SELECT * FROM FLIGHT WHERE departure_city = '" + city1 + "' AND arrival_city = '" + city2 + "'";
 			
 			resultSet = statement.executeQuery(onewayQuery);
+			
+			if(!resultSet.hasNext())
+			{
+				System.out.println("No Flights Exist Between Those Cities.");
+				return;
+			}
 			
 			System.out.println("--------------------");
 			System.out.println("One-Way Flights Between " + city1 + " and " + city2);
@@ -969,6 +1001,12 @@ System.out.println("Should not continue");
 			
 			resultSet = statement.executeQuery(onewayQuery);
 			
+			if(!resultSet.hasNext())
+			{
+				System.out.println("No Flights Exist Between Those Cities.");
+				return;
+			}
+			
 			System.out.println("--------------------");
 			System.out.println("One-Way Flights Between " + city1 + " and " + city2 + " on Airline " + airlineID);
 			while(resultSet.next())
@@ -1022,6 +1060,12 @@ System.out.println("Should not continue");
 							"' AND D.flight_date = to_date('" + givenDate + "', 'MM/DD/YYYY')";
 			
 			resultSet = statement.executeQuery(onewayQuery);
+			
+			if(!resultSet.hasNext())
+			{
+				System.out.println("No Flights Exist Between Those Cities.");
+				return;
+			}
 			
 			System.out.println("--------------------");
 			System.out.println("One-Way Flights Between " + city1 + " and " + city2 + " on Date " + givenDate);
@@ -1079,6 +1123,12 @@ System.out.println("Should not continue");
 							"' AND D.flight_date = to_date('" + givenDate + "', 'MM/DD/YYYY') AND A.airline_name = '" + airlineName + "'";
 			
 			resultSet = statement.executeQuery(onewayQuery);
+			
+			if(!resultSet.hasNext())
+			{
+				System.out.println("No Flights Exist Between Those Cities.");
+				return;
+			}
 			
 			System.out.println("--------------------");
 			System.out.println("One-Way Flights Between " + city1 + " and " + city2 + " on Date " + givenDate);
@@ -1211,12 +1261,17 @@ System.out.println("Should not continue");
 		{
 			flightQuery = "SELECT flight_number FROM RESERVATION_DETAIL WHERE reservation_number = '" + reservationNum + "'";
 			resultSet = statement.executeQuery(flightQuery);
-			resultSet.next();
+			
+			if(!resultSet.next())
+			{
+				System.out.println("No Reservations With That Number Exist.");
+				return;
+			}
+			
 			if(resultSet.getString("flight_number") == null)
 			{
 				System.out.println("Error with Reservation Number");
 			}
-			
 			else
 			{
 				System.out.println("The following flight numbers make up this Reservation #" + reservationNum);
