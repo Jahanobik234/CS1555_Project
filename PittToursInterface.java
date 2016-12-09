@@ -767,56 +767,96 @@ public class PittToursInterface
 	{
 		try
 		{
-			resultSet = statement.executeQuery("SELECT R.cid FROM Reservation_detail D NATURAL JOIN Reservation R" +
+			resultSet = statement.executeQuery("SELECT salutation, first_name, last_name " + 
+												"FROM (CUSTOMER JOIN " +
+												"(SELECT cid FROM (Reservation_detail D NATURAL JOIN Reservation R) P" +
 												"WHERE D.flight_number = " + flight_num + " AND " + 
-												"D.flight_date = to_date('" + flight_date + "', 'MM/DD/YYYY)");
+												"D.flight_date = to_date('" + flight_date + "', 'MM/DD/YYYY') AND R.Ticketed = 'Y') ON cid = P.cid)");
+			
+			if(!resultSet.next())
+			{
+				System.out.println("Sorry, No Passengers Bought Tickets For That Flight On That Day");
+			}
+			
+			else	
+			{
+				while(resultSet.next())
+				{
+					System.out.println(resultSet.getString("salutation") + " " + resultSet.getString("first_name") + " " + resultSet.getString("last_name"));
+				}
+			}
 		}
 		catch(SQLException invalidEntry1)
 		{
 			System.out.println(invalidEntry1.toString());
 			return -1;
 		}
+		
 		return 0;
 	}
 	
 	public static void user_task1(String sal, String fName, String lName, String ccNum, String ccExpire, String street, 
 									String city, String state, String phone, String email)
 	{
-		String cidReceiver = "SELECT MAX(cid) FROM CUSTOMER";
-		int newCID = -1;
+		String existingCustomer = "SELECT COUNT(*) FROM CUSTOMER WHERE first_name = '" + fName + "' AND last_name = '" + lName + "'";
+		int numCustomers = 0;
 		try
 		{
-			resultSet = statement.executeQuery(cidReceiver);
+			resultSet = statement.executeQuery(existingCustomer);
 			resultSet.next();
-			newCID = resultSet.getInt("MAX(cid)") + 1;
+			numCustomers = resultSet.getInt("COUNT(*)");
 		}
 		catch(SQLException e)
 		{
 			System.out.println(e.toString());
-		}
-				
-		int flag = 0;
-		String insertStatement = "INSERT INTO CUSTOMER VALUES('" + newCID + "', '" + sal + "', '" + fName + "', '" + lName + "', '" 
-							+ ccNum + "', " + ccExpire + ", '" + street + "', '" + city + "', '" + state + "', '" + phone 
-							+ "', '" + email + ", NULL)";
+		}	
 		
-		try	// Perform and commit update
+		if(numCustomers > 0)
 		{
-			connection.setAutoCommit(false);
-			statement.executeUpdate(insertStatement);
-			connection.commit();
-			System.out.println("Addition Successful with for Customer " + newCID);
+			System.out.println("Sorry, A Customer With That Name Already Exists!");
 		}
-		catch(SQLException e1)	// Rollback if update failed
+		
+		else
 		{
+			String cidReceiver = "SELECT COUNT(cid) FROM CUSTOMER";
+			int newCID = -1;
 			try
 			{
-				connection.rollback();
-				System.out.println(e1.toString());
+				resultSet = statement.executeQuery(cidReceiver);
+				resultSet.next();
+				newCID = resultSet.getInt("COUNT(cid)") + 1;
 			}
-			catch(SQLException e2)
+			
+			catch(SQLException e)
 			{
-				System.out.println(e2.toString());
+				System.out.println(e.toString());
+			}	
+			
+			System.out.println("NEW CID: " + newCID);
+					
+			int flag = 0;
+			String insertStatement = "INSERT INTO CUSTOMER VALUES('" + newCID + "', '" + sal + "', '" + fName + "', '" + lName + "', '" 
+								+ ccNum + "', to_date('" + ccExpire + "', 'MM/YY'),	'" + street + "', '" + city + "', '" + state + "', '" + phone 
+								+ "', '" + email + "', NULL)";
+			
+			try	// Perform and commit update
+			{
+				connection.setAutoCommit(false);
+				statement.executeUpdate(insertStatement);
+				connection.commit();
+				System.out.println("Addition Successful with for Customer " + newCID);
+			}
+			catch(SQLException e1)	// Rollback if update failed
+			{
+				try
+				{
+					connection.rollback();
+					System.out.println(e1.toString());
+				}
+				catch(SQLException e2)
+				{
+					System.out.println(e2.toString());
+				}
 			}
 		}
 	}
@@ -835,6 +875,8 @@ public class PittToursInterface
 		String phone;
 		String email;
 		String freqMiles;
+		
+		System.out.println("FIRST: " + first + " LAST: " + last);
 		
 		try
 		{

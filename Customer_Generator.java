@@ -45,7 +45,7 @@ public class Customer_Generator
 			
 			// CID
 			cids[counter] = String.format("%08d", counter + 1);
-			output.printf("INSERT INTO CUSTOMER VALUES(%08d, ", counter + 1);
+			output.printf("INSERT INTO CUSTOMER VALUES('%08d', ", counter + 1);
 			
 			// SALUTATION, F_NAME, L_NAME
 			if(pick1 > 50)
