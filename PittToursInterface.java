@@ -771,11 +771,9 @@ public class PittToursInterface
 	{
 		try
 		{
-			resultSet = statement.executeQuery("SELECT salutation, first_name, last_name " + 
-												"FROM CUSTOMER JOIN " +
-												"(SELECT P.cid FROM (Reservation_detail D NATURAL JOIN Reservation R) P" +
-												"WHERE D.flight_number = " + flight_num + " AND " + 
-												"D.flight_date = to_date('" + flight_date + "', 'MM/DD/YYYY') AND R.Ticketed = 'Y')) ON cid = P.cid");
+			resultSet = statement.executeQuery("SELECT cid FROM (Reservation_detail D JOIN Reservation R ON D.reservation_number = R.reservation_number) " +
+											   "WHERE D.flight_number = '" + flight_num + "' AND " + 
+											   "D.flight_date = to_date('" + flight_date + "', 'MM/DD/YYYY') AND R.Ticketed = 'Y'");
 			
 			if(!resultSet.next())
 			{
@@ -784,10 +782,13 @@ public class PittToursInterface
 			
 			else	
 			{
-				while(resultSet.next())
+				ResultSet resultSet2;
+				do
 				{
-					System.out.println(resultSet.getString("salutation") + " " + resultSet.getString("first_name") + " " + resultSet.getString("last_name"));
-				}
+					resultSet2 = statement.executeQuery("SELECT salutation, first_name, last_name FROM CUSTOMER WHERE cid = '" + resultSet.getString(1) + "'");
+					resultSet2.next();
+					System.out.println(resultSet2.getString("salutation") + " " + resultSet2.getString("first_name") + " " + resultSet2.getString("last_name"));
+				}while(resultSet.next());
 			}
 		}
 		catch(SQLException invalidEntry1)
@@ -879,9 +880,7 @@ public class PittToursInterface
 		String phone;
 		String email;
 		String freqMiles;
-		
-		System.out.println("FIRST: " + first + " LAST: " + last);
-		
+				
 		try
 		{
 			resultSet = statement.executeQuery("SELECT * FROM CUSTOMER WHERE first_name = '" + first + "' AND " +
@@ -940,9 +939,9 @@ public class PittToursInterface
 			
 			do
 			{
-				System.out.println("One-Way Between " + city1 + " and " + city2 + " on Airline: " + resultSet.getString("airline_id"));
-				System.out.println("\tHigh Price: " + resultSet.getInt("high_price"));
-				System.out.println("\tLow Price: " + resultSet.getInt("low_price"));
+				System.out.println("\nOne-Way Between " + city1 + " and " + city2 + " on Airline: " + resultSet.getString("airline_id"));
+				System.out.println("High Price: $" + resultSet.getInt("high_price"));
+				System.out.println("Low Price: $" + resultSet.getInt("low_price"));
 			}while(resultSet.next());
 		
 			flightQuery = "SELECT * FROM Price WHERE departure_city = '" + city2 + "' AND arrival_city = '" + city1 + "'";
@@ -956,12 +955,14 @@ public class PittToursInterface
 			
 			do
 			{
-				System.out.println("One-Way Between " + city2 + " and " + city1 + " on Airline: " + resultSet.getString("airline_id"));
-				System.out.println("\tHigh Price: " + resultSet.getInt("high_price"));
-				System.out.println("\tLow Price: " + resultSet.getInt("low_price"));
+				System.out.println("\nOne-Way Between " + city2 + " and " + city1 + " on Airline: " + resultSet.getString("airline_id"));
+				System.out.println("High Price: $" + resultSet.getInt("high_price"));
+				System.out.println("Low Price: $" + resultSet.getInt("low_price"));
 			}while(resultSet.next());
 		
-			flightQuery = "SELECT * FROM Price P JOIN Flight F ON P.airline_id = F.airline_id WHERE P.departure_city = '" + city1 + "' AND P.arrival_city = '" + city2 + "'";
+			flightQuery = "SELECT F.airline_id, F.departure_time, G.arrival_time " +
+						  "FROM FLIGHT F JOIN FLIGHT G ON (F.arrival_city = G.departure_city AND F.airline_id = G.airline_id) " +
+						  "WHERE F.departure_city = '" + city1 + "' AND G.arrival_city = '" + city2 + "'";
 			resultSet = statement.executeQuery(flightQuery);
 			
 			if(!resultSet.next())
@@ -970,22 +971,38 @@ public class PittToursInterface
 				return;
 			}
 			
+			ResultSet resultSet2;
+			
 			do
 			{
 				int depTime, arrTime;
-				depTime = Integer.parseInt(resultSet.getString("P.departure_time"));
-				arrTime = Integer.parseInt(resultSet.getString("P.arrival_time"));
+				depTime = Integer.parseInt(resultSet.getString(2));
+				arrTime = Integer.parseInt(resultSet.getString(3));
 			
 				if(depTime > arrTime)
 				{
-					System.out.println("Roundtrip Between " + city1 + " and " + city2 + "on Airline: " + resultSet.getString("airline_id"));
-					System.out.println("\tPrice: " + resultSet.getInt("P.high_price"));
+					int price = 0;
+					resultSet2 = statement.executeQuery("SELECT high_price, airline_id FROM PRICE WHERE airline_id = '" + resultSet.getString(1) + "' AND departure_city = '" + city1 + "' AND arrival_city = '" + city2 + "'");
+					resultSet2.next();
+					price += resultSet2.getInt("high_price");
+					resultSet2 = statement.executeQuery("SELECT high_price, airline_id FROM PRICE WHERE airline_id = '" + resultSet.getString(1) + "' AND departure_city = '" + city2 + "' AND arrival_city = '" + city1 + "'");
+					resultSet2.next();
+					price += resultSet2.getInt("high_price");
+					System.out.println("Roundtrip Between " + city1 + " and " + city2 + "on Airline: " + resultSet2.getString("airline_id"));
+					System.out.println("Price: $" + price);
 				}
 			
 				else
 				{
-					System.out.println("Roundtrip Between " + city1 + " and " + city2 + "on Airline: " + resultSet.getString("airline_id"));
-					System.out.println("\tPrice: " + resultSet.getInt("P.low_price"));
+					int price = 0;
+					resultSet2 = statement.executeQuery("SELECT low_price, airline_id FROM PRICE WHERE airline_id = '" + resultSet.getString(1) + "' AND departure_city = '" + city1 + "' AND arrival_city = '" + city2 + "'");
+					resultSet2.next();
+					price += resultSet2.getInt("low_price");
+					resultSet2 = statement.executeQuery("SELECT low_price, airline_id FROM PRICE WHERE airline_id = '" + resultSet.getString(1) + "' AND departure_city = '" + city2 + "' AND arrival_city = '" + city1 + "'");
+					resultSet2.next();
+					price += resultSet2.getInt("low_price");
+					System.out.println("Roundtrip Between " + city1 + " and " + city2 + "on Airline: " + resultSet2.getString("airline_id"));
+					System.out.println("Price: $" + price);
 				}
 			}while(resultSet.next());
 		}
@@ -1039,19 +1056,19 @@ public class PittToursInterface
 			System.out.println("Connecting Flights Between " + city1 + " and " + city2);
 			do
 			{
-				if(checkSchedules(resultSet.getString("F.weekly_schedule"), resultSet.getString("G.weekly_schedule")) && 
-					(Integer.parseInt(resultSet.getString("F.arrival_time")) + 1) % 2400 < Integer.parseInt(resultSet.getString("G.departure_time")))
+				if(checkSchedules(resultSet.getString(8), resultSet.getString(16)) && 
+					(Integer.parseInt(resultSet.getString(7)) + 1) % 2400 < Integer.parseInt(resultSet.getString(15)))
 				{
-					System.out.printf("Flight Number (Flight 1): %s\n", resultSet.getString("F.flight_number"));
-					System.out.printf("Depature City: %s\n", resultSet.getString("F.departure_city"));
-					System.out.printf("Arrival City: %s\n", resultSet.getString("F.arrival_city"));
-					System.out.printf("Departure Time: %s\n", resultSet.getString("F.departure_time"));
-					System.out.printf("Arrival Time: %s\n", resultSet.getString("F.arrival_time"));
-					System.out.printf("Flight Number (Flight 2): %s\n", resultSet.getString("G.flight_number"));
-					System.out.printf("Depature City: %s\n", resultSet.getString("G.departure_city"));
-					System.out.printf("Arrival City: %s\n", resultSet.getString("G.arrival_city"));
-					System.out.printf("Departure Time: %s\n", resultSet.getString("G.departure_time"));
-					System.out.printf("Arrival Time: %s\n", resultSet.getString("G.arrival_time"));
+					System.out.printf("Flight Number (Flight 1): %s\n", resultSet.getString(1));
+					System.out.printf("Depature City: %s\n", resultSet.getString(4));
+					System.out.printf("Arrival City: %s\n", resultSet.getString(5));
+					System.out.printf("Departure Time: %s\n", resultSet.getString(6));
+					System.out.printf("Arrival Time: %s\n", resultSet.getString(7));
+					System.out.printf("Flight Number (Flight 2): %s\n", resultSet.getString(9));
+					System.out.printf("Depature City: %s\n", resultSet.getString(12));
+					System.out.printf("Arrival City: %s\n", resultSet.getString(13));
+					System.out.printf("Departure Time: %s\n", resultSet.getString(14));
+					System.out.printf("Arrival Time: %s\n", resultSet.getString(15));
 					System.out.println("--------------------");
 				}
 			}while(resultSet.next());
@@ -1069,7 +1086,7 @@ public class PittToursInterface
 		try
 		{
 			//Roundtrip First
-			onewayQuery = "SELECT * FROM FLIGHT WHERE departure_city = '" + city1 + "' AND arrival_city = '" + city2 + "' AND airline_id = '" + airlineID + "'";
+			onewayQuery = "SELECT * FROM FLIGHT WHERE airline_id = '" + airlineID + "' AND departure_city = '" + city1 + "' AND arrival_city = '" + city2 + "'";
 			
 			resultSet = statement.executeQuery(onewayQuery);
 			
@@ -1080,7 +1097,7 @@ public class PittToursInterface
 			}
 			
 			System.out.println("--------------------");
-			System.out.println("One-Way Flights Between " + city1 + " and " + city2 + " on Airline " + airlineID);
+			System.out.println("One-Way Flights Between " + city1 + " and " + city2);
 			do
 			{
 				System.out.printf("Flight Number: %s\n", resultSet.getString("flight_number"));
@@ -1092,8 +1109,9 @@ public class PittToursInterface
 			}while(resultSet.next());
 			
 			//Trips With Connections
-			connectionFlights = "SELECT * FROM (FLIGHT F JOIN FLIGHT G ON F.arrival_city = G.departure_city) T WHERE (F.departure_city = '"
-						+ city1 + "' AND G.arrival_city = '" + city2 + "') AND (airline_id = '" + airlineID + "');"; //This Will Have to Be Filtered A Bit More
+			connectionFlights = "SELECT * "
+							+ "FROM FLIGHT F JOIN FLIGHT G ON F.arrival_city = G.departure_city " 
+							+ "WHERE F.airline_id = '" + airlineID + "' AND G.airline_id = '" + airlineID + "' AND F.departure_city = '" + city1 + "' AND G.arrival_city = '" + city2 + "'"; //This Will Have to Be Filtered A Bit More
 			
 			resultSet = statement.executeQuery(connectionFlights);
 			
@@ -1103,26 +1121,26 @@ public class PittToursInterface
 				return;
 			}
 			
-			System.out.println("Connecting Flights Between " + city1 + " and " + city2 + " on Airline " + airlineID);
+			System.out.println("Connecting Flights Between " + city1 + " and " + city2);
 			do
 			{
-				if(checkSchedules(resultSet.getString("F.weekly_schedule"), resultSet.getString("G.weekly_schedule")) && 
-					(Integer.parseInt(resultSet.getString("F.arrival_time")) + 1) % 2400 < Integer.parseInt(resultSet.getString("G.departure_time")))
+				if(checkSchedules(resultSet.getString(8), resultSet.getString(16)) && 
+					(Integer.parseInt(resultSet.getString(7)) + 1) % 2400 < Integer.parseInt(resultSet.getString(15)))
 				{
-					System.out.printf("Flight Number (Flight 1): %s\n", resultSet.getString("F.flight_number"));
-					System.out.printf("Depature City: %s\n", resultSet.getString("F.departure_city"));
-					System.out.printf("Arrival City: %s\n", resultSet.getString("F.arrival_city"));
-					System.out.printf("Departure Time: %s\n", resultSet.getString("F.departure_time"));
-					System.out.printf("Arrival Time: %s\n", resultSet.getString("F.arrival_time"));
-					System.out.printf("Flight Number (Flight 2): %s\n", resultSet.getString("G.flight_number"));
-					System.out.printf("Depature City: %s\n", resultSet.getString("G.departure_city"));
-					System.out.printf("Arrival City: %s\n", resultSet.getString("G.arrival_city"));
-					System.out.printf("Departure Time: %s\n", resultSet.getString("G.departure_time"));
-					System.out.printf("Arrival Time: %s\n", resultSet.getString("G.arrival_time"));
-					System.out.println("--------------------");
+					System.out.printf("Flight Number (Flight 1): %s\n", resultSet.getString(1));
+					System.out.printf("Depature City: %s\n", resultSet.getString(4));
+					System.out.printf("Arrival City: %s\n", resultSet.getString(5));
+					System.out.printf("Departure Time: %s\n", resultSet.getString(6));
+					System.out.printf("Arrival Time: %s\n", resultSet.getString(7));
+					System.out.printf("Flight Number (Flight 2): %s\n", resultSet.getString(9));
+					System.out.printf("Depature City: %s\n", resultSet.getString(12));
+					System.out.printf("Arrival City: %s\n", resultSet.getString(13));
+					System.out.printf("Departure Time: %s\n", resultSet.getString(14));
+					System.out.printf("Arrival Time: %s\n", resultSet.getString(15));
 				}
 			}while(resultSet.next());
 		}
+		
 		catch(SQLException t5err)
 		{
 			System.out.println(t5err.getMessage());
@@ -1148,14 +1166,22 @@ public class PittToursInterface
 			
 			System.out.println("--------------------");
 			System.out.println("One-Way Flights Between " + city1 + " and " + city2 + " on Date " + givenDate);
+			ResultSet resultSet2, resultSet3;
 			do
 			{
-				System.out.printf("Flight Number: %s\n", resultSet.getString("F.airline_id"));
-				System.out.printf("Departure City: %s\n", resultSet.getString("F.departure_city"));
-				System.out.printf("Arrival City: %s\n", resultSet.getString("F.arrival_city"));
-				System.out.printf("Departure Time: %s\n", resultSet.getString("F.departure_time"));
-				System.out.printf("Arrival Time: %s\n", resultSet.getString("F.arrival_time"));
-				System.out.println("--------------------");
+				resultSet2 = statement.executeQuery("SELECT COUNT(*) FROM RESERVATION_DETAIL WHERE flight_number = '" + resultSet.getString(1) + "'");
+				resultSet2.next();
+				resultSet3 = statement.executeQuery("SELECT plane_capacity FROM (FLIGHT F JOIN PLANE P ON F.airline_id = P.owner_id) WHERE F.flight_number = '" + resultSet.getString(1) + "'");
+				resultSet3.next();
+				if(resultSet2.getInt(1) < resultSet3.getInt(1))
+				{
+					System.out.printf("Flight Number: %s\n", resultSet.getString("F.airline_id"));
+					System.out.printf("Departure City: %s\n", resultSet.getString("F.departure_city"));
+					System.out.printf("Arrival City: %s\n", resultSet.getString("F.arrival_city"));
+					System.out.printf("Departure Time: %s\n", resultSet.getString("F.departure_time"));
+					System.out.printf("Arrival Time: %s\n", resultSet.getString("F.arrival_time"));
+					System.out.println("--------------------");
+				}
 			}while(resultSet.next());
 			
 			//Trips With Connections
@@ -1173,22 +1199,34 @@ public class PittToursInterface
 			}
 			
 			System.out.println("Connecting Flights Between " + city1 + " and " + city2 + " on Date " + givenDate);
+			ResultSet resultSet4, resultSet5;
 			do
 			{
 				if(checkSchedules(resultSet.getString("F.weekly_schedule"), resultSet.getString("G.weekly_schedule")) && 
 					(Integer.parseInt(resultSet.getString("F.arrival_time")) + 1) % 2400 < Integer.parseInt(resultSet.getString("G.departure_time")))
 				{
-					System.out.printf("Flight Number (Flight 1): %s\n", resultSet.getString("F.flight_number"));
-					System.out.printf("Departure City: %s\n", resultSet.getString("F.departure_city"));
-					System.out.printf("Arrival City: %s\n", resultSet.getString("F.arrival_city"));
-					System.out.printf("Departure Time: %s\n", resultSet.getString("F.departure_city"));
-					System.out.printf("Arrival Time: %s\n", resultSet.getString("F.arrival_city"));
-					System.out.printf("Flight Number (Flight 2): %s\n", resultSet.getString("G.flight_number"));
-					System.out.printf("Depature City: %s\n", resultSet.getString("G.departure_city"));
-					System.out.printf("Arrival City: %s\n", resultSet.getString("G.arrival_city"));
-					System.out.printf("Departure Time: %s\n", resultSet.getString("G.departure_time"));
-					System.out.printf("Arrival Time: %s\n", resultSet.getString("G.arrival_time"));
-					System.out.println("--------------------");
+					resultSet2 = statement.executeQuery("SELECT COUNT(*) FROM RESERVATION_DETAIL WHERE flight_number = '" + resultSet.getString(1) + "'");
+					resultSet2.next();
+					resultSet3 = statement.executeQuery("SELECT plane_capacity FROM (FLIGHT F JOIN PLANE P ON F.airline_id = P.owner_id) WHERE F.flight_number = '" + resultSet.getString(1) + "'");
+					resultSet3.next();
+					resultSet4 = statement.executeQuery("SELECT COUNT(*) FROM RESERVATION_DETAIL WHERE flight_number = '" + resultSet.getString(9) + "'");
+					resultSet4.next();
+					resultSet5 = statement.executeQuery("SELECT plane_capacity FROM (FLIGHT F JOIN PLANE P ON F.airline_id = P.owner_id) WHERE F.flight_number = '" + resultSet.getString(9) + "'");
+					resultSet5.next();
+					if(resultSet2.getInt(1) < resultSet3.getInt(1) && resultSet4.getInt(1) < resultSet5.getInt(1))
+					{
+						System.out.printf("Flight Number (Flight 1): %s\n", resultSet.getString("F.flight_number"));
+						System.out.printf("Departure City: %s\n", resultSet.getString("F.departure_city"));
+						System.out.printf("Arrival City: %s\n", resultSet.getString("F.arrival_city"));
+						System.out.printf("Departure Time: %s\n", resultSet.getString("F.departure_city"));
+						System.out.printf("Arrival Time: %s\n", resultSet.getString("F.arrival_city"));
+						System.out.printf("Flight Number (Flight 2): %s\n", resultSet.getString("G.flight_number"));
+						System.out.printf("Depature City: %s\n", resultSet.getString("G.departure_city"));
+						System.out.printf("Arrival City: %s\n", resultSet.getString("G.arrival_city"));
+						System.out.printf("Departure Time: %s\n", resultSet.getString("G.departure_time"));
+						System.out.printf("Arrival Time: %s\n", resultSet.getString("G.arrival_time"));
+						System.out.println("--------------------");
+					}
 				}
 			}while(resultSet.next());
 		}
@@ -1280,24 +1318,24 @@ public class PittToursInterface
 			boolean seatAvail = true;
 			for(int i = 0; i < legNum+1 && seatAvail; i++)
 			{
-				resultSet = statement.executeQuery("SELECT COUNT(*) FROM RESERVATION_DETAIL WHERE to_date('" + legInfo[i][1] + "', 'MM-DD-YYYY') = flight_date AND flight_number = " + legInfo[i][0]);
+				resultSet = statement.executeQuery("SELECT COUNT(*) FROM RESERVATION_DETAIL WHERE to_date('" + legInfo[i][1] + "', 'MM-DD-YYYY') = flight_date AND flight_number = '" + legInfo[i][0] + "'");
 				resultSet.next();
 				currCapacity = resultSet.getInt(1);
 				
-				resultSet = statement.executeQuery("SELECT plane_capacity FROM FLIGHT F JOIN PLANE P ON F.plane_type = P.plane_type WHERE flight_number = " + legInfo[i][0]);
+				resultSet = statement.executeQuery("SELECT plane_capacity FROM FLIGHT F JOIN PLANE P ON F.plane_type = P.plane_type WHERE flight_number = '" + legInfo[i][0] + "'");
 				resultSet.next();
 				maxCapacity = Integer.parseInt(resultSet.getString("plane_capacity"));
 				
-				if(currCapacity >= maxCapacity) //There is room on the plane_capacity
+				if(currCapacity >= maxCapacity) //There is mo room on the plane_capacity
 				{
 					System.out.println("Flight " + legInfo[i][0] + " does not have any open seats! Reservation Cancelled!");
 					seatAvail = false;
 				}
 			}
 			
-			resultSet = statement.executeQuery("SELECT MAX(reservation_number) FROM RESERVATION");
+			resultSet = statement.executeQuery("SELECT COUNT(reservation_number) FROM RESERVATION");
 			resultSet.next();
-			int newReservationNumber = Integer.parseInt(resultSet.getString(1)) + 1;
+			int newReservationNumber = (resultSet.getInt(1)) + 1;
 			resultSet = statement.executeQuery("SELECT * FROM FLIGHT WHERE departure_city = (SELECT departure_city FROM FLIGHT WHERE flight_number = '" 
 						+ legInfo[0][0] + "') AND arrival_city = (SELECT arrival_city FROM FLIGHT WHERE flight_number = '" + legInfo[legNum][0]
 						+ "') AND airline_id = (SELECT airline_id FROM FLIGHT WHERE flight_number = '" + legInfo[0][0] + "'");
@@ -1324,9 +1362,9 @@ public class PittToursInterface
 			{
 				connection.setAutoCommit(false);
 				statement.executeUpdate("INSERT INTO RESERVATION VALUES('" + newReservationNumber + "', '" + custID + "', '" +  depCity + "', '" 
-						+ arrCity + "', '" + price + "', '" + "', '" + ccNumber + "', " + legInfo[0][1] + ", 'Y';");
+						+ arrCity + "', '" + price + "', '" + "', '" + ccNumber + "', to_date('" + legInfo[0][1] + "', 'MM-DD-YYYY'), 'Y'");
 				connection.commit();
-				System.out.println("Addition Addition of Reservation # " + newReservationNumber);
+				System.out.println("Addition of Reservation # " + newReservationNumber);
 			}
 			catch(SQLException e1)	// Rollback if update failed
 			{
@@ -1361,17 +1399,13 @@ public class PittToursInterface
 				return;
 			}
 			
-			if(resultSet.getString("flight_number") == null)
-			{
-				System.out.println("Error with Reservation Number");
-			}
 			else
 			{
 				System.out.println("The following flight numbers make up this Reservation #" + reservationNum);
-				while(resultSet.next())
+				do
 				{
 					System.out.println(resultSet.getString("flight_number"));
-				}
+				}while(resultSet.next());
 			}
 		}
 		catch(SQLException e)
@@ -1382,7 +1416,7 @@ public class PittToursInterface
 	
 	public static void user_task10(String reservationNum)
 	{
-		String updateReservation = "UPDATE RESERVATION SET Ticketed = 'Y' WHERE Reservation_Number = '" + reservationNum + "';";
+		String updateReservation = "UPDATE RESERVATION SET Ticketed = 'Y' WHERE reservation_number = '" + reservationNum + "'";
 		try	// Perform and commit update
 		{
 			connection.setAutoCommit(false);
