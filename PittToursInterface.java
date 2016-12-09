@@ -170,14 +170,18 @@ public class PittToursInterface
 			case 6:
 				String fDate;
 				String fNum;
-				do
+				System.out.print("Enter Flight Date: ");
+				fDate = userKeyboard.nextLine();
+				System.out.print("Enter Flight Number: ");
+				fNum = userKeyboard.nextLine();
+				if(!fDate.equals("-1") && !fNum.equals("-1")) 
 				{
-					System.out.print("Enter Flight Date: ");
-					fDate = userKeyboard.nextLine();
-					System.out.print("Enter Flight Number: ");
-					fNum = userKeyboard.nextLine();
-					if(!fDate.equals("-1") && !fNum.equals("-1")) flag = admin_task6(fNum, fDate);
-				}while(flag != 0 && !fDate.equals("-1") && !fNum.equals("-1"));
+					flag = admin_task6(fNum, fDate);
+					if(flag != 0)
+					{
+						System.out.println("Cannot Generate Manifest for that day or flight.");
+					}
+				}
 				break;
 			case 7:
 				// Do Nothing and Exit
@@ -768,10 +772,10 @@ public class PittToursInterface
 		try
 		{
 			resultSet = statement.executeQuery("SELECT salutation, first_name, last_name " + 
-												"FROM (CUSTOMER JOIN " +
-												"(SELECT cid FROM (Reservation_detail D NATURAL JOIN Reservation R) P" +
+												"FROM CUSTOMER JOIN " +
+												"(SELECT P.cid FROM (Reservation_detail D NATURAL JOIN Reservation R) P" +
 												"WHERE D.flight_number = " + flight_num + " AND " + 
-												"D.flight_date = to_date('" + flight_date + "', 'MM/DD/YYYY') AND R.Ticketed = 'Y') ON cid = P.cid)");
+												"D.flight_date = to_date('" + flight_date + "', 'MM/DD/YYYY') AND R.Ticketed = 'Y')) ON cid = P.cid");
 			
 			if(!resultSet.next())
 			{
