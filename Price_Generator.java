@@ -50,8 +50,8 @@ public class Price_Generator
 			lowPrice = numGen.nextInt(101) + 50; //Low Price Between 50-150
 			}while(!(highPrice - lowPrice > 30));
 			
-			output.printf("'%d', ", highPrice);
-			output.printf("'%d'", lowPrice);
+			output.printf("%d, ", highPrice);
+			output.printf("%d", lowPrice);
 			prices[counter][0] = lowPrice;
 			prices[counter][1] = highPrice;
 			
