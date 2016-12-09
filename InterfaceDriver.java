@@ -1,4 +1,5 @@
-/* Jonathan Hanobik and Seth Stayer
+/* 
+* Jonathan Hanobik and Seth Stayer
 * CS1555 - Fall 2016, Term Project
 * Administrator/User Interface Driver
 */
