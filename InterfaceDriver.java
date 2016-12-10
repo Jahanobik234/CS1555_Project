@@ -209,7 +209,23 @@ public class InterfaceDriver
 		}
 		
 		// Task 6 -- Passanger Manifests
+		int t6 = pti.admin_task6("00008", "12/06/2016");
+		if(t6 != 0)
+		{
+			System.out.println("Query Not Executable, An Error Occurred.");
+		}
 		
+		t6 = pti.admin_task6("00009", "12/07/2016");
+		if(t6 != 0)
+		{
+			System.out.println("Query Not Executable, An Error Occurred.");
+		}
+		
+		t6 = pti.admin_task6("00010", "12/08/2016");
+		if(t6 != 0)
+		{
+			System.out.println("Query Not Executable, An Error Occurred.");
+		}
 		
 		/******** USER ********/
 		
@@ -255,28 +271,96 @@ public class InterfaceDriver
 		{
 			System.out.println(err.toString());
 		}
+		
 			// Read in from file for stress test
+		File f = new File("user_1.txt");
+		Scanner reader = new Scanner(f);
 		
-		// Task 2 --
+		while(reader.hasNext())
+		{
+			String[] values = reader.nextLine().split(",");
+			salutation = values[0];
+			firstName = values[1];
+			lastName = values[2];
+			ccNum = values[3];
+			ccExpire = values[4];
+			street = values[5]; 
+			city = values[6];
+			state = values[7];
+			phone = values[8];
+			email = values[9];
+			
+			try
+			{
+				pti.user_task1(salutation, firstName, lastName, ccNum, ccExpire, street, city, state, phone, email);
+				try
+				{
+					String after = "SELECT COUNT(*) FROM Customer";
+					rs = statement.executeQuery(after);
+					System.out.printf("Cardinality of Customer After Insert: %s", rs.next().getString("COUNT(*)"));
+				}
+				catch(SQLException err)
+				{
+					System.out.println(err.toString());
+				}
+			}
+			catch(Exception err)
+			{
+				System.out.println(err.toString());
+			}
+		}
+		reader.close();
 		
-		// Task 3 --
+		// Task 2 -- Show customer info, given customer name
+		File f = new File("user_2.txt");
+		Scanner reader = new Scanner(f);
 		
-		// Task 4 --
+		while(reader.hasNext())
+		{
+			String[] name = reader.nextLine().split();
+			String first = name[0];
+			String last = name[1];
+			
+			try
+			{
+				pti.user_task2(first, last);
+			}
+			catch(Exception err)
+			{
+				System.out.println(err.toString());
+			}
+		}
+		reader.close();
 		
-		// Task 5 --
+		// Task 3 -- Find price for flights between two cities
 		
-		// Task 6 --
 		
-		// Task 7 --
 		
-		// Task 8 --
+		// Task 4 -- Find all routes between two cities
 		
-		// Task 9 --
+		// Task 5 -- Find all routes between two cities of a given airline
 		
-		// Task 10 --
+		// Task 6 -- Find all routes with available seats between two cities on given date
+		
+		// Task 7 -- For a given airline, find all routes with available seats between two cities on given date
+		
+		// Task 8 -- Add reservation
+		
+		// Task 9 -- Show reservation info, given reservation number
+		
+		// Task 10 -- Buy ticket from existing reservation
 		
 		/******** ADMINISTRATOR ********/
 		
 		// Task 1 -- Delete Database Information
+		try
+		{
+			admin_task1("yes");
+			System.out.println("Database cleared");
+		}
+		catch(SQLException err)
+		{
+			System.out.println(err.toString());
+		}
 	}
 }

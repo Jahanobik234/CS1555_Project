@@ -422,8 +422,6 @@ public class PittToursInterface
 		catch(IOException ioe)
 		{
 			System.out.println(ioe.toString());
-// 			System.out.print("File doesn't exist. Input proper filename: ");
-// 			System.out.print("Name of file: ");
 			fReader = null;
 		}		
 		
@@ -766,7 +764,6 @@ public class PittToursInterface
 		return 0;
 	}
 	
-	// INCOMPLETE - NEEDS TO PRINT FINAL MANIFEST
 	public static int admin_task6(String flight_num, String flight_date)
 	{
 		try

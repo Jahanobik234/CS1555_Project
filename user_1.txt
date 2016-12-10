@@ -1,4 +1,3 @@
--- cid, salutation, first_name, last_name, credit_card_num, credit_card_expire, street, city, state, phone, email --
 'Mr', 'Richard', 'Lloyd', '7836483301113682', to_date('09/23', 'MM/YY'), '315 Friendship Lane', 'Boston', 'MA', '0181388379', '400@pitt.edu', 
 'Ms', 'Anna', 'Tuft', '5308054580727223', to_date('06/22', 'MM/YY'), '336 Swanson Street', 'Boston', 'MA', '6350608509', '401@pitt.edu', 
 'Mr', 'Peter', 'Wagner', '1035803546343336', to_date('02/19', 'MM/YY'), '796 Craig Street', 'Honolulu', 'HI', '8602825000', '402@pitt.edu', 
