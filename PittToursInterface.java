@@ -958,47 +958,48 @@ public class PittToursInterface
 			}while(resultSet.next());
 		
 			flightQuery = "SELECT * " +
-						  "FROM FLIGHT F JOIN FLIGHT G ON (F.airline_id = G.airline_id) " +
+						  "FROM FLIGHT F JOIN FLIGHT G ON F.airline_id = G.airline_id " +
 						  "WHERE F.departure_city = '" + city1 + "' AND F.arrival_city = '" + city2 + "'" + " AND G.departure_city = '" + city2 + "' AND G.arrival_city = '" + city1 + "'";
 			resultSet = statement.executeQuery(flightQuery);
-			
+
 			if(!resultSet.next())
 			{
 				System.out.println("No Flights Exist.");
 				return;
 			}
 			
-			ResultSet resultSet2;
+			ResultSet resultSet2, resultSet3;
 			
 			do
 			{
 				int depTime, arrTime;
+				String currAirlineID = resultSet.getString(2);
 				depTime = Integer.parseInt(resultSet.getString(14));
 				arrTime = Integer.parseInt(resultSet.getString(7));
 			
 				if(depTime > arrTime)
 				{
 					int price = 0;
-					resultSet2 = statement.executeQuery("SELECT high_price, airline_id FROM PRICE WHERE airline_id = '" + resultSet.getString(2) + "' AND departure_city = '" + city1 + "' AND arrival_city = '" + city2 + "'");
+					resultSet2 = statement.executeQuery("SELECT high_price, airline_id FROM PRICE WHERE airline_id = '" + currAirlineID + "' AND departure_city = '" + city1 + "' AND arrival_city = '" + city2 + "'");
 					resultSet2.next();
 					price += resultSet2.getInt("high_price");
-					resultSet2 = statement.executeQuery("SELECT high_price, airline_id FROM PRICE WHERE airline_id = '" + resultSet.getString(10) + "' AND departure_city = '" + city2 + "' AND arrival_city = '" + city1 + "'");
-					resultSet2.next();
-					price += resultSet2.getInt("high_price");
-					System.out.println("Roundtrip Between " + city1 + " and " + city2 + "on Airline: " + resultSet2.getString("airline_id"));
+					resultSet3 = statement.executeQuery("SELECT high_price, airline_id FROM PRICE WHERE airline_id = '" + currAirlineID + "' AND departure_city = '" + city2 + "' AND arrival_city = '" + city1 + "'");
+					resultSet3.next();
+					price += resultSet3.getInt("high_price");
+					System.out.println("Roundtrip Between " + city1 + " and " + city2 + " on Airline: " + currAirlineID);
 					System.out.println("Price: $" + price);
 				}
 			
 				else
 				{
 					int price = 0;
-					resultSet2 = statement.executeQuery("SELECT low_price, airline_id FROM PRICE WHERE airline_id = '" + resultSet.getString(2) + "' AND departure_city = '" + city1 + "' AND arrival_city = '" + city2 + "'");
+					resultSet2 = statement.executeQuery("SELECT low_price, airline_id FROM PRICE WHERE airline_id = '" + currAirlineID + "' AND departure_city = '" + city1 + "' AND arrival_city = '" + city2 + "'");
 					resultSet2.next();
 					price += resultSet2.getInt("low_price");
-					resultSet2 = statement.executeQuery("SELECT low_price, airline_id FROM PRICE WHERE airline_id = '" + resultSet.getString(10) + "' AND departure_city = '" + city2 + "' AND arrival_city = '" + city1 + "'");
-					resultSet2.next();
-					price += resultSet2.getInt("low_price");
-					System.out.println("Roundtrip Between " + city1 + " and " + city2 + "on Airline: " + resultSet2.getString("airline_id"));
+					resultSet3 = statement.executeQuery("SELECT low_price, airline_id FROM PRICE WHERE airline_id = '" + currAirlineID + "' AND departure_city = '" + city2 + "' AND arrival_city = '" + city1 + "'");
+					resultSet3.next();
+					price += resultSet3.getInt("low_price");
+					System.out.println("Roundtrip Between " + city1 + " and " + city2 + "on Airline: " + currAirlineID);
 					System.out.println("Price: $" + price);
 				}
 			}while(resultSet.next());
