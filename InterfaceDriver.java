@@ -13,8 +13,9 @@ public class InterfaceDriver
 {
 	public static void main(String[] args)
 	{
-		Connection connection;
-		PittToursInterface pti;
+		Connection connection = null;
+		Statement statement = null;
+		PittToursInterface pti = null;
 		ResultSet rs;
 		
 		// Create Connection and Call Interface
@@ -43,10 +44,10 @@ public class InterfaceDriver
 		// Task 1 -- Delete Database (To Begin Fresh)
 		try
 		{
-			admin_task1("yes");
+			pti.admin_task1("yes");
 			System.out.println("Database cleared");
 		}
-		catch(SQLException err)
+		catch(Exception err)
 		{
 			System.out.println(err.toString());
 		}
@@ -59,7 +60,8 @@ public class InterfaceDriver
 		{
 			String before = "SELECT COUNT(*) FROM Plane";
 			rs = statement.executeQuery(before);
-			System.out.printf("Cardinality of Plane Before Insert: %s", rs.next().getString("COUNT(*)"));
+			rs.next();
+			System.out.printf("Cardinality of Plane Before Insert: %s", rs.getString("COUNT(*)"));
 		}
 		catch(SQLException err)
 		{
@@ -81,7 +83,8 @@ public class InterfaceDriver
 				{
 					String after = "SELECT COUNT(*) FROM Plane";
 					rs = statement.executeQuery(after);
-					System.out.printf("Cardinality of Plane After Insert: %s", rs.next().getString("COUNT(*)"));
+					rs.next();
+					System.out.printf("Cardinality of Plane After Insert: %s", rs.getString("COUNT(*)"));
 				}
 				catch(SQLException err)
 				{
@@ -98,7 +101,8 @@ public class InterfaceDriver
 		{
 			String before = "SELECT COUNT(*) FROM Airline";
 			rs = statement.executeQuery(before);
-			System.out.printf("Cardinality of Airline Before Insert: %s", rs.next().getString("COUNT(*)"));
+			rs.next();
+			System.out.printf("Cardinality of Airline Before Insert: %s", rs.getString("COUNT(*)"));
 		}
 		catch(SQLException err)
 		{
@@ -120,7 +124,8 @@ public class InterfaceDriver
 				{
 					String after = "SELECT COUNT(*) FROM Airline";
 					rs = statement.executeQuery(after);
-					System.out.printf("Cardinality of Airline After Insert: %s", rs.next().getString("COUNT(*)"));
+					rs.next();
+					System.out.printf("Cardinality of Airline After Insert: %s", rs.getString("COUNT(*)"));
 				}
 				catch(SQLException err)
 				{
@@ -137,7 +142,8 @@ public class InterfaceDriver
 		{
 			String before = "SELECT COUNT(*) FROM Flight";
 			rs = statement.executeQuery(before);
-			System.out.printf("Cardinality of Flight Before Insert: %s", rs.next().getString("COUNT(*)"));
+			rs.next();
+			System.out.printf("Cardinality of Flight Before Insert: %s", rs.getString("COUNT(*)"));
 		}
 		catch(SQLException err)
 		{
@@ -159,7 +165,8 @@ public class InterfaceDriver
 				{
 					String after = "SELECT COUNT(*) FROM Flight";
 					rs = statement.executeQuery(after);
-					System.out.printf("Cardinality of Flight After Insert: %s", rs.next().getString("COUNT(*)"));
+					rs.next();
+					System.out.printf("Cardinality of Flight After Insert: %s", rs.getString("COUNT(*)"));
 				}
 				catch(SQLException err)
 				{
@@ -177,7 +184,8 @@ public class InterfaceDriver
 		{
 			String before = "SELECT COUNT(*) FROM Price";
 			rs = statement.executeQuery(before);
-			System.out.printf("Cardinality of Price Before Insert: %s", rs.next().getString("COUNT(*)"));
+			rs.next();
+			System.out.printf("Cardinality of Price Before Insert: %s", rs.getString("COUNT(*)"));
 		}
 		catch(SQLException err)
 		{
@@ -199,7 +207,8 @@ public class InterfaceDriver
 				{
 					String after = "SELECT COUNT(*) FROM Price";
 					rs = statement.executeQuery(after);
-					System.out.printf("Cardinality of Price After Insert: %s", rs.next().getString("COUNT(*)"));
+					rs.next();
+					System.out.printf("Cardinality of Price After Insert: %s", rs.getString("COUNT(*)"));
 				}
 				catch(SQLException err)
 				{
@@ -248,7 +257,8 @@ public class InterfaceDriver
 		{
 			String before = "SELECT COUNT(*) FROM Customer";
 			rs = statement.executeQuery(before);
-			System.out.printf("Cardinality of Customer Before Insert: %s", rs.next().getString("COUNT(*)"));
+			rs.next();
+			System.out.printf("Cardinality of Customer Before Insert: %s", rs.getString("COUNT(*)"));
 		}
 		catch(SQLException err)
 		{
@@ -262,7 +272,8 @@ public class InterfaceDriver
 			{
 				String after = "SELECT COUNT(*) FROM Customer";
 				rs = statement.executeQuery(after);
-				System.out.printf("Cardinality of Customer After Insert: %s", rs.next().getString("COUNT(*)"));
+				rs.next();
+				System.out.printf("Cardinality of Customer After Insert: %s", rs.getString("COUNT(*)"));
 			}
 			catch(SQLException err)
 			{
@@ -275,8 +286,17 @@ public class InterfaceDriver
 		}
 		
 			// Read in from file for stress test
-		File f = new File("user_1.txt");
-		Scanner reader = new Scanner(f);
+		File f;
+		Scanner reader = null;
+		try
+		{
+			f = new File("user_1.txt");
+			reader = new Scanner(f);
+		}
+		catch(Exception err)
+		{
+			System.out.println(err.toString());
+		}
 		
 		while(reader.hasNext())
 		{
@@ -299,7 +319,8 @@ public class InterfaceDriver
 				{
 					String after = "SELECT COUNT(*) FROM Customer";
 					rs = statement.executeQuery(after);
-					System.out.printf("Cardinality of Customer After Insert: %s", rs.next().getString("COUNT(*)"));
+					rs.next();
+					System.out.printf("Cardinality of Customer After Insert: %s", rs.getString("COUNT(*)"));
 				}
 				catch(SQLException err)
 				{
@@ -315,12 +336,20 @@ public class InterfaceDriver
 		
 		// Task 2 -- Show customer info, given customer name
 		System.out.println("\t\tTesting User Task 2...");
-		File f = new File("user_2.txt");
-		Scanner reader = new Scanner(f);
+		
+		try
+		{
+			f = new File("user_2.txt");
+			reader = new Scanner(f);
+		}
+		catch(Exception err)
+		{
+			System.out.println(err.toString());
+		}
 		
 		while(reader.hasNext())
 		{
-			String[] name = reader.nextLine().split();
+			String[] name = reader.nextLine().split(",");
 			String first = name[0];
 			String last = name[1];
 			
@@ -339,7 +368,7 @@ public class InterfaceDriver
 		System.out.println("\t\tTesting User Task 3...");
 		String[] cities = {"PIT", "IND", "SAN", "BWI", "MCO"};
 		
-		for(int i = 0; i < 5, i++)
+		for(int i = 0; i < 5; i++)
 		{
 			String city1 = cities[i];
 			for(int j = 1; j < 5; j++)
@@ -347,7 +376,7 @@ public class InterfaceDriver
 				String city2 = cities[j];
 				try
 				{
-					user_task3(city1, city2);
+					pti.user_task3(city1, city2);
 				}
 				catch(Exception err)
 				{
@@ -358,9 +387,9 @@ public class InterfaceDriver
 		
 		// Task 4 -- Find all routes between two cities
 		System.out.println("\t\tTesting User Task 4...");
-		String[] cities = {"PIT", "IND", "SAN", "BWI", "MCO"};
+		//String[] cities = {"PIT", "IND", "SAN", "BWI", "MCO"};
 		
-		for(int i = 0; i < 5, i++)
+		for(int i = 0; i < 5; i++)
 		{
 			String city1 = cities[i];
 			for(int j = 1; j < 5; j++)
@@ -368,7 +397,7 @@ public class InterfaceDriver
 				String city2 = cities[j];
 				try
 				{
-					user_task4(city1, city2);
+					pti.user_task4(city1, city2);
 				}
 				catch(Exception err)
 				{
@@ -379,10 +408,10 @@ public class InterfaceDriver
 		
 		// Task 5 -- Find all routes between two cities of a given airline
 		System.out.println("\t\tTesting User Task 5...");
-		String[] cities = {"PIT", "IND", "SAN", "BWI", "MCO"};
+		//String[] cities = {"PIT", "IND", "SAN", "BWI", "MCO"};
 		String[] airlines = {"00002", "00004", "00006", "00008", "00010"};
 		
-		for(int i = 0; i < 5, i++)
+		for(int i = 0; i < 5; i++)
 		{
 			String airlineID = airlines[i];
 			String city1 = cities[i];
@@ -391,7 +420,7 @@ public class InterfaceDriver
 				String city2 = cities[j];
 				try
 				{
-					user_task5(city1, city2, airlineID);
+					pti.user_task5(city1, city2, airlineID);
 				}
 				catch(Exception err)
 				{
@@ -402,10 +431,10 @@ public class InterfaceDriver
 		
 		// Task 6 -- Find all routes with available seats between two cities on given date
 		System.out.println("\t\tTesting User Task 6...");
-		String[] cities = {"PIT", "IND", "SAN", "BWI", "MCO"};
+		//String[] cities = {"PIT", "IND", "SAN", "BWI", "MCO"};
 		String[] dates = {"12/06/2016", "12/07/2016", "12/09/2016", "12/04/2016", "12/05/2016"};
 		
-		for(int i = 0; i < 5, i++)
+		for(int i = 0; i < 5; i++)
 		{
 			String date = dates[i];
 			String city1 = cities[i];
@@ -414,7 +443,7 @@ public class InterfaceDriver
 				String city2 = cities[j];
 				try
 				{
-					user_task6(city1, city2, date);
+					pti.user_task6(city1, city2, date);
 				}
 				catch(Exception err)
 				{
@@ -425,11 +454,11 @@ public class InterfaceDriver
 		
 		// Task 7 -- For a given airline, find all routes with available seats between two cities on given date
 		System.out.println("\t\tTesting User Task 7...");
-		String[] cities = {"PIT", "IND", "SAN", "BWI", "MCO"};
-		String[] dates = {"12/06/2016", "12/07/2016", "12/09/2016", "12/04/2016", "12/05/2016"};
-		String[] airlineNames = {"Allegiant Air","Delta Air Lines","JetBlue Airways","Spirit Airlines","United Airlines"}
+		// String[] cities = {"PIT", "IND", "SAN", "BWI", "MCO"};
+		// String[] dates = {"12/06/2016", "12/07/2016", "12/09/2016", "12/04/2016", "12/05/2016"};
+		String[] airlineNames = {"Allegiant Air","Delta Air Lines","JetBlue Airways","Spirit Airlines","United Airlines"};
 		
-		for(int i = 0; i < 5, i++)
+		for(int i = 0; i < 5; i++)
 		{
 			String date = dates[i];
 			String city1 = cities[i];
@@ -439,7 +468,7 @@ public class InterfaceDriver
 				String city2 = cities[j];
 				try
 				{
-					user_task7(city1, city2, date, airline);
+					pti.user_task7(city1, city2, date, airline);
 				}
 				catch(Exception err)
 				{
@@ -453,17 +482,19 @@ public class InterfaceDriver
 		
 		// Task 9 -- Show reservation info, given reservation number
 		
+		
 		// Task 10 -- Buy ticket from existing reservation
+		
 		
 		/******** ADMINISTRATOR ********/
 		
 		// Task 1 -- Delete Database Information
 		try
 		{
-			admin_task1("yes");
+			pti.admin_task1("yes");
 			System.out.println("Database cleared");
 		}
-		catch(SQLException err)
+		catch(Exception err)
 		{
 			System.out.println(err.toString());
 		}
