@@ -131,7 +131,7 @@ public class InterfaceDriver
 		
 		// Task 3 -- Load Schedule Information
 		String[] task3File = {"admin_3.1.txt", "admin_3.2.txt", "admin_3.3.txt", "admin_3.4.txt", "admin_3.5.txt"};
-		System.out.println("Testing Admin Task 3...");
+		System.out.println("\t\tTesting Admin Task 3...");
 		
 		try
 		{
@@ -171,7 +171,7 @@ public class InterfaceDriver
 		// Task 4 -- Load Price Information
 		String[] task4File = {"admin_4.1.txt", "admin_4.2.txt", "admin_4.3.txt", "admin_4.4.txt", "admin_4.5.txt", 
 								"admin_4.6.txt", "admin_4.7.txt", "admin_4.8.txt", "admin_4.9.txt", "admin_4.10.txt"};
-		System.out.println("Testing Admin Task 4...");
+		System.out.println("\t\tTesting Admin Task 4...");
 		
 		try
 		{
@@ -209,6 +209,7 @@ public class InterfaceDriver
 		}
 		
 		// Task 6 -- Passanger Manifests
+		System.out.println("\t\tTesting Admin Task 6...");
 		int t6 = pti.admin_task6("00008", "12/06/2016");
 		if(t6 != 0)
 		{
@@ -230,6 +231,7 @@ public class InterfaceDriver
 		/******** USER ********/
 		
 		// Task 1 -- Add Customer
+		System.out.println("\t\tTesting User Task 1...");
 			// Individual First
 		String salutation = "Mr";
 		String firstName = "Edward";
@@ -312,6 +314,7 @@ public class InterfaceDriver
 		reader.close();
 		
 		// Task 2 -- Show customer info, given customer name
+		System.out.println("\t\tTesting User Task 2...");
 		File f = new File("user_2.txt");
 		Scanner reader = new Scanner(f);
 		
@@ -333,18 +336,120 @@ public class InterfaceDriver
 		reader.close();
 		
 		// Task 3 -- Find price for flights between two cities
+		System.out.println("\t\tTesting User Task 3...");
+		String[] cities = {"PIT", "IND", "SAN", "BWI", "MCO"};
 		
-		
+		for(int i = 0; i < 5, i++)
+		{
+			String city1 = cities[i];
+			for(int j = 1; j < 5; j++)
+			{
+				String city2 = cities[j];
+				try
+				{
+					user_task3(city1, city2);
+				}
+				catch(Exception err)
+				{
+					System.out.println(err.toString());
+				}
+			}
+		}
 		
 		// Task 4 -- Find all routes between two cities
+		System.out.println("\t\tTesting User Task 4...");
+		String[] cities = {"PIT", "IND", "SAN", "BWI", "MCO"};
+		
+		for(int i = 0; i < 5, i++)
+		{
+			String city1 = cities[i];
+			for(int j = 1; j < 5; j++)
+			{
+				String city2 = cities[j];
+				try
+				{
+					user_task4(city1, city2);
+				}
+				catch(Exception err)
+				{
+					System.out.println(err.toString());
+				}
+			}
+		}
 		
 		// Task 5 -- Find all routes between two cities of a given airline
+		System.out.println("\t\tTesting User Task 5...");
+		String[] cities = {"PIT", "IND", "SAN", "BWI", "MCO"};
+		String[] airlines = {"00002", "00004", "00006", "00008", "00010"};
+		
+		for(int i = 0; i < 5, i++)
+		{
+			String airlineID = airlines[i];
+			String city1 = cities[i];
+			for(int j = 1; j < 5; j++)
+			{
+				String city2 = cities[j];
+				try
+				{
+					user_task5(city1, city2, airlineID);
+				}
+				catch(Exception err)
+				{
+					System.out.println(err.toString());
+				}
+			}
+		}
 		
 		// Task 6 -- Find all routes with available seats between two cities on given date
+		System.out.println("\t\tTesting User Task 6...");
+		String[] cities = {"PIT", "IND", "SAN", "BWI", "MCO"};
+		String[] dates = {"12/06/2016", "12/07/2016", "12/09/2016", "12/04/2016", "12/05/2016"};
+		
+		for(int i = 0; i < 5, i++)
+		{
+			String date = dates[i];
+			String city1 = cities[i];
+			for(int j = 1; j < 5; j++)
+			{
+				String city2 = cities[j];
+				try
+				{
+					user_task6(city1, city2, date);
+				}
+				catch(Exception err)
+				{
+					System.out.println(err.toString());
+				}
+			}
+		}
 		
 		// Task 7 -- For a given airline, find all routes with available seats between two cities on given date
+		System.out.println("\t\tTesting User Task 7...");
+		String[] cities = {"PIT", "IND", "SAN", "BWI", "MCO"};
+		String[] dates = {"12/06/2016", "12/07/2016", "12/09/2016", "12/04/2016", "12/05/2016"};
+		String[] airlineNames = {"Allegiant Air","Delta Air Lines","JetBlue Airways","Spirit Airlines","United Airlines"}
+		
+		for(int i = 0; i < 5, i++)
+		{
+			String date = dates[i];
+			String city1 = cities[i];
+			String airline = airlineNames[i];
+			for(int j = 1; j < 5; j++)
+			{
+				String city2 = cities[j];
+				try
+				{
+					user_task7(city1, city2, date, airline);
+				}
+				catch(Exception err)
+				{
+					System.out.println(err.toString());
+				}
+			}
+		}
 		
 		// Task 8 -- Add reservation
+		
 		
 		// Task 9 -- Show reservation info, given reservation number
 		
