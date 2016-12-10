@@ -506,6 +506,14 @@ public class InterfaceDriver
 		{
 			System.out.println(err.toString());
 		}
-		connection.close();
+		
+		try
+		{
+			connection.close();
+		}
+		catch(SQLException err)
+		{
+			System.out.println(err.toString());
+		}
 	}
 }

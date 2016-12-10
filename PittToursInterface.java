@@ -80,7 +80,14 @@ public class PittToursInterface
 			}
 		}while(userSelection != "3");
 		
-		connection.close();
+		try
+		{
+			connection.close();
+		}
+		catch(SQLException err)
+		{
+			System.out.println(err.toString());
+		}
 	}
 	
 	//Interface Methods/Functions for Administrator
