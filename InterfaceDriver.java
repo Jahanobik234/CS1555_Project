@@ -481,10 +481,18 @@ public class InterfaceDriver
 		
 		
 		// Task 9 -- Show reservation info, given reservation number
-		
+		System.out.println("Testing User Task 9...");
+		for(int i = 1; i < 11; i++)
+		{
+			pti.user_task9(String.format("%05d", i));
+		}
 		
 		// Task 10 -- Buy ticket from existing reservation
-		
+		System.out.println("Test User Task 10...");
+		for(int i = 11; i < 21; i++)
+		{
+			pti.user_task10(String.format("%05d", i));
+		}
 		
 		/******** ADMINISTRATOR ********/
 		
@@ -498,5 +506,6 @@ public class InterfaceDriver
 		{
 			System.out.println(err.toString());
 		}
+		connection.close();
 	}
 }

@@ -79,6 +79,8 @@ public class PittToursInterface
 				userSelection = "3";
 			}
 		}while(userSelection != "3");
+		
+		connection.close();
 	}
 	
 	//Interface Methods/Functions for Administrator
