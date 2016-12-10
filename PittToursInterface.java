@@ -989,10 +989,10 @@ public class PittToursInterface
 				if(depTime > arrTime)
 				{
 					int price = 0;
-					resultSet2 = statement.executeQuery("SELECT high_price, airline_id FROM PRICE WHERE airline_id = '" + currAirlineID + "' AND departure_city = '" + city1 + "' AND arrival_city = '" + city2 + "'");
+					resultSet2 = statement.executeQuery("SELECT high_price, airline_id FROM PRICE WHERE departure_city = '" + city1 + "' AND arrival_city = '" + city2 + "'");
 					resultSet2.next();
 					price += resultSet2.getInt("high_price");
-					resultSet3 = statement.executeQuery("SELECT high_price, airline_id FROM PRICE WHERE airline_id = '" + currAirlineID + "' AND departure_city = '" + city2 + "' AND arrival_city = '" + city1 + "'");
+					resultSet3 = statement.executeQuery("SELECT high_price, airline_id FROM PRICE WHERE departure_city = '" + city2 + "' AND arrival_city = '" + city1 + "'");
 					resultSet3.next();
 					price += resultSet3.getInt("high_price");
 					System.out.println("\nRoundtrip Between " + city1 + " and " + city2 + " on Airline: " + currAirlineID);
@@ -1002,10 +1002,10 @@ public class PittToursInterface
 				else
 				{
 					int price = 0;
-					resultSet2 = statement.executeQuery("SELECT low_price, airline_id FROM PRICE WHERE airline_id = '" + currAirlineID + "' AND departure_city = '" + city1 + "' AND arrival_city = '" + city2 + "'");
+					resultSet2 = statement.executeQuery("SELECT low_price, airline_id FROM PRICE WHERE departure_city = '" + city1 + "' AND arrival_city = '" + city2 + "'");
 					resultSet2.next();
 					price += resultSet2.getInt("low_price");
-					resultSet3 = statement.executeQuery("SELECT low_price, airline_id FROM PRICE WHERE airline_id = '" + currAirlineID + "' AND departure_city = '" + city2 + "' AND arrival_city = '" + city1 + "'");
+					resultSet3 = statement.executeQuery("SELECT low_price, airline_id FROM PRICE WHERE departure_city = '" + city2 + "' AND arrival_city = '" + city1 + "'");
 					resultSet3.next();
 					price += resultSet3.getInt("low_price");
 					System.out.println("\nRoundtrip Between " + city1 + " and " + city2 + " on Airline: " + currAirlineID);
@@ -1176,17 +1176,23 @@ public class PittToursInterface
 			ResultSet resultSet2, resultSet3;
 			do
 			{
-				resultSet2 = statement.executeQuery("SELECT COUNT(*) FROM RESERVATION_DETAIL WHERE flight_number = '" + resultSet.getString(1) + "'");
+				String tempFlightNum = resultSet.getString(1);
+				String ai = resultSet.getString(2);
+				String dc = resultSet.getString(4);
+				String ac = resultSet.getString(5);
+				String dt = resultSet.getString(6);
+				String at = resultSet.getString(7);
+				resultSet2 = statement.executeQuery("SELECT COUNT(*) FROM RESERVATION_DETAIL WHERE flight_number = '" + tempFlightNum + "'");
 				resultSet2.next();
 				resultSet3 = statement.executeQuery("SELECT plane_capacity FROM (FLIGHT F JOIN PLANE P ON F.airline_id = P.owner_id) WHERE F.flight_number = '" + resultSet.getString(1) + "'");
 				resultSet3.next();
 				if(resultSet2.getInt(1) < resultSet3.getInt(1))
 				{
-					System.out.printf("Flight Number: %s\n", resultSet.getString("F.airline_id"));
-					System.out.printf("Departure City: %s\n", resultSet.getString("F.departure_city"));
-					System.out.printf("Arrival City: %s\n", resultSet.getString("F.arrival_city"));
-					System.out.printf("Departure Time: %s\n", resultSet.getString("F.departure_time"));
-					System.out.printf("Arrival Time: %s\n", resultSet.getString("F.arrival_time"));
+					System.out.printf("Flight Number: %s\n", ai);
+					System.out.printf("Departure City: %s\n", dc);
+					System.out.printf("Arrival City: %s\n", ac);
+					System.out.printf("Departure Time: %s\n", dt);
+					System.out.printf("Arrival Time: %s\n", at);
 					System.out.println("--------------------");
 				}
 			}while(resultSet.next());
@@ -1380,11 +1386,6 @@ public class PittToursInterface
 			try	// Perform and commit update
 			{
 				connection.setAutoCommit(false);
-				connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-				for(int j = 0; j < legNum; j++)
-				{
-					statement.executeUpdate("INSERT INTO RESERVATION_DETAIL VALUES('" + newReservationNumber + "', '" + legInfo[j][0] + "', to_date('" + legInfo[j][1] + "', 'MM-DD-YYYY'), " + j + ")");
-				}
 				
 				statement.executeUpdate("INSERT INTO RESERVATION VALUES('" + newReservationNumber + "', '" + custID + "', '" +  depCity + "', '" 
 						+ arrCity + "', '" + price + "', '" + ccNumber + "', to_date('" + legInfo[0][1] + "', 'MM-DD-YYYY'), 'Y')");
