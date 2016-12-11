@@ -1173,7 +1173,8 @@ public class PittToursInterface
 			
 			System.out.println("--------------------");
 			System.out.println("One-Way Flights Between " + city1 + " and " + city2 + " on Date " + givenDate);
-			ResultSet resultSet2, resultSet3;
+			ResultSet resultSet2 = null;
+			ResultSet resultSet3 = null;
 			do
 			{
 				String tempFlightNum = resultSet.getString(1);
@@ -1182,10 +1183,30 @@ public class PittToursInterface
 				String ac = resultSet.getString(5);
 				String dt = resultSet.getString(6);
 				String at = resultSet.getString(7);
-				resultSet2 = statement.executeQuery("SELECT COUNT(*) FROM RESERVATION_DETAIL WHERE flight_number = '" + tempFlightNum + "'");
-				resultSet2.next();
-				resultSet3 = statement.executeQuery("SELECT plane_capacity FROM (FLIGHT F JOIN PLANE P ON F.airline_id = P.owner_id) WHERE F.flight_number = '" + resultSet.getString(1) + "'");
-				resultSet3.next();
+				try
+				{
+					resultSet2 = statement.executeQuery("SELECT COUNT(*) FROM RESERVATION_DETAIL WHERE flight_number = '" + tempFlightNum + "'");
+					resultSet2.next();
+				}
+				catch(SQLException err)
+				{
+					System.out.println("Result Set 2 Error:");
+					System.out.println(err.toString());
+					break;
+				}
+				
+				try
+				{
+					resultSet3 = statement.executeQuery("SELECT plane_capacity FROM (FLIGHT F JOIN PLANE P ON F.airline_id = P.owner_id) WHERE F.flight_number = '" + resultSet.getString(1) + "'");
+					resultSet3.next();
+				}
+				catch(SQLException err2)
+				{
+					System.out.println("Result Set 3 Error:");
+					System.out.println(err2.toString());
+					break;
+				}
+				
 				if(resultSet2.getInt(1) < resultSet3.getInt(1))
 				{
 					System.out.printf("Flight Number: %s\n", ai);
@@ -1339,7 +1360,7 @@ public class PittToursInterface
 				resultSet2 = statement.executeQuery("SELECT plane_capacity FROM FLIGHT F JOIN PLANE P ON F.plane_type = P.plane_type WHERE F.flight_number = '" + legInfo[i][0] + "'");
 				resultSet2.next();
 				maxCapacity = resultSet2.getInt("plane_capacity");
-				if(currCapacity >= maxCapacity) //There is mo room on the plane_capacity
+				if(currCapacity >= maxCapacity) //There is no room on the plane_capacity
 				{
 					System.out.println("Flight " + legInfo[i][0] + " does not have any open seats! Reservation Cancelled!");
 					seatAvail = false;

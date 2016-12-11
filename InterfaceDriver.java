@@ -217,26 +217,6 @@ public class InterfaceDriver
 			}
 		}
 		
-		// Task 6 -- Passanger Manifests
-		System.out.println("\t\tTesting Admin Task 6...");
-		int t6 = pti.admin_task6("00008", "12/06/2016");
-		if(t6 != 0)
-		{
-			System.out.println("Query Not Executable, An Error Occurred.");
-		}
-		
-		t6 = pti.admin_task6("00009", "12/07/2016");
-		if(t6 != 0)
-		{
-			System.out.println("Query Not Executable, An Error Occurred.");
-		}
-		
-		t6 = pti.admin_task6("00010", "12/08/2016");
-		if(t6 != 0)
-		{
-			System.out.println("Query Not Executable, An Error Occurred.");
-		}
-		
 		/******** USER ********/
 		
 		// Task 1 -- Add Customer
@@ -534,6 +514,26 @@ public class InterfaceDriver
 		}
 		
 		/******** ADMINISTRATOR ********/
+		
+		// Task 6 -- Passanger Manifests
+		System.out.println("\t\tTesting Admin Task 6...");
+		int t6 = pti.admin_task6("00008", "12/06/2016");
+		if(t6 != 0)
+		{
+			System.out.println("Query Not Executable, An Error Occurred.");
+		}
+		
+		t6 = pti.admin_task6("00009", "12/07/2016");
+		if(t6 != 0)
+		{
+			System.out.println("Query Not Executable, An Error Occurred.");
+		}
+		
+		t6 = pti.admin_task6("00010", "12/08/2016");
+		if(t6 != 0)
+		{
+			System.out.println("Query Not Executable, An Error Occurred.");
+		}
 		
 		// Task 1 -- Delete Database Information
 		try
