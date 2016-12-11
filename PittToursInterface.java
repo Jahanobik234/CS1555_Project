@@ -463,7 +463,6 @@ public class PittToursInterface
 					connection.setAutoCommit(false);
 					statement.executeUpdate(temp);
 					connection.commit(); 
-					System.out.println("Database Successfully Deleted.");
 				}
 				catch(SQLException e1)				// Rollback if update failed
 				{
@@ -478,6 +477,7 @@ public class PittToursInterface
 					}
 				}
 			}
+			System.out.println("Database Successfully Deleted.");
 		}
 		else
 		{
