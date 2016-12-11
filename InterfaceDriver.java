@@ -478,7 +478,46 @@ public class InterfaceDriver
 		}
 		
 		// Task 8 -- Add reservation
+		System.out.println("Testing User Task 8...");
+		Scanner reader = null;
+		File f;
+		try
+		{
+			f = new File("user_8.txt");
+			reader = new Scanner(f);
+		}
+		catch(Exception err)
+		{
+			System.out.println(err.toString());
+		}
 		
+		String s1, s2, s3, s4;
+		String [][] legInfo = new String[4][2];
+		
+		while(reader.hasNext()
+		{
+			for(int i = 0; i < 4; i++)
+			{
+				String[] values = reader.nextLine().split(",");
+				s1 = values[0];
+				s2 = values[1];
+				s3 = values[2];
+				
+				if(!s1.equals("0")) //Just Flight Number and Date
+				{
+					legInfo[i][0] = s1;
+					legInfo[i][1] = s2;
+				}
+				
+				else
+				{
+					pti.user_task8((i+1), legInfo, s2, s3);
+				}
+			
+			}
+			
+		}
+		System.out.println("User Task 8 Tested");
 		
 		// Task 9 -- Show reservation info, given reservation number
 		System.out.println("Testing User Task 9...");
