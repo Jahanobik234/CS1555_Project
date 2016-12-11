@@ -17,7 +17,15 @@ public class PittToursInterface
 	
 	public PittToursInterface(Connection conn)
 	{
+		try
+		{
 		connection = conn;
+		statement = connection.createStatement();
+		}
+		catch(SQLException err)
+		{
+			System.out.println(err.toString());
+		}
 	}
 	
 	public static void main(String[] args)
@@ -643,8 +651,7 @@ public class PittToursInterface
 			try
 			{
 				str = str.concat("'" + departure_city + "') AND (arrival_city = '" +
-								arrival_city + "') AND (airline_id = '" + airline_id +
-								"')");
+								arrival_city + "') AND (airline_id = '" + airline_id + "')");
 				connection.setAutoCommit(false);
 				resultSet = statement.executeQuery(str);
 				connection.commit();

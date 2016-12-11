@@ -61,7 +61,7 @@ public class InterfaceDriver
 			String before = "SELECT COUNT(*) FROM Plane";
 			rs = statement.executeQuery(before);
 			rs.next();
-			System.out.printf("Cardinality of Plane Before Insert: %s", rs.getString("COUNT(*)"));
+			System.out.printf("Cardinality of Plane Before Insert: %s\n", rs.getString("COUNT(*)"));
 		}
 		catch(SQLException err)
 		{
@@ -84,7 +84,7 @@ public class InterfaceDriver
 					String after = "SELECT COUNT(*) FROM Plane";
 					rs = statement.executeQuery(after);
 					rs.next();
-					System.out.printf("Cardinality of Plane After Insert: %s", rs.getString("COUNT(*)"));
+					System.out.printf("Cardinality of Plane After Insert: %s\n", rs.getString("COUNT(*)"));
 				}
 				catch(SQLException err)
 				{
@@ -102,7 +102,7 @@ public class InterfaceDriver
 			String before = "SELECT COUNT(*) FROM Airline";
 			rs = statement.executeQuery(before);
 			rs.next();
-			System.out.printf("Cardinality of Airline Before Insert: %s", rs.getString("COUNT(*)"));
+			System.out.printf("Cardinality of Airline Before Insert: %s\n", rs.getString("COUNT(*)"));
 		}
 		catch(SQLException err)
 		{
@@ -125,7 +125,7 @@ public class InterfaceDriver
 					String after = "SELECT COUNT(*) FROM Airline";
 					rs = statement.executeQuery(after);
 					rs.next();
-					System.out.printf("Cardinality of Airline After Insert: %s", rs.getString("COUNT(*)"));
+					System.out.printf("Cardinality of Airline After Insert: %s\n", rs.getString("COUNT(*)"));
 				}
 				catch(SQLException err)
 				{
@@ -143,7 +143,7 @@ public class InterfaceDriver
 			String before = "SELECT COUNT(*) FROM Flight";
 			rs = statement.executeQuery(before);
 			rs.next();
-			System.out.printf("Cardinality of Flight Before Insert: %s", rs.getString("COUNT(*)"));
+			System.out.printf("Cardinality of Flight Before Insert: %s\n", rs.getString("COUNT(*)"));
 		}
 		catch(SQLException err)
 		{
@@ -166,7 +166,7 @@ public class InterfaceDriver
 					String after = "SELECT COUNT(*) FROM Flight";
 					rs = statement.executeQuery(after);
 					rs.next();
-					System.out.printf("Cardinality of Flight After Insert: %s", rs.getString("COUNT(*)"));
+					System.out.printf("Cardinality of Flight After Insert: %s\n", rs.getString("COUNT(*)"));
 				}
 				catch(SQLException err)
 				{
@@ -185,7 +185,7 @@ public class InterfaceDriver
 			String before = "SELECT COUNT(*) FROM Price";
 			rs = statement.executeQuery(before);
 			rs.next();
-			System.out.printf("Cardinality of Price Before Insert: %s", rs.getString("COUNT(*)"));
+			System.out.printf("Cardinality of Price Before Insert: %s\n", rs.getString("COUNT(*)"));
 		}
 		catch(SQLException err)
 		{
@@ -208,7 +208,7 @@ public class InterfaceDriver
 					String after = "SELECT COUNT(*) FROM Price";
 					rs = statement.executeQuery(after);
 					rs.next();
-					System.out.printf("Cardinality of Price After Insert: %s", rs.getString("COUNT(*)"));
+					System.out.printf("Cardinality of Price After Insert: %s\n", rs.getString("COUNT(*)"));
 				}
 				catch(SQLException err)
 				{
@@ -238,7 +238,7 @@ public class InterfaceDriver
 			String before = "SELECT COUNT(*) FROM Customer";
 			rs = statement.executeQuery(before);
 			rs.next();
-			System.out.printf("Cardinality of Customer Before Insert: %s", rs.getString("COUNT(*)"));
+			System.out.printf("Cardinality of Customer Before Insert: %s\n", rs.getString("COUNT(*)"));
 		}
 		catch(SQLException err)
 		{
@@ -253,7 +253,7 @@ public class InterfaceDriver
 				String after = "SELECT COUNT(*) FROM Customer";
 				rs = statement.executeQuery(after);
 				rs.next();
-				System.out.printf("Cardinality of Customer After Insert: %s", rs.getString("COUNT(*)"));
+				System.out.printf("Cardinality of Customer After Insert: %s\n", rs.getString("COUNT(*)"));
 			}
 			catch(SQLException err)
 			{
@@ -300,7 +300,7 @@ public class InterfaceDriver
 					String after = "SELECT COUNT(*) FROM Customer";
 					rs = statement.executeQuery(after);
 					rs.next();
-					System.out.printf("Cardinality of Customer After Insert: %s", rs.getString("COUNT(*)"));
+					System.out.printf("Cardinality of Customer After Insert: %s\n", rs.getString("COUNT(*)"));
 				}
 				catch(SQLException err)
 				{
@@ -459,8 +459,6 @@ public class InterfaceDriver
 		
 		// Task 8 -- Add reservation
 		System.out.println("Testing User Task 8...");
-		Scanner reader = null;
-		File f;
 		try
 		{
 			f = new File("user_8.txt");
@@ -474,7 +472,7 @@ public class InterfaceDriver
 		String s1, s2, s3, s4;
 		String [][] legInfo = new String[4][2];
 		
-		while(reader.hasNext()
+		while(reader.hasNext())
 		{
 			for(int i = 0; i < 4; i++)
 			{
