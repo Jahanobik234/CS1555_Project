@@ -1408,6 +1408,11 @@ public class PittToursInterface
 			{
 				connection.setAutoCommit(false);
 				
+				for(int j = 0; j < legNum; j++)
+				{
+					statement.executeUpdate("INSERT INTO RESERVATION_DETAIL VALUES('" + newReservationNumber + "', '" + legInfo[j][0] + "', to_date('" + legInfo[j][1] + "', 'MM-DD-YYYY'), " + j + ")");
+				}
+				
 				statement.executeUpdate("INSERT INTO RESERVATION VALUES('" + newReservationNumber + "', '" + custID + "', '" +  depCity + "', '" 
 						+ arrCity + "', '" + price + "', '" + ccNumber + "', to_date('" + legInfo[0][1] + "', 'MM-DD-YYYY'), 'Y')");
 				connection.commit();

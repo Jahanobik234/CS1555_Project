@@ -2596,6 +2596,7 @@ commit;
 CREATE OR REPLACE FUNCTION getCapacity(flightNum IN VARCHAR2) RETURN INT 
 AS
 capacity int;
+PRAGMA AUTONOMOUS_TRANSACTION;
 BEGIN
 	SELECT COUNT(*) INTO capacity
 	FROM Reservation_Detail
@@ -2606,6 +2607,7 @@ END;
 /
 
 CREATE OR REPLACE PROCEDURE updateFlightType(new_type IN CHAR, flightNum IN VARCHAR) AS
+PRAGMA AUTONOMOUS_TRANSACTION;
 BEGIN
 	UPDATE Flight	
 	SET plane_type = new_type
@@ -2683,6 +2685,7 @@ DECLARE
 	WHERE P.owner_id = (SELECT airline_id
 						FROM Flight
 						WHERE flight_number = :new.flight_number);
+PRAGMA AUTONOMOUS_TRANSACTION;
 BEGIN
 	curr_capacity := getCapacity(:new.flight_number);
 	SELECT plane_capacity INTO max_capacity
