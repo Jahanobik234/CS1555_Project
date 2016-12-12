@@ -42,7 +42,7 @@ CREATE TABLE Flight (
 	airline_id VARCHAR(5),
 	plane_type CHAR(4),
 	departure_city VARCHAR(3),
-	arrival_city VARCHAR(3),
+	arrival_city VARCHAR(4),
 	departure_time VARCHAR(4),
 	arrival_time VARCHAR(4),
 	weekly_schedule VARCHAR(7),

@@ -112,7 +112,6 @@ public class InterfaceDriver
 		for(String taskFile : task2File)
 		{
 			int t2 = pti.admin_task2(taskFile);
-		
 			if(t2 != 0)
 			{
 				System.out.println("The data was not inserted into the database.");
@@ -458,7 +457,7 @@ public class InterfaceDriver
 		}
 		
 		// Task 8 -- Add reservation
-		System.out.println("Testing User Task 8...");
+		/*System.out.println("Testing User Task 8...");
 		try
 		{
 			f = new File("user_8.txt");
@@ -496,7 +495,7 @@ public class InterfaceDriver
 			
 		}
 		System.out.println("User Task 8 Tested");
-		
+		*/
 		// Task 9 -- Show reservation info, given reservation number
 		System.out.println("Testing User Task 9...");
 		for(int i = 1; i < 11; i++)

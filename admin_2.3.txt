@@ -1,4 +1,4 @@
-'00004', 'Frontier Airlines', 'FFT', 1994
-'00005', 'JetBlue Airways', 'JBU', 1998
-'00006', 'Southwest Airlines', 'SWA', 1967
-'00007', 'Spirit Airlines', 'NKS', 1980
+00004,Frontier Airlines,FFT,1994
+00005,JetBlue Airways,JBU,1998
+00006,Southwest Airlines,SWA,1967
+00007,Spirit Airlines,NKS,1980

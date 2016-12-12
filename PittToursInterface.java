@@ -523,7 +523,7 @@ public class PittToursInterface
 				break;
 			}			
 			//Concatenate all data and previous line to create insert statement
-			line = insert.concat("('" + airline_id + "', '" + airline_name + "' ,'" + airline_abbreviation + "', " + year_founded + ")");
+			line = insert.concat("('" + airline_id + "', '" + airline_name + "', '" + airline_abbreviation + "', " + year_founded + ")");
 
 			try									// Perform and commit update
 			{
@@ -650,8 +650,8 @@ public class PittToursInterface
 			String str = "SELECT * FROM Price WHERE (departure_city = ";
 			try
 			{
-				str = str.concat("'" + departure_city + "') AND (arrival_city = '" +
-								arrival_city + "') AND (airline_id = '" + airline_id + "')");
+				str = str.concat("'" + departure_city + "' AND arrival_city = '" +
+								arrival_city + "' AND airline_id = '" + airline_id + "')");
 				connection.setAutoCommit(false);
 				resultSet = statement.executeQuery(str);
 				connection.commit();
