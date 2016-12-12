@@ -451,11 +451,13 @@ public class PittToursInterface
 		if(confirmation.equals("yes"))
 		{
 			// Delete Database
+			// KNOWN BUG!!: Only deletes Price table even though all queries execute without error
 			String deleteFrom;
-			String[] tablename = {"Airline", "Customer", "Flight", "Price", "Plane", "Reservation", "Reservation Detail"};
+			String[] tablename = {"Airline", "Customer", "Flight", "Price", "Plane", "Reservation", "Reservation_Detail"};
 			String temp;
-			for(String table : tablename)
+			for(int i = 0; i < 7; i++)
 			{
+				String table = tablename[i];
 				deleteFrom = "DELETE FROM ";
 				temp = deleteFrom.concat(table);
 				try									// Perform and commit update
